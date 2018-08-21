@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import ports.soc.ides.controller.AbstractIdesController;
 import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.model.Idea;
+import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.util.IdesUtils;
 
 @Named("showIdea")
@@ -57,6 +58,10 @@ public class IdeaDisplayController extends AbstractIdesController {
 	
 	private void generateShareableLink() {
 		if (idea.getId() <= 0) {
+			shareableLink = null;
+			return;
+		}
+		if (idea.getStatus() != IdeaStatus.Approved && idea.getStatus() != IdeaStatus.Allocated) {
 			shareableLink = null;
 			return;
 		}

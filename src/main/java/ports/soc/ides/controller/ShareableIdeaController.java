@@ -11,6 +11,7 @@ import ports.soc.ides.dao.IdeaDAO;
 import ports.soc.ides.dao.SqlSessionProvider;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
+import ports.soc.ides.util.IdesUtils;
 
 @Named("share")
 @RequestScoped
@@ -40,9 +41,11 @@ public class ShareableIdeaController extends AbstractIdesController {
 		
 		IdeaStatus status = i.getStatus();
 		if (status == IdeaStatus.Approved || status == IdeaStatus.Allocated) {
-			allowed = true;
 			showIdea.initDefault(i);
-			showOrg.initDefault(i.getOrganisation());
+			if (!IdesUtils.isEmpty(showIdea.getShareableLink()) && i.getOrganisation() != null) {
+				allowed = true;
+				showOrg.initDefault(i.getOrganisation());
+			}
 		}
 	}
 	
@@ -57,7 +60,7 @@ public class ShareableIdeaController extends AbstractIdesController {
 			
 			return dao.selectIdeaById(ideaRef);
 		} catch (Exception e) {
-			log.error("error getIdeaFromParameters idea ref=" + getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA));
+			log.error("error retrieving shareable idea by parameter, idea reference no=" + getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA));
 			return null;
 		}
 	}

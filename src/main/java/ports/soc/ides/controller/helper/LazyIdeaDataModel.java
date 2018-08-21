@@ -68,7 +68,7 @@ public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 		sb.append("query ideas: first=").append(first).append(", pageSize=").append(pageSize).append(", sortField=").append(sortField).append(", sortOrder=").append(sortOrder)
 				.append(", status=").append(IdesUtils.deepPrint(filterStatus)).append(", type=")
 				.append(IdesUtils.deepPrint(filterType)).append(", searchText=").append(searchKeyword);
-		log.debug(sb.toString());
+		log.info(sb.toString());
 		
 		List<Idea> result = new ArrayList<>();
 		try (SqlSession sql = sqlProvier.getSqlSession()){

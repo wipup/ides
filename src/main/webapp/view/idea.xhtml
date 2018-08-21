@@ -38,7 +38,8 @@
 		</h:panelGroup>
 		<h:panelGroup rendered="#{!share.allowed}">
 			<p:panel >
-				<h:outputText value="Not found" />
+				<h:outputText value="Unable to view the requested idea." /><br/>
+				<h:outputText value="The idea reference number may be invalid or the requested idea may be provisional, withdrawn or doesn't exist in our database." />
 			</p:panel>
 		</h:panelGroup>
 		<div class="ui-g">

@@ -31,7 +31,7 @@ public class InitialConfigurationPropertyName {
 	public static final String DATABASE_JDBC_DRIVER = "ides.database.jdbc.driverClass";
 	public static final String DATABASE_JDBC_URL = "ides.database.jdbc.url";
 	public static final String DATABASE_JDBC_USERNAME = "ides.database.jdbc.username";
-	public static final String DATABASE_JDBC_PASSWORD = "ides.database.jdbc.passowrd";
+	public static final String DATABASE_JDBC_PASSWORD = "ides.database.jdbc.password";
 	
 	public static final String DATABASE_JNDI_INIT_CONTEXT = "ides.database.jndi.initialContext";
 	public static final String DATABASE_JNDI_DATASOURCE = "ides.database.jndi.datasource";
