@@ -11,7 +11,7 @@ import ports.soc.ides.model.DataModel;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.model.constant.ProjectType;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 public class IdeaDAO extends AbstractDAO {
 

@@ -42,8 +42,8 @@ import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.model.constant.OwnerType;
 import ports.soc.ides.model.constant.ProjectType;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.CaptchaUtil;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.CaptchaUtil;
+import ports.soc.ides.util.IdesUtils;
 
 @Named("ideaWizard")
 @ViewScoped

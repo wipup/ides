@@ -6,7 +6,7 @@ import javax.inject.Named;
 
 import ports.soc.ides.controller.AbstractIdesController;
 import ports.soc.ides.model.Idea;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @Named("ideaForm")
 @ViewScoped

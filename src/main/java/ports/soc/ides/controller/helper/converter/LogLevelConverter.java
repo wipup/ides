@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @FacesConverter("logLevelConveter")
 public class LogLevelConverter implements Converter<Level> {

@@ -52,8 +52,8 @@ import ports.soc.ides.model.Organisation;
 import ports.soc.ides.model.User;
 import ports.soc.ides.model.constant.OwnerType;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @Named("admin")
 @ViewScoped

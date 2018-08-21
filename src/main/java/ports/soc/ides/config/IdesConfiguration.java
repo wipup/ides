@@ -10,7 +10,7 @@ import java.util.Set;
 import ports.soc.ides.config.util.PropertyLoader;
 import ports.soc.ides.model.User;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 public class IdesConfiguration extends AbstractConfiguration {
 

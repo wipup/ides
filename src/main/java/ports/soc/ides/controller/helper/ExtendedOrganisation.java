@@ -5,7 +5,7 @@ import java.util.List;
 
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.Organisation;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 public class ExtendedOrganisation extends Organisation {
 

@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.interceptor.annotation.LogPerformance;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @LogPerformance
 @Interceptor

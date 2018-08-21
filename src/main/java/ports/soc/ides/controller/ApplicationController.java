@@ -25,7 +25,7 @@ import ports.soc.ides.exception.IdesException;
 import ports.soc.ides.interceptor.annotation.IdesRoleAllowed;
 import ports.soc.ides.logger.LoggerConfigurationFactory;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @Named(value = "app")
 @ApplicationScoped

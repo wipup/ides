@@ -1,4 +1,4 @@
-package ports.soc.util;
+package ports.soc.ides.util;
 
 public class Pair<K, V> {
 	private K first;

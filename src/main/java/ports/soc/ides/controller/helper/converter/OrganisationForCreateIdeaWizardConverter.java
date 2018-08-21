@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.controller.CreateIdeaWizardController;
 import ports.soc.ides.model.Organisation;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @FacesConverter("orgConverter")
 public class OrganisationForCreateIdeaWizardConverter implements Converter<Organisation> {

@@ -3,7 +3,7 @@ package ports.soc.ides.config;
 import java.util.Objects;
 
 import ports.soc.ides.config.util.PropertyLoader;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 public class DatabaseConfiguration extends AbstractConfiguration {
 

@@ -1,6 +1,6 @@
 package ports.soc.ides.config;
 
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 public enum DatasourceType {
 	JDBC, JNDI;

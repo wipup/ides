@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.DateTimeUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.DateTimeUtils;
+import ports.soc.ides.util.IdesUtils;
 
 /**
  * Currently not being stored in database

@@ -6,7 +6,7 @@ import javax.validation.constraints.Size;
 
 import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.model.constant.ProjectType;
-import ports.soc.util.DateTimeUtils;
+import ports.soc.ides.util.DateTimeUtils;
 
 public class Idea extends DataModel {
 

@@ -24,7 +24,7 @@ import ports.soc.ides.interceptor.annotation.IdesRoleAllowed;
 import ports.soc.ides.interceptor.annotation.LogPerformance;
 import ports.soc.ides.model.Organisation;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 /**
  * A backing bean of Manage-Clients page

@@ -1,4 +1,4 @@
-package ports.soc.util;
+package ports.soc.ides.util;
 
 import java.util.Collection;
 import java.util.Enumeration;

@@ -15,7 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.controller.helper.IdesPage;
-import ports.soc.util.FacesUtils;
+import ports.soc.ides.util.FacesUtils;
 
 /**
  * https://stackoverflow.com/a/28614033

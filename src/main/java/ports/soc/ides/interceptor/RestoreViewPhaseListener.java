@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.PrimeFaces;
 
-import ports.soc.util.FacesUtils;
+import ports.soc.ides.util.FacesUtils;
 
 /**
  * Taken from: https://dzone.com/articles/session-timeout-handling-jsf

@@ -16,8 +16,8 @@ import ports.soc.ides.controller.UserController;
 import ports.soc.ides.interceptor.annotation.IdesRoleAllowed;
 import ports.soc.ides.model.User;
 import ports.soc.ides.model.constant.Role;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 /**
  * This interceptor is just a second defense line

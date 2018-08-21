@@ -19,7 +19,7 @@ import ports.soc.ides.interceptor.annotation.LogPerformance;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.model.constant.ProjectType;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 /**
  * Enable lazy-loading behavior for Idea data table

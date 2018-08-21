@@ -12,9 +12,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.PrimeFaces;
 
-import ports.soc.util.DateTimeUtils;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.DateTimeUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 /**
  * An abstract class of JSF CDI backing bean containing all necessary methods of

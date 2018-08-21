@@ -37,7 +37,7 @@ import ports.soc.ides.config.util.PropertyFileReader;
 import ports.soc.ides.config.util.PropertyLoader;
 import ports.soc.ides.config.util.QueuedPropertyReader;
 import ports.soc.ides.exception.IdesException;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @ApplicationScoped
 public class SqlSessionProvider {

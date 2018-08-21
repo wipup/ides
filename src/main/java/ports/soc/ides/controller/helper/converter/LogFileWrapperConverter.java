@@ -10,8 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.controller.AdministratorPanelController;
 import ports.soc.ides.controller.helper.FileWrapper;
-import ports.soc.util.FacesUtils;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.FacesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @FacesConverter("logFileWrapperConverter")
 public class LogFileWrapperConverter implements Converter<FileWrapper> {

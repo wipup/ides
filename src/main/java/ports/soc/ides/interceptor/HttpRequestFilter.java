@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.logger.LoggerConfigurationFactory;
-import ports.soc.util.IdesUtils;
+import ports.soc.ides.util.IdesUtils;
 
 @WebFilter(servletNames = { "Faces Servlet" })
 public class HttpRequestFilter implements Filter {
