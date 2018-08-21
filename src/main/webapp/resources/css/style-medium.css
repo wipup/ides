@@ -1,0 +1,49 @@
+@media screen and (min-width: 40.063em) {
+
+	.ui-sticky-ghost {
+		height: auto !important;
+	}
+	.ides-label-md {
+		text-align: right;
+		font-weight: bold;
+	}
+	
+	.ui-md-0 {
+		display: none !important;
+	}
+
+	/*
+	
+	 */
+	.column-md-chkbox {
+		text-align: center;
+	}
+	.column-md-ref {
+		text-align: right;
+	}
+	.column-md-title {
+		/* nothing */
+	}
+	.column-md-type {
+		width: 128px;
+		text-align: center;
+	}
+	.column-md-org {
+		width: 250px;
+	}
+	.column-md-org-ad {
+		width: 200px;
+	}
+	.column-md-date {
+		min-width: 120px;
+		text-align: center;
+	}
+	.column-md-status {
+		text-align: center;
+		width: 100px;
+	}
+	.column-md-btn {
+		width: 150px;
+		text-align: center;
+	}
+}

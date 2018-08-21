@@ -1,0 +1,57 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.controller.helper.CreateIdeaWizardStep" var="WizardStep" allSuffix="ALL_STEPS" />
+	<p:importConstants type="ports.soc.ides.controller.CreateIdeaWizardController" var="IdeaWizardConst" />
+	<p:importConstants type="ports.soc.ides.controller.AbstractIdesController" var="Const" />
+
+	<p:panel rendered="#{!ideaWizard.createNewOrganisationPage}">
+		<div class="ui-g">
+			<div class="ui-lg-4 ui-md-5 ui-sm-5" >
+				<p:button value="Back" icon="fa fa-arrow-left" styleClass="wizard-button-back wizard-button" 
+					onclick="enableWidgetBySelector('.wizard-button', false); PF('wiz').back(); return false;" 
+					disabled="#{!ideaWizard.enableBackBtn}" immediate="true" onerror="enableWidgetBySelector('.wizard-button', true);"
+					 />
+			</div>
+
+			<div class="ui-lg-3 ui-md-1 ui-sm-0 ui-g-nopad">
+				<p:commandButton value="Start Over" rendered="false" icon="fa fa-refresh" actionListener="#{ideaWizard.onStartOver}"  disabled="#{ideaWizard.currentStep == WizardStep.CREATE_ORGANISATION}" immediate="true" oncomplete="" />
+			</div>
+
+			<h:panelGroup rendered="#{ideaWizard.currentStep != WizardStep.REVIEW}">
+				<div class="ui-lg-4 ui-md-5 ui-sm-5"  >
+					<p:button type="button" value="Next" icon="fa fa-arrow-right" iconPos="right" 
+						styleClass="wizard-button-next wizard-button" onclick="animateScroll('scrollTopBar'); PF('wiz').next(); return false;" 
+						disabled="#{!ideaWizard.enableNextBtn}" validateClient="true" 
+						oncomplete="enableWidgetBySelector('.wizard-button-next', true);" />
+				</div>
+			</h:panelGroup>
+
+			<h:panelGroup rendered="#{ideaWizard.currentStep == WizardStep.REVIEW}">
+				<div class="ui-lg-4 ui-md-4 ui-sm-5"  >
+					<p:commandButton value="Submit" icon="fa fa-save" styleClass="wizard-button wizard-submit-idea" actionListener="#{ideaWizard.onSubmitNewIdea}" 
+						update="submitIdeaResultDialog" onstart="enableWidgetBySelector('.wizard-submit-idea', false);" validateClient="true" oncomplete="afterClickedSubmitIdeaButton(); animateScroll('scrollTopBar');" >
+						<f:param name="#{Const.PARAM_MODAL_VAR}" value="submitIdeaResultDialog"  />
+					</p:commandButton>
+				</div>
+			</h:panelGroup>
+		</div>
+	</p:panel>
+
+	<p:panel rendered="#{ideaWizard.createNewOrganisationPage}">
+		<div class="ui-g">
+			<div class="ui-lg-4 ui-md-5 ui-sm-5" >
+				<p:commandButton value="Cancel" styleClass="wizard-button-cancel wizard-button" update="@form" onclick="enableWidgetBySelector('.wizard-button', false);" actionListener="#{ideaWizard.onCancelCreateOrg}" immediate="true" icon="fa fa-close" oncomplete="animateScroll('scrollTopBar');" />
+			</div>
+			<div class="ui-lg-3 ui-md-1 ui-sm-0 ui-g">
+			</div>
+			<div class="ui-lg-4 ui-md-5 ui-sm-5"  >
+				<p:commandButton value="Submit" validateClient="true" styleClass="wizard-submit-org wizard-button" actionListener="#{ideaWizard.onSubmitNewOrganisation}" update="submitNewOrgResultDialog" onclick="enableWidgetBySelector('.wizard-button', false);"
+						oncomplete="enableWidgetBySelector('.wizard-button', true); closeModalWhenClickMask(false); animateScroll('scrollTopBar');" icon="fa fa-save"  >
+					<f:param name="#{Const.PARAM_MODAL_VAR}" value="submitNewOrgResultDialog"  />
+				</p:commandButton>
+			</div>
+		</div>
+	</p:panel>
+	
+
+</ui:fragment>

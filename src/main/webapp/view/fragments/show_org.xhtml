@@ -1,0 +1,94 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+	<div class="ui-g">
+		<h:panelGroup rendered="#{showOrg.renderId}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Reference number: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.id}"  />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderName}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Organisation name: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.name}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderAddress}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Postal address: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.address}" styleClass="multi-line" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderPostcode}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Postcode: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.postcode}"  />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderTypeOfWork}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Outline of what your organisation does: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.typeOfWork}"  />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderContact}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Contact name: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.contact}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderTelephone}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Telephone number: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.telephone}"  />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup rendered="#{showOrg.renderEmail}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Email address: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.email}" styleClass="show-org-email" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+	</div>
+
+</ui:fragment>

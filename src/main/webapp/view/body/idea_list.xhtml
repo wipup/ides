@@ -1,0 +1,652 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
+	<p:importEnum type="ports.soc.ides.model.constant.ProjectType" var="ProjType" allSuffix="ALL_PROJ_TYPE" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
+	<p:importConstants type="ports.soc.ides.controller.IdeaListController" var="IdeaListConst" />
+	<p:importConstants type="ports.soc.ides.controller.AbstractIdesController" var="Const" />
+	<p:importConstants type="ports.soc.ides.dao.IdeaDAO" var="IdeaConst" />
+	
+	<p:panel header="Browse Ideas" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+	<h:form styleClass="no-space">
+		<p:panel styleClass="no-space" header="Search &amp; Filter Options" collapsed="false" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleableHeader="false" >
+			<div class="ui-g no-space">
+				<div class="ui-g ui-g-12 ui-g-nopad">
+					<h:panelGroup rendered="#{!auth.loggedIn or !auth.admin}">
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:outputLabel value="Idea Status: " for="visitorIdeaAlloc" style="font-weight: bold;" />
+							<p:selectOneRadio id="visitorIdeaAlloc" widgetVar="ideaAlloc" value="#{ideaList.filterIdeaStatus}" layout="custom" onchange="applyFilter();">
+								<f:selectItem itemLabel="Approved ideas" itemValue="#{IdeaStatus.Approved}" />
+								<f:selectItem itemLabel="Allocated ideas" itemValue="#{IdeaStatus.Allocated}" />
+								<f:selectItem itemLabel="All Ideas" itemValue="#{null}" />
+							</p:selectOneRadio>
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="ideaAllocAll" for="visitorIdeaAlloc" itemIndex="2" />
+							<p:outputLabel for="ideaAllocAll" value="All Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="ideaAllocUnallocated" for="visitorIdeaAlloc" itemIndex="0" />
+							<p:outputLabel for="ideaAllocUnallocated" value="Unallocated Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="ideaAllocAllocated" for="visitorIdeaAlloc" itemIndex="1" />
+							<p:outputLabel for="ideaAllocAllocated" value="Allocated Ideas" styleClass="filter-radiobox-label" />
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup rendered="#{auth.loggedIn and auth.admin}">
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:outputLabel value="Idea Status: " for="adminIdeaAlloc" style="font-weight: bold;" />
+							<p:selectOneRadio id="adminIdeaAlloc" value="#{ideaList.filterIdeaStatus}" layout="custom" onchange="applyFilter();">
+								<f:selectItem itemLabel="#{IdeaStatus.Approved.label}" itemValue="#{IdeaStatus.Approved}" />
+								<f:selectItem itemLabel="#{IdeaStatus.Allocated.label}" itemValue="#{IdeaStatus.Allocated}" />
+								<f:selectItem itemLabel="#{IdeaStatus.Provisional.label}" itemValue="#{IdeaStatus.Provisional}" />
+								<f:selectItem itemLabel="#{IdeaStatus.Withdrawn.label}" itemValue="#{IdeaStatus.Withdrawn}" />
+								<f:selectItem itemLabel="All Ideas" itemValue="#{null}" />
+							</p:selectOneRadio>
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="adminIdeaAllocAll" for="adminIdeaAlloc" itemIndex="4" />
+							<p:outputLabel for="adminIdeaAllocAll" value="All Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="adminIdeaAllocUnallocated" for="adminIdeaAlloc" itemIndex="0" />
+							<p:outputLabel for="adminIdeaAllocUnallocated" value="Unallocated Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="adminIdeaAllocAllocated" for="adminIdeaAlloc" itemIndex="1" />
+							<p:outputLabel for="adminIdeaAllocAllocated" value="Allocated Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="adminIdeaAllocProv" for="adminIdeaAlloc" itemIndex="2" />
+							<p:outputLabel for="adminIdeaAllocProv" value="Provisional Ideas" styleClass="filter-radiobox-label" />
+						</div>
+						<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+							<p:radioButton id="adminIdeaAllocWithdrawn" for="adminIdeaAlloc" itemIndex="3" />
+							<p:outputLabel for="adminIdeaAllocWithdrawn" value="Withdrawn Ideas" styleClass="filter-radiobox-label" />
+						</div>
+					</h:panelGroup>
+				</div>
+				<hr style="width: 100%;" />
+				<div class="ui-g ui-g-12 ui-g-nopad">
+					<div class="ui-g-2 ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+						<p:outputLabel value="Project Type: " for="projectType" style="font-weight: bold;" />
+						<p:selectOneRadio id="projectType" value="#{ideaList.filterProjectType}" layout="custom" onchange="applyFilter();">
+							<f:selectItem itemLabel="All Project Type" itemValue="#{null}" />
+							<f:selectItem itemLabel="#{ProjType.Study.label}" itemValue="#{ProjType.Study}" />
+							<f:selectItem itemLabel="#{ProjType.Engineering.label}" itemValue="#{ProjType.Engineering}" />
+						</p:selectOneRadio>
+					</div>
+					<div class="ui-g-2 ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+						<p:radioButton id="projectTypeAll" for="projectType" itemIndex="0"  />
+						<p:outputLabel for="projectTypeAll" value="All Project Types" styleClass="filter-radiobox-label" />
+					</div>
+					<div class="ui-g-2 ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+						<p:radioButton id="projectTypeStudy" for="projectType" itemIndex="1" />
+						<p:outputLabel for="projectTypeStudy" value="Study Projects" styleClass="filter-radiobox-label" />
+					</div>
+					<div class="ui-g-2 ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad ides-sm-pad">
+						<p:radioButton id="projectTypeEng" for="projectType" itemIndex="2" />
+						<p:outputLabel for="projectTypeEng" value="Engineering Projects" styleClass="filter-radiobox-label" />
+					</div>
+				</div>
+				<hr style="width: 100%;" />
+				<div class="ui-g ui-g-12 no-space">
+					<div class="ui-lg-2 ui-md-6 ui-sm-12 ui-g-nopad">
+						<p:outputLabel value="Search idea:" for="searchTxt" style="font-weight: bold;" />
+					</div>
+					<div class="ui-lg-6 ui-md-6 ui-sm-12 ui-g-nopad">
+						<div class="ui-inputgroup">
+							<p:inputText id="searchTxt" widgetVar="searchTxt"  value="#{ideaList.searchKeyword}" placeholder="Search keyword" maxlength="#{IdeaListConst.MAX_SEARCH_KEYWORD_LENGTH}" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ applyFilter(); }" />
+							<p:button value="Search" icon="fa fa-search" styleClass="white-button"  onclick="applyFilter(); return false;" title="Search idea"   />
+						</div>
+					</div>
+				</div>
+				<p:remoteCommand name="applyFilter" actionListener="#{ideaList.onFilterIdea}" update="#{IdeaListConst.IDEA_TABLE_FORM_ID}" 
+						oncomplete="#{auth.admin ? 'resetSelection();' : ''} showTotalIdeaMessage(); updateRppDropdownText();" 
+						onstart="$(':focus').blur(); setLoadingMessage('Applying filter');" />
+			</div>
+		</p:panel>
+		<p:remoteCommand name="showTotalIdeaMessage" actionListener="#{ideaList.onShowIdeaFetchingStatus}" partialSubmit="true" process="@this" />		
+	</h:form>
+	
+	<h:form id="#{IdeaListConst.IDEA_TABLE_FORM_ID}">
+		<p:inputText type="hidden" widgetVar="hiddenSearchTxt" value="#{ideaList.searchKeyword}" readonly="true" disabled="true" />
+		<script type="text/javascript">
+			function updateRppDropdownText(){					
+				var rpp = $('.ui-paginator-rpp-options');
+				rpp.each(function(index){
+					var options = $(this).children();
+					options.each(function(){
+						var opt = $(this);
+						opt.text("Show " + opt.val() + " ideas per page");
+					});
+					options.last().text("Show all ideas");
+				});
+			}
+			function safeHighlight(){
+				var searchKeyword = PF('hiddenSearchTxt').jq.val();
+				#{not empty ideaList.searchKeyword ? 'highlightText(searchKeyword);' : ''}	
+			}
+			function updateTableAfterAjax(){
+				$(':focus').blur();
+				removeDataTableInlineWidth();
+				initTimeAgo(); 
+				#{auth.admin ? 'resetSelection();' : '' }   
+				#{not empty ideaList.searchKeyword ? 'safeHighlight();' : ''}
+				updateRppDropdownText();
+			}
+			function defaultAjaxHandler(xhr, status, args) {
+				if (!args){
+					return false;
+				}
+				var callback = "";
+				if (args[callback]){
+					return true;
+				}
+				return false;
+			}
+		</script>
+		<p:dataTable id="#{IdeaListConst.IDEA_TABLE_FORM_DATATABLE_ID}" rowHover="true" var="idea" rowIndexVar="i" value="#{ideaList.lazyIdeaDataModel}" lazy="true" 
+			resizableColumns="true" resizeMode="expand" rows="#{IdeaListConst.DEFAULT_ROWS_PER_PAGE}" paginator="true" tableStyle="table-layout: auto;"
+			first="0" sortBy="#{IdeaConst.COLUMN_TIMESTAMP}" sortOrder="descending" reflow="true"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {RowsPerPageDropdown}"
+			rowsPerPageTemplate="#{IdeaListConst.ROWS_PER_PAGE_TEMPLATE},#{ideaList.lazyIdeaDataModel.rowCount}"
+			currentPageReportTemplate="Page {currentPage} of {totalPages} pages (Total {totalRecords} ideas)">
+			
+			<p:ajax event="page" oncomplete="updateTableAfterAjax();" />
+			<p:ajax event="sort" oncomplete="updateTableAfterAjax();" />
+
+			<f:facet name="header">
+				<div class="ui-g ui-g-nopad">
+					<div class="ui-g-12 ui-g-nopad">
+						<h:outputText value="Displaying #{ideaList.filterIdeaStatus == null ? 'all' : ideaList.filterIdeaStatus} #{ideaList.filterProjectType} ideas " />
+					</div>
+					<div class="ui-g-12 ui-sm-12 ui-g-nopad" style="align-content: center; text-align: center;">
+						<p:outputLabel value="Find ideas containing keyword: &#160;" rendered="#{not empty ideaList.searchKeyword}" styleClass="ui-sm-12" />
+						<p:button value="#{ideaList.searchKeyword}" icon="fa fa-close" onclick="$(PF('searchTxt').jqId).val(''); applyFilter(); return false;" iconPos="right" style="width: auto !important;" styleClass="no-space ui-sm-12" rendered="#{not empty ideaList.searchKeyword}" title="Remove &quot;#{ideaList.searchKeyword}&quot; keyword" />
+					</div>
+				</div>
+				<h:panelGroup id="ideaSelectionTools" rendered="#{auth.loggedIn and auth.admin}" styleClass="ui-sm-0" style="left: 0px; background-color: white; width: 100%;">
+					<p:separator style="margin: 5;" />
+					<div class="ui-g">
+					<div class="ui-g ui-g-12 ui-g-nopad">
+						<div class="ui-g-2 ui-sm-12 ui-g-nopad" style="line-height: 1.5em;">
+							<p:outputLabel id="selectedCount" value="Selection Actions: " style="margin: .4em;" />
+						</div>
+						<div class="ui-lg-2 ui-sm-6 ui-g-nopad">
+							<p:button widgetVar="confirmApproveSelectionBtn" styleClass="no-space approve-btn" value="Approve" icon="fa fa-check-square-o" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}'}]); return false;" />
+						</div>
+						<div class="ui-g-2 ui-sm-6 ui-g-nopad">
+							<p:button widgetVar="confirmAllocateSelectionBtn" styleClass="no-space" value="Allocate" icon="fa fa-lock" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}'}]); return false;" />
+						</div>
+						<div class="ui-g-2 ui-sm-6 ui-g-nopad">
+							<p:button widgetVar="confirmWithdrawSelectionBtn" styleClass="no-space withdraw-btn" value="Withdraw" icon="fa fa-minus-circle"  disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}'}]); return false;" />
+						</div>
+						<div class="ui-g-2 ui-sm-6 ui-g-nopad" style="#{app.enableIdeaDeletion ? '' : 'display: none;'}">
+							<p:button widgetVar="confirmDeleteSelectionBtn" rendered="#{app.enableIdeaDeletion}" styleClass="no-space delete-btn" value="Delete" icon="fa fa-trash-o" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}'}]); return false;" />
+						</div>
+						<div class="ui-g-2 ui-sm-12 ui-g-nopad">
+							<p:button widgetVar="clearSelectionBtn" styleClass="no-space" value="Clear selection" onclick="resetSelection(); return false;" disabled="true" icon="fa fa-close" />
+						</div>
+					</div>
+					</div>
+					<p:remoteCommand name="confirmAction" actionListener="#{ideaList.onConfirmSelectedIdeas}" oncomplete="confirmActionCallback(xhr, status, args);" update="confirmSelectedIdeasModalDialog" onerror="PF('confirmModalVar').hide();" />
+					<script type="text/javascript">
+						function confirmActionCallback(xhr, status, args){
+							if (!args){
+								return;
+							}
+							if (args["#{IdeaListConst.PARAM_CALLBACK}"]) {
+								PF('confirmModalVar').show();
+							}
+						}
+					</script>
+				</h:panelGroup>
+				<p:sticky target="ideaSelectionTools" rendered="#{auth.loggedIn and auth.admin}" />
+			</f:facet>
+			<p:column rendered="#{auth.admin}" styleClass="column-md-chkbox column-sm-chkbox" >
+				<div class="ui-sm-0">
+					<p:selectBooleanCheckbox widgetVar="ideaChkBox_#{i}" id="ideaChk" styleClass="idea-chkbox" value="false" onchange="onClickIdeaCheckbox(#{i}, '#{idea.status}'); updateIdeaCountLabel(); updateSelectionControlButtons();" />
+				</div>					
+				<p:inputText id="selectedIdea_#{IdeaListConst.PARAM_IDEA_INDEX}" widgetVar="hiddenIdeaIndex_#{i}" value="#{i}" type="hidden" disabled="true" />
+				<f:facet name="header">
+					<p:selectBooleanCheckbox widgetVar="ideaChkHeaderVar" id="ideaChkHeader" value="false" onchange="clickAllCheckBox(PF('ideaChkHeaderVar').isChecked());" />
+				</f:facet>
+				<f:facet name="footer">
+					<p:selectBooleanCheckbox widgetVar="ideaChkFooterVar" id="ideaChkFooter" value="false" onchange="clickAllCheckBox(PF('ideaChkFooterVar').isChecked());" />
+				</f:facet>
+			</p:column>
+
+			<p:column headerText="#" footerText="#" sortBy="#{IdeaConst.COLUMN_ID}" styleClass="column-md-ref column-sm-ref" >
+				<span class="highlight-target"><h:outputText value="##{idea.id}" /></span>
+			</p:column>
+
+			<p:column headerText="Title" footerText="Title" sortBy="#{IdeaConst.COLUMN_TITLE}" styleClass="column-md-title column-sm-title" >
+				<p:commandLink value="#{idea.title}" actionListener="#{ideaList.onSelectRow}" update="showIdeaPanel" oncomplete="#{not empty ideaList.searchKeyword ? 'safeHighlight();' : ''}" onerror="PF('ideaDetailModal').hide();" styleClass="highlight-target">
+					<f:param name="#{IdeaListConst.PARAM_IDEA_INDEX}" value="#{i}" />
+					<f:param name="#{Const.PARAM_MODAL_VAR}" value="ideaDetailModal" />
+				</p:commandLink>
+			</p:column>
+
+			<p:column headerText="Project Type" footerText="Project Type" sortBy="#{IdeaConst.COLUMN_TYPE}" styleClass="column-md-type column-sm-type" priority="5" >
+				<h:outputText value="#{idea.type.label}" />
+			</p:column>
+
+			<p:column headerText="Client (Organisation)" footerText="Client (Organisation)" sortBy="#{IdeaConst.COLUMN_ORGANISATION_CONTACT}" styleClass="#{auth.admin ? 'column-md-org-ad column-sm-org-ad' : 'column-md-org column-sm-org'}" priority="4" >
+				<div class="ui-g ui-sm-0" >
+					<div class="ui-md-12 ui-g-nopad" style="text-align: center;">
+						<span class="highlight-target"><h:outputText value="#{idea.organisation.contact}" /></span>
+					</div>
+					<div class="ui-md-12 ui-g-nopad" style="text-align: center;">
+						(<span class="highlight-target"><h:outputText value="#{idea.organisation.name}" /></span>)
+					</div>
+				</div>
+				<div class="ui-md-0 ui-g" style="padding: 0 1.5em;">
+					<div class="ui-sm-12 ui-g-nopad">
+						<span class="highlight-target"><h:outputText value="#{idea.organisation.contact}" /></span>
+					</div>
+					<div class="ui-sm-12 ui-g-nopad">
+						<span class="highlight-target"><h:outputText value="#{idea.organisation.name}" /></span>
+					</div>
+				</div>
+			</p:column>
+
+			<p:column headerText="Last update" footerText="Last update" sortBy="#{IdeaConst.COLUMN_TIMESTAMP}" styleClass="column-md-date column-sm-date">
+				<h:outputText id="lastUpdate" value="#{ideaList.formatDateTime(idea.timestamp)}" style="cursor: help; margin: 0; padding: 0;" />
+				<p:tooltip for="lastUpdate">
+					<time class="timeago" datetime="#{idea.timestamp}"></time>
+				</p:tooltip>
+			</p:column>
+
+			<p:column headerText="Status" footerText="Status" sortBy="#{IdeaConst.COLUMN_STATUS}" styleClass="column-md-status column-sm-status" priority="6" >
+				<h:panelGroup rendered="#{idea.status == IdeaStatus.Approved}">			
+					<span class="status-approved"><h:outputText value="Approved" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{idea.status == IdeaStatus.Allocated}">			
+					<span class="status-allocated"><h:outputText value="Allocated" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{idea.status == IdeaStatus.Provisional}">			
+					<span class="status-provisional"><h:outputText value="Provisional" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{idea.status == IdeaStatus.Withdrawn}">			
+					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{idea.status != IdeaStatus.Withdrawn and idea.status != IdeaStatus.Provisional and idea.status != IdeaStatus.Allocated and idea.status != IdeaStatus.Approved}">
+					<h:outputText value="#{idea.status}" />
+				</h:panelGroup>
+			</p:column>
+
+			<p:column headerText="Action" footerText="Action" styleClass="column-md-btn column-sm-btn no-space" resizable="false" rendered="#{auth.admin}" >
+				<div class="ui-g" style="padding: 2px;">
+					<h:panelGroup class="ui-g-12" style="padding: 5px 2px;">
+						<p:commandButton value="Edit" icon="fa fa-edit" styleClass="cell-btn" actionListener="#{ideaList.onShowEditIdeaModal}" update="editIdeaModalPanel" onerror="PF('editIdeaModalVar').hide();">
+							<f:param name="#{IdeaListConst.PARAM_IDEA_INDEX}" value="#{i}" />
+							<f:param name="#{Const.PARAM_MODAL_VAR}" value="editIdeaModalVar" />
+						</p:commandButton>
+					</h:panelGroup>
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Provisional}" style="padding: 5px 2px;">
+						<p:button value="Approve" icon="fa fa-check-square-o" styleClass="cell-btn approve-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
+					</h:panelGroup>
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Approved}" style="padding: 5px 2px;">
+						<p:button value="Allocate" icon="fa fa-lock" styleClass="cell-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
+					</h:panelGroup>
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Provisional}" style="padding: 5px 2px;">
+						<p:button value="Withdraw" icon="fa fa-minus-circle" styleClass="cell-btn withdraw-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
+					</h:panelGroup>
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Withdrawn}" style="padding: 5px 2px;">
+						<p:button value="Delete" icon="fa fa-trash-o" styleClass="cell-btn delete-btn" rendered="#{app.enableIdeaDeletion}" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
+					</h:panelGroup>
+				</div>
+			</p:column>
+		</p:dataTable>
+		<script type="text/javascript">
+			$(document).ready(function() {
+				refreshModalSetting();
+				updateTableAfterAjax();
+			});
+		</script>
+		<h:panelGroup rendered="#{auth.admin}">
+			<p:remoteCommand name="processSelectedIdeas" actionListener="#{ideaList.onProcessSelectedIdeas}" oncomplete="processSelectedIdeasCallback(xhr, status, args);" update="@form" />
+			<p:remoteCommand name="processOneIdea" actionListener="#{ideaList.onProcessOneIdea}" oncomplete="PF('confirmOneIdeaDialog').hide(); resetSelection(); enableWidgetBySelector('.dialog-btn', true);" update="@form" />
+			<script type="text/javascript">
+				var selectedIndex = {};
+				var statusCount = {};
+				
+				function reloadSelectionStatus(){
+					selectedIndex = {};
+					statusCount = {};
+					$(".idea-chkbox").each(function(index, value) {
+						var chkbox = PrimeFaces.getWidgetById(value.id);
+						chkbox.toggle();
+						chkbox.toggle();
+					});
+				}
+				
+				function toggleCheckbox(widgetVar, check){
+					var chkBox = PF(widgetVar);
+					if (check){
+						chkBox.check();
+					} else {
+						chkBox.uncheck();
+					}
+				}
+				
+				function resetSelection(){
+					selectedIndex = {};
+					statusCount = {};
+					$(".idea-chkbox").each(function(index, value) {
+						var chkbox = PrimeFaces.getWidgetById(value.id);
+						if (!chkbox){
+							return;
+						}
+						if (chkbox.isChecked()) {
+							chkbox.toggle(); 
+						}
+					});
+					
+					toggleCheckbox('ideaChkHeaderVar', false);
+					toggleCheckbox('ideaChkFooterVar', false);
+					
+					updateIdeaCountLabel(); 
+					updateSelectionControlButtons();
+				}
+					
+				function clickAllCheckBox(v) {
+					$(".idea-chkbox").each(function(index, value) {
+						var chkbox = PrimeFaces.getWidgetById(value.id);
+						if (!chkbox){
+							return;
+						}
+						if (chkbox.isChecked() != v) {
+							chkbox.toggle(); 
+						}
+					});
+					
+					toggleCheckbox('ideaChkHeaderVar', v);
+					toggleCheckbox('ideaChkFooterVar', v);
+					
+					updateIdeaCountLabel(); 
+					updateSelectionControlButtons();
+				}
+				
+				function onClickIdeaCheckbox(index, status){
+					var ideaChkbox = PF('ideaChkBox_' + index);
+					var hiddenInput = PF('hiddenIdeaIndex_' + index);
+					
+					if (!statusCount[status]){
+						statusCount[status] = 0;
+					}
+					
+					if (ideaChkbox.isChecked()){
+						hiddenInput.enable();
+						selectedIndex[index] = status;
+						statusCount[status]++;
+					} else {
+						hiddenInput.disable();
+						delete selectedIndex[index];
+						statusCount[status]--;
+						
+						if (statusCount[status] &lt; 0){
+							statusCount[status] = 0;
+						}
+					}
+				}
+				
+				function updateIdeaCountLabel(){
+					var label = $("##{IdeaListConst.IDEA_TABLE_FORM_ID}\\:#{IdeaListConst.IDEA_TABLE_FORM_DATATABLE_ID}\\:selectedCount");
+					var count = Object.keys(selectedIndex).length;
+					var clearBtn = PF('clearSelectionBtn');
+					if (count &lt;= 0 ){
+						label.text("Selection Actions: ");
+						clearBtn.disable();
+					} else {
+						label.text("Selecting " + count + " idea" + (count &gt; 1 ? "s: " : ": "));
+						clearBtn.enable();
+					}
+				}
+				
+				function updateSelectionControlButtons(){
+					if (statusCount['#{IdeaStatus.Approved}'] > 0){
+						PF('confirmAllocateSelectionBtn').enable();
+					} else {
+						PF('confirmAllocateSelectionBtn').disable();
+					}
+					
+					if (statusCount['#{IdeaStatus.Provisional}'] > 0){
+						PF('confirmApproveSelectionBtn').enable();
+						PF('confirmWithdrawSelectionBtn').enable();
+					} else {
+						PF('confirmApproveSelectionBtn').disable();
+						PF('confirmWithdrawSelectionBtn').disable();
+					}
+					
+					if (PF('confirmDeleteSelectionBtn')){
+						if (statusCount['#{IdeaStatus.Withdrawn}'] > 0 &amp;&amp; #{app.enableIdeaDeletion}){
+							PF('confirmDeleteSelectionBtn').enable();
+						} else {
+							PF('confirmDeleteSelectionBtn').disable();
+						}
+					}
+				}
+				
+				
+				function processSelectedIdeasCallback(xhr, status, args){
+					if (!args){
+						return;
+					}
+					if (args["#{IdeaListConst.PARAM_CALLBACK}"]) {
+						PF('confirmModalVar').hide();
+						resetSelection();
+					} else {
+						reloadSelectionStatus();
+					}
+					enableWidgetBySelector('.dialog-btn', true);
+					updateSelectionControlButtons();
+				}
+				
+				var ideaIndex = "";
+				var mode = "";
+				function confirmProcessOneIdea(action, ref, index, title, type, org, date){
+					var header;
+					var message;
+					var buttonTxt;
+					
+					PF('confirmOneIdeaBtn').jq.removeClass('approve-btn');
+					PF('confirmOneIdeaBtn').jq.removeClass('delete-btn');
+					PF('confirmOneIdeaBtn').jq.removeClass('withdraw-btn');
+					
+					if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}"){
+						header = "Idea Approval confirmation";
+						message = "Are you sure that you want to approve this idea?";
+						buttonTxt = "Approve";
+						PF('confirmOneIdeaBtn').jq.addClass('approve-btn');
+					} else if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}"){
+						header = "Idea Allocation confirmation";
+						message = "Are you sure that you want to mark this idea as allocated?";
+						buttonTxt = "Allocate";
+					}  else if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}"){
+						header = "Idea Withdrawal confirmation";
+						message = "Are you sure that you want to withdraw this idea?";
+						buttonTxt = "Withdraw";
+						PF('confirmOneIdeaBtn').jq.addClass('withdraw-btn');
+					}  else if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}"){
+						header = "Idea Deletion confirmation";
+						message = "Are you sure that you want to delete this idea? <br/><strong>It will be gone and cannot be recovered.</strong>";
+						buttonTxt = "Delete!!";
+						PF('confirmOneIdeaBtn').jq.addClass('delete-btn');
+					} else {
+						return;
+					}
+					
+					ideaIndex = index;
+					mode = action;
+					
+					var modal = PF('confirmOneIdeaDialog');
+					
+					$("#confirmMessage").html(message);
+					$("#confirmOneIdeaRef").text('#' + ref);
+					$("#confirmOneIdeaTitle").text(title);
+					$("#confirmOneIdeaType").text(type);
+					$("#confirmOneIdeaOrg").text(org);
+					$("#confirmOneIdeaDate").text(date);
+					PF('confirmOneIdeaBtn').jq.children('span').text(buttonTxt);
+					
+					var modalHeader = $(modal.titlebar).children('span').text(header);
+					modal.show();
+				}
+			</script>
+		</h:panelGroup>
+	</h:form>
+	<p:dialog widgetVar="confirmOneIdeaDialog" header="Confirmation" rendered="#{auth.admin}" modal="true" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="250" width="600" position="top">
+		<div class="ui-g">
+			<div class="ui-g-12">
+				<span class="fa fa-question-circle"></span> <span class="ui-outputlabel ui-widget" id="confirmMessage"></span>
+			</div>
+			<div class="ui-g-12 ui-g-nopad">
+				<p:separator style="margin: 5;" />
+			</div>
+			<div class="ui-g-3 ides-div-border">
+				<p:outputLabel value="Reference: " style="font-weight: bold;" />
+			</div>
+			<div class="ui-g-8 ides-div-border">
+				<span class="ui-outputlabel ui-widget" id="confirmOneIdeaRef"></span>
+			</div>
+			<div class="ui-g-3 ides-div-border">
+				<p:outputLabel value="Title: " style="font-weight: bold;" />
+			</div>
+			<div class="ui-g-8 ides-div-border">
+				<span class="ui-outputlabel ui-widget" id="confirmOneIdeaTitle"></span>
+			</div>
+			<div class="ui-g-3 ides-div-border">
+				<p:outputLabel value="Type: " style="font-weight: bold;" />
+			</div>
+			<div class="ui-g-8 ides-div-border">
+				<span class="ui-outputlabel ui-widget" id="confirmOneIdeaType"></span>
+			</div>
+			<div class="ui-g-3 ides-div-border">
+				<p:outputLabel value="Owner: " style="font-weight: bold;" />
+			</div>
+			<div class="ui-g-8 ides-div-border">
+				<span class="ui-outputlabel ui-widget" id="confirmOneIdeaOrg"></span>
+			</div>
+			<div class="ui-g-3 ides-div-border">
+				<p:outputLabel value="Last update: " style="font-weight: bold;" />
+			</div>
+			<div class="ui-g-8 ides-div-border">
+				<span class="ui-outputlabel ui-widget" id="confirmOneIdeaDate"></span>
+			</div>
+		</div>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Cancel" icon="fa fa-close" onclick="PF('confirmOneIdeaDialog').hide(); return false;" />
+				</div>
+				<div class="ui-md-4 ui-sm-0 ui-g-nopad"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Confirm"  widgetVar="confirmOneIdeaBtn" styleClass="dialog-btn #{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_DELETE ? 'delete-btn' : ''}" 
+								onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processOneIdea([{name: '#{IdeaListConst.PARAM_IDEA_INDEX}', value: ideaIndex}, {name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: mode}]); return false;" />
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+
+	<p:dialog id="editIdeaModal" widgetVar="editIdeaModalVar" header="Edit Idea" height="520" width="1200" onShow="fixModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" rendered="#{auth.admin}" modal="true" maximizable="false" position="top" closeOnEscape="false" >
+		<h:panelGroup id="editIdeaModalPanel" styleClass="no-space">
+			<h:form rendered="#{ideaList.renderEditIdeaForm}">
+				<p:messages>
+					<p:autoUpdate />
+				</p:messages>
+				<ui:include src="#{IdesPage.CREATE_IDEA_FORM.path}" />
+				<p:remoteCommand name="submitEditIdea" actionListener="#{ideaList.onSubmitEditIdea}" update="#{IdeaListConst.IDEA_TABLE_FORM_ID}" oncomplete="enableWidgetBySelector('.dialog-btn', true);" />
+			</h:form>
+		</h:panelGroup>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Close" icon="fa fa-close" onclick="PF('editIdeaModalVar').hide();  return false;" />
+				</div>
+				<div class="ui-md-4 ui-sm-0 ui-g-nopad"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Save" icon="fa fa-save" styleClass="no-space dialog-btn"  onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); submitEditIdea(); return false;" />
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+
+	<p:dialog id="confirmSelectedIdeasModalDialog" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" rendered="#{auth.admin}" 
+		widgetVar="confirmModalVar" header="Confirm #{ideaList.confirmModalMode} of #{ideaList.selectedIdeaSize} idea#{ideaList.selectedIdeaSize &lt;= 1 ? '' : 's'}" closeOnEscape="true" modal="true" position="top" height="300" width="800">
+		<p:dataTable value="#{ideaList.selectedIdeas}" var="idea" emptyMessage="No idea selected" reflow="true">
+			<p:column headerText="#" style="width: 48px; text-align: right;">
+				<h:outputText value="#{idea.id}" />
+			</p:column>
+			<p:column headerText="Title">
+				<h:outputText value="#{idea.title}" />
+			</p:column>
+			<p:column headerText="Type">
+				<h:outputText value="#{idea.type.label}" />	
+			</p:column>
+			<p:column headerText="Owner">
+				<h:outputText value="#{idea.organisation.contact} (#{idea.organisation.name})" />	
+			</p:column>
+		</p:dataTable>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Cancel" icon="fa fa-close" onclick="PF('confirmModalVar').hide();  return false;" />
+				</div>
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad"></div>
+				<div class="ui-md-0 ui-sm-12 ui-g-nopad"></div>
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Approve" icon="fa fa-check-square-o" styleClass="no-space dialog-btn approve-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}"  
+							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}'}]); return false;" />
+					<p:button value="Withdraw" icon="fa fa-minus-circle" styleClass="no-space dialog-btn withdraw-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}"  
+							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}'}]); return false;" />
+					<p:button value="Allocate" icon="fa fa-lock"  styleClass="no-space dialog-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}"  
+							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}'}]); return false;" />
+					<p:button value="Delete" icon="fa fa-trash-o" styleClass="no-space dialog-btn delete-btn"  rendered="#{app.enableIdeaDeletion and ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_DELETE}"  
+							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}'}]); return false;" />
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+
+	<p:dialog id="ideaDetailModal" header="Idea and client's detail" onShow="fixModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="700" width="1300" widgetVar="ideaDetailModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+		<h:panelGroup id="showIdeaPanel" styleClass="no-space">
+			<h:panelGroup rendered="#{not empty ideaList.searchKeyword}">
+			</h:panelGroup>
+			<p:panel styleClass="no-space" header="Idea detail" toggleable="true" toggleSpeed="500" closeSpeed="500">
+				<ui:include src="#{IdesPage.SHOW_IDEA.path}" />
+			</p:panel>
+			<p:panel styleClass="no-space" header="Client &amp; organisation detail" toggleable="true" toggleSpeed="500" closeSpeed="500" style="margin-top: .3em !important">
+				<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+			</p:panel>
+		</h:panelGroup>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-lg-3 ui-md-3 ui-sm-12 ui-g-nopad">
+					<p:button value="Close" onclick="PF('ideaDetailModal').hide(); return false;" icon="fa fa-close"  />
+				</div>
+				<div class="ui-g-8 ui-md-8 ui-sm-0" style="line-height: 1.8em; text-align: right;">
+					<h:outputText value="You can press ESC to close this window. "/>
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+</ui:fragment>
+
+
+
+
+
+
+
+
+
+

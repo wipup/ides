@@ -1,0 +1,127 @@
+<html xmlns="http://www.w3c.org/1999/xhtml" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:p="http://primefaces.org/ui" >
+<h:head>
+	<title>IDES Project Idea Database</title>
+	<link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}"/>
+	<f:facet name="first">
+		<meta name="google-signin-client_id" content="#{app.googleSignInclientId}" />		
+		<script src="https://apis.google.com/js/platform.js" async="async" defer="defer"></script>
+	</f:facet>
+	<f:metadata>
+		<f:viewAction action="#{nav.onPostBack}" onPostBack="true" />
+	</f:metadata>
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+	<f:facet name="last">
+		<h:outputScript name="scripts/ides.js" />
+		<h:outputScript name="scripts/googleSignIn.js" />
+		<h:outputScript name="scripts/time.timeago.js" />
+	</f:facet>
+</h:head>
+<h:body>
+	<f:facet name="last">
+		<h:outputStylesheet name="css/quilljs.css" />
+		<h:outputStylesheet name="css/style.css" />
+		<h:outputStylesheet name="css/style-large.css" />
+		<h:outputStylesheet name="css/style-medium.css" />
+		<h:outputStylesheet name="css/style-small.css" />
+	</f:facet>
+	
+	<p:importConstants type="ports.soc.ides.controller.AbstractIdesController" var="Const" />
+	<p:importConstants type="ports.soc.ides.config.IdesConfiguration" var="Config" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
+
+	<div class="ui-fluid">
+		<h:panelGroup id="banner">
+			<div style="line-height: 4em; text-align: center;" class="main-background">
+				<span style="padding: .5em; font-size: 1.5em; font-weight: bold;">IDES <span class="ui-sm-0"> Project Idea Database</span></span>
+			</div>
+		</h:panelGroup>
+
+		<h:panelGroup id="menu">
+			<ui:include src="#{IdesPage.MENU_BAR.path}" />
+		</h:panelGroup>
+		<h:panelGroup id="notification">
+			<p:notificationBar id="notificationBar" widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" styleClass="notification-bar" effectSpeed="slow">
+				<div class="ui-g ui-g-nopad">
+					<div class="ui-md-12 ui-sm-11 ui-g-nopad">
+						<p:textEditor widgetVar="announcement" value="#{app.announcement}" style="min-height: auto;" styleClass="readonly-editor"
+							readonly="true" toolbarVisible="false" required="false"  />
+					</div>
+					<div class="ui-lg-2 ui-md-4 ui-sm-11 ui-g-nopad" style="margin-top: 1px;">
+						<p:button widgetVar="closeAnnouncementBtn" value="Close" onclick="PF('appNotification').hide(); return false;" style="width: 100%;" />
+					</div>
+				</div>
+				<script type="text/javascript">
+					$(document).ready(function(){
+						if (#{app.autoDisplayAnnouncement}){
+							var announcement = PF('announcement');
+							announcement.editor = new Quill(announcement.jqId, readOnlyEditorOptions);
+						}
+					});
+				</script>
+			</p:notificationBar>
+			<p:growl id="#{Const.ID_COMPONENT_MESSAGE}" showDetail="true" life="4000" />
+		</h:panelGroup>
+	
+		<h:panelGroup id="body">
+			<ui:include src="#{nav.currentPage.path}" />
+		</h:panelGroup>
+		
+		
+		<script type="text/javascript">
+			var defaultMessage = "Loading";
+			var ajaxStatusMessage = "Loading";
+			function setLoadingMessage(message){
+				ajaxStatusMessage = message;
+			}
+			function updateAjaxMessage(){
+				$("#globalAjaxMessage").text(ajaxStatusMessage);
+			}
+			function disableFormSubmitOnEnter(){
+				//taken from https://stackoverflow.com/questions/28116894/primefaces-disable-submit-on-pressing-enter-key
+				$('form').off('keypress.disableAutoSubmitOnEnter').on('keypress.disableAutoSubmitOnEnter', function(event) {
+				    if (event.which === $.ui.keyCode.ENTER &amp;&amp; $(event.target).is(':input:not(textarea,:button,:submit,:reset)')) {
+				        event.preventDefault();
+				    }
+				});
+			}
+			function handleError(e){
+				PF('status').hide(); 
+				PF('ajaxErrorDialog').show(); 
+				setLoadingMessage(defaultMessage);
+			};
+		</script>
+		<p:ajaxStatus onstart="updateAjaxMessage(); PF('status').show()" onsuccess="PF('status').hide(); setLoadingMessage(defaultMessage)" onerror="handleError(event)" oncomplete="disableFormSubmitOnEnter()" />
+		<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage);">
+			<div>
+				<div id="globalAjaxMessage" style="text-align: center;">
+					Loading...
+				</div>
+				<div>
+					<p:graphicImage name="/images/ajaxloadingbar.gif" />
+				</div>
+			</div>
+		</p:dialog>
+		<p:dialog widgetVar="ajaxErrorDialog" onShow="enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" header="Error" draggable="true" closable="true" resizable="false" showHeader="true" position="top">
+			<div class="ui-g ui-g-12">
+				<div class="ui-g-12">
+					<h:outputText value="Failed to connect to the server." />
+				</div>
+				<div class="ui-g-12">
+					<p:button value="Close" icon="fa fa-close" onclick="PF('ajaxErrorDialog').hide(); return false;" />
+				</div>
+			</div>
+		</p:dialog>
+
+		<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show();"  />
+		<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top" >
+			<f:facet name="message">
+				<h:outputText value="You have been inactive for too long. Your session has expired." />
+				<br/>
+				<h:outputText value="Please refresh the page." />
+			</f:facet>
+			<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide();" icon="fa fa-close" />
+		</p:confirmDialog>
+	</div>
+
+</h:body>
+</html>

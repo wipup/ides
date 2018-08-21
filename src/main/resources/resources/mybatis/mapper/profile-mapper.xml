@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ports.soc.ides.dao.mybatis.ContactProfileMapper">
+
+	<cache />
+
+	<select id="selectProfile" resultMap="profileResultMap" >
+		SELECT *
+		FROM CONTACT_PROFILE
+		WHERE
+			ownertype = #{type, typeHandler=ports.soc.ides.dao.mybatis.OwnerTypeTypeHandler}
+			AND owner = #{owner}
+	</select>
+	
+	<resultMap id="profileResultMap" type="ports.soc.ides.model.ContactProfile" >
+		<id property="id" column="id" jdbcType="INTEGER" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="typeOfWork" column="does" jdbcType="VARCHAR" />
+		<result property="address" column="addr" jdbcType="VARCHAR" />
+		<result property="postcode" column="postcode" jdbcType="VARCHAR" />
+		<result property="contact" column="contact" jdbcType="VARCHAR" />
+		<result property="email" column="email" jdbcType="VARCHAR" />
+		<result property="telephone" column="tel" jdbcType="VARCHAR" />
+		<result property="owner" column="owner" jdbcType="VARCHAR" />
+		<result property="ownerType" column="ownertype" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.OwnerTypeTypeHandler" />
+	</resultMap>
+	
+	<select id="countProfile" resultType="long">
+		SELECT *
+		FROM CONTACT_PROFILE 
+		WHERE 
+			ownertype = #{type, typeHandler=ports.soc.ides.dao.mybatis.OwnerTypeTypeHandler}
+			AND owner = #{owner}
+	</select>
+	
+	<select id="selectNextId" resultType="long" useCache="false" >
+		SELECT CONTACT_PROFILE_SEQUENCE.nextval FROM dual
+	</select>
+	
+	<!-- ============================================================================================================== -->
+	
+	<insert id="insertProfile" flushCache="true" useGeneratedKeys="true" keyColumn="id" keyProperty="id" parameterType="ports.soc.ides.model.ContactProfile" >
+		INSERT INTO CONTACT_PROFILE (ID, NAME, DOES, ADDR, POSTCODE, TEL, EMAIL, CONTACT, OWNER, OWNERTYPE)
+		VALUES (
+			#{profile.id},
+			#{profile.name, jdbcType=VARCHAR},
+			#{profile.typeOfWork, jdbcType=VARCHAR},
+			#{profile.address, jdbcType=VARCHAR},
+			#{profile.postcode, jdbcType=VARCHAR},
+			#{profile.telephone, jdbcType=VARCHAR},
+			#{profile.email, jdbcType=VARCHAR},
+			#{profile.contact, jdbcType=VARCHAR},
+			#{profile.owner, jdbcType=VARCHAR},
+			#{profile.ownerType, typeHandler=ports.soc.ides.dao.mybatis.OwnerTypeTypeHandler}
+			)
+	</insert>
+	
+	<!-- ============================================================================================================== -->
+	
+	<update id="updateProfile" flushCache="true" parameterType="ports.soc.ides.model.ContactProfile" >
+		UPDATE CONTACT_PROFILE
+		SET 
+			NAME = #{profile.name, jdbcType=VARCHAR},
+			DOES = #{profile.typeOfWork, jdbcType=VARCHAR},
+			ADDR = #{profile.address, jdbcType=VARCHAR},
+			POSTCODE = #{profile.postcode, jdbcType=VARCHAR},
+			TEL = #{profile.telephone, jdbcType=VARCHAR},
+			EMAIL = #{profile.email, jdbcType=VARCHAR},
+			CONTACT = #{profile.contact, jdbcType=VARCHAR},
+			OWNER = #{profile.owner, jdbcType=VARCHAR},
+			OWNERTYPE = #{profile.ownerType, typeHandler=ports.soc.ides.dao.mybatis.OwnerTypeTypeHandler}
+		WHERE ID = #{profile.id}
+	</update>
+	
+	<delete id="deleteProfile" flushCache="true">
+		DELETE FROM CONTACT_PROFILE
+			WHERE ID = #{id}	
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ports.soc.ides.dao.mybatis.IdeaMapper">
+
+	<cache />
+
+	<select id="selectIdeaById" resultMap="eagerIdeaResult">
+		SELECT *
+		FROM ideas2
+		WHERE projid = #{id}		
+	</select>
+
+	<resultMap id="eagerIdeaResult" type="ports.soc.ides.model.Idea">
+		<id property="id" column="projid" jdbcType="INTEGER" />
+		<result property="title" column="projtitle" jdbcType="VARCHAR" />
+		<result property="aim" column="projaims" jdbcType="CLOB" />
+		<result property="deliverables" column="projdeliver" jdbcType="CLOB" />
+		<result property="status" column="projapproved" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler" />
+		<result property="timestamp" column="projdate" jdbcType="TIMESTAMP" />
+		<result property="createTime" column="projcreate" jdbcType="TIMESTAMP" />
+		<result property="question" column="projquest" jdbcType="CLOB" />
+		<result property="student" column="projstudent" jdbcType="VARCHAR" />
+		<result property="type" column="projtype" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler" />
+		<association property="organisation" column="projorg" fetchType="eager" select="ports.soc.ides.dao.mybatis.OrganisationMapper.selectOrgById" />
+	</resultMap>
+	
+	<select id="countIdeasForListing" resultType="long">
+		SELECT count(projid)
+		FROM ideas2 i
+		<if test="searchText != null and searchText != ''">
+			JOIN contacts ON orgid = projorg
+		</if>
+		WHERE projapproved IN
+		<foreach item="item" index="index" collection="statuses" open="(" separator="," close=")">
+			#{item, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler}
+		</foreach>
+		AND projtype IN
+		<foreach item="item" index="index" collection="types" open="(" separator="," close=")">
+			#{item, typeHandler=ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler}
+		</foreach>
+		
+		<if test="searchText != null and searchText != ''">
+			AND
+			( 
+				lower(to_char(projid)) LIKE '%' || lower(#{searchText})  || '%' OR
+				lower(projtitle) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projaims) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projquest) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projdeliver) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projstudent) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgcontact) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgname) LIKE '%' || lower(#{searchText}) || '%'
+			)
+		</if>
+	</select>
+
+	<!-- ============================================================================================================== -->
+
+	<select id="selectIdeasForListing" resultMap="selectIdeasForListingResult"  >
+		<if test="first &gt;= 0 and last &gt; first">
+			SELECT outer.*
+			FROM ( 
+				SELECT ROWNUM rn, inner.*
+					FROM (
+		</if>
+		
+		SELECT projid, projtitle, projapproved, projdate, projorg, projtype, projcreate, orgid, orgname, orgcontact
+		FROM ideas2
+		JOIN contacts ON orgid = projorg
+		
+		WHERE projapproved IN
+		<foreach item="item" index="index" collection="statuses" open="(" separator="," close=")">
+			#{item, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler}
+		</foreach>
+		
+		AND projtype IN
+		<foreach item="item" index="index" collection="types" open="(" separator="," close=")">
+			#{item, typeHandler=ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler}
+		</foreach>
+		
+		<if test="searchText != null and searchText != ''">
+			AND
+			( 
+				lower(to_char(projid)) LIKE '%' || lower(#{searchText})  || '%' OR
+				lower(projtitle) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projaims) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projquest) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projdeliver) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(projstudent) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgcontact) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgname) LIKE '%' || lower(#{searchText}) || '%'
+			)
+		</if>
+		
+		ORDER BY
+		<choose>
+			<when test="sortBy == 'COLUMN_ID'">projid</when>
+			<when test="sortBy == 'COLUMN_TITLE'">projtitle</when>
+			<when test="sortBy == 'COLUMN_STATUS'">projapproved</when>
+			<when test="sortBy == 'COLUMN_TIMESTAMP'">projdate</when>
+			<when test="sortBy == 'COLUMN_CREATE'">projcreate</when>
+			<when test="sortBy == 'COLUMN_TYPE'">projtype</when>
+			<when test="sortBy == 'COLUMN_ORGANISATION_NAME'">orgname</when>
+			<when test="sortBy == 'COLUMN_ORGANISATION_CONTACT'">orgcontact</when>
+			<otherwise>projdate</otherwise>
+		</choose>
+		<choose>
+			<when test="order.toString().equals('ASCENDING')">ASC</when>
+			<when test="order.toString().equals('DESCENDING')">DESC</when>
+			<otherwise>DESC</otherwise>
+		</choose>
+		<if test="first &gt;= 0 and last &gt; first">
+						)
+					inner
+				)
+			outer
+			WHERE outer.rn &gt; #{first} AND outer.rn &lt;= #{last}
+		</if>
+
+	</select>
+
+	<resultMap id="selectIdeasForListingResult" type="ports.soc.ides.model.Idea">
+		<id property="id" column="projid" jdbcType="INTEGER" />
+		<result property="title" column="projtitle" jdbcType="VARCHAR" />
+		<result property="status" column="projapproved" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler" />
+		<result property="timestamp" column="projdate" jdbcType="TIMESTAMP" />
+		<result property="createTime" column="projcreate" jdbcType="TIMESTAMP" />
+		<result property="type" column="projtype" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler" />
+		<association property="organisation" column="projorg" javaType="ports.soc.ides.model.Organisation">
+			<id property="id" column="orgid" jdbcType="INTEGER" />
+			<result property="name" column="orgname" jdbcType="VARCHAR" />
+			<result property="contact" column="orgcontact" jdbcType="VARCHAR" />
+		</association>
+	</resultMap>
+	
+	
+	<select id="selectNextId" resultType="long" useCache="false" >
+		SELECT ideas2_sequence.nextval FROM dual
+	</select>
+
+	<!-- ============================================================================================================== -->
+	
+	<insert id="insertIdea" flushCache="true" useGeneratedKeys="true" keyColumn="projid" keyProperty="id" parameterType="ports.soc.ides.model.Idea" >
+		INSERT INTO ideas2 (projid, projtitle, projtype, projapproved, projaims, projquest, projdeliver, projorg, projstudent, projdate, projcreate)
+		VALUES (
+			#{idea.id},
+			#{idea.title}, 
+			#{idea.type, typeHandler=ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler}, 
+			#{idea.status, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler}, 
+			#{idea.aim, jdbcType=CLOB},
+			#{idea.question, jdbcType=CLOB},
+			#{idea.deliverables, jdbcType=CLOB },
+			#{idea.organisation.id, javaType=long, jdbcType=INTEGER},
+			#{idea.student},
+			#{idea.timestamp, jdbcType=TIMESTAMP},
+			#{idea.createTime, jdbcType=TIMESTAMP}
+			)
+	</insert>
+	
+	<!-- ============================================================================================================== -->
+	
+	<update id="updateIdeaStatus" flushCache="true" >
+		UPDATE IDEAS2
+		SET projapproved = #{status, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler},
+			projdate = #{timestamp, jdbcType=TIMESTAMP}
+		WHERE projid = #{id}
+	</update>
+	
+	<update id="updateIdea" flushCache="true" parameterType="ports.soc.ides.model.Idea"  >
+		UPDATE IDEAS2
+		SET projtitle = #{idea.title}, 
+			projtype = #{idea.type, typeHandler=ports.soc.ides.dao.mybatis.ProjectTypeTypeHandler}, 
+			projaims =  #{idea.aim, jdbcType=CLOB},
+			projquest = #{idea.question, jdbcType=CLOB},
+			projapproved = #{idea.status, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler},
+			projdeliver = #{idea.deliverables, jdbcType=CLOB },
+			projstudent = #{idea.student},
+			projdate = #{idea.timestamp, jdbcType=TIMESTAMP}
+		WHERE projid = #{idea.id}
+	</update>
+	
+	<delete id="deleteIdea" flushCache="true">
+		DELETE FROM IDEAS2
+			WHERE projid = #{id}	
+	</delete>
+	
+</mapper>
+
+
+
+
+
+
+

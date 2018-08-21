@@ -1,0 +1,267 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importConstants type="ports.soc.ides.controller.CreateIdeaWizardController" var="IdeaWizardConst" />
+	<p:importEnum type="ports.soc.ides.controller.helper.CreateIdeaWizardStep" var="WizardStep" allSuffix="ALL_STEPS" />
+	<p:importEnum type="ports.soc.ides.model.constant.ProjectType" var="ProjType" allSuffix="ALL_PROJ_TYPE" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
+
+	<p:panel header="Submit a new idea" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+
+	<h:form id="#{IdeaWizardConst.CREATE_IDEA_FORM_WIZARD_ID}" > 
+		<span id="scrollTopBar" ></span>
+		<p:steps id="wizardStep" activeIndex="#{ideaWizard.currentStep.ordinal}" styleClass="custom">
+			<p:menuitem value="Client's Organisation" />
+			<p:menuitem value="Project Idea" />
+			<p:menuitem value="Confirmation" />
+		</p:steps>
+		<h:panelGroup id="topNavBar">
+			<ui:include src="#{IdesPage.CREATE_IDEA_WIZARD_NAV_BAR.path}" />
+		</h:panelGroup>
+		<p:messages id="beanValidation" closable="true">
+			<p:autoUpdate />
+		</p:messages>
+		<p:wizard id="#{IdeaWizardConst.CREATE_IDEA_WIZARD_ID}" widgetVar="wiz" flowListener="#{ideaWizard.handleWizardFlow}" showNavBar="false" showStepStatus="false" >
+			<p:tab id="#{WizardStep.CREATE_ORGANISATION}" title="1. Client's Organisation Detail">
+				<!-- ======================================================================================================================== -->
+				<h:panelGroup rendered="#{!ideaWizard.createNewOrganisationPage}">
+					<p:panel header="1. Client &amp; organisation" styleClass="no-space">
+						<div class="ui-g">
+							<div class="ui-lg-6 ui-md-6 ui-sm-12 ides-label-md" style="font-weight: normal;">
+								<h:outputText value="Search and select client &amp; organisation from the list below or" />
+							</div>
+							<div class="ui-lg-5 ui-md-5 ui-sm-12">
+								<p:commandButton id="newOrgButton" value="Create new client and organisation" icon="fa fa-pencil" onclick="enableWidgetBySelector('.wizard-button', false);" actionListener="#{ideaWizard.onClickCreateOrganisationButton}" update="@form" immediate="true" styleClass="wizard-button" onerror="enableWidgetBySelector('.wizard-button', true);" />
+							</div>
+							<div class="ui-g-12 no-space"></div>
+							<div class="ui-g-12">
+								<p:selectOneListbox id="organisationList" widgetVar="organisationList" var="o" value="#{ideaWizard.selectedOrg}" converter="orgConverter" 
+									onchange="updateOrgValue();" filter="true" filterMatchMode="contains" scrollHeight="150" required="true" 
+									requiredMessage="Please choose your project client or create a new one.">
+									<f:selectItems value="#{ideaWizard.orgs}" var="item" itemValue="#{item}" noSelectionValue="null"  />
+									<p:column>
+										<div class="ui-g ui-g-nopad">
+											<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad">
+												<h:outputText value="#{o.name}" />	
+											</div>
+											<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad">
+												<h:outputText value="#{o.contact}" />
+											</div>
+											<div class="ui-lg-2 ui-md-2 ui-sm-0 ides-label-sm ides-label-md ui-g-nopad" style="font-weight: normal;">
+												<h:outputText value="##{o.id}" />&#160;
+											</div>
+										<div class="ui-lg-0 ui-md-0 ui-sm-12 ides-div-border ui-g-nopad"></div>
+										<div class="ui-lg-0 ui-md-0 ui-sm-12"></div>
+										</div>
+									</p:column>
+								</p:selectOneListbox>
+								<p:remoteCommand name="updateOrgValue" actionListener="#{ideaWizard.onSelectOrganisation}" update="orgDetailPanel, topNavBar, bottomNavBar" oncomplete="PF('orgPanelVar').expand()" />
+								<p:watermark for="organisationList" value="Type here to filter" />
+							</div>
+						</div>
+				
+					</p:panel>
+					<h:panelGroup id="orgDetailPanel">
+						<p:panel widgetVar="orgPanelVar" collapsed="false" styleClass="no-space" header="Contact detail: #{ideaWizard.selectedOrg.contact} #{ideaWizard.selectedOrg != null ? '(' : '' }#{ideaWizard.selectedOrg.name}#{ideaWizard.selectedOrg != null ? ')' : '' }" toggleable="true" toggleSpeed="500" closeSpeed="500" >
+							<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+						</p:panel>
+					</h:panelGroup>
+				</h:panelGroup>
+				<!-- ======================================================================================================================== -->
+				<h:panelGroup rendered="#{ideaWizard.createNewOrganisationPage}">
+					<p:panel header="1. Create new client &amp; organisation">
+						<h:panelGroup rendered="#{app.enableCaptcha and not auth.loggedIn}">
+							<div class="ui-g">
+								<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+									<p:outputLabel value="Security Check: " indicateRequired="true" />
+								</div>
+								<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+									<div id="loadingOrgCaptcha"><h:outputText value="Loading reCAPTCHA" /></div>
+									<div id="orgCaptcha" class="g-recaptcha"></div>
+								</div>
+							</div>
+							<script type="text/javascript">
+								var onCaptchaSuccess = function(token){
+									enableWidgetBySelector('.wizard-submit-org', true);
+									$('.wizard-submit-org').children('.ui-button-text').text('Submit');
+								};
+								var onCaptchaExpiredCallback = function(){
+									enableWidgetBySelector('.wizard-submit-org', false);
+									$('.wizard-submit-org').children('.ui-button-text').text('Please re-challenge the reCAPTCHA');
+								};
+								var onCaptchaloadCallback = function() {
+									grecaptcha.render('orgCaptcha', {
+										'sitekey': '#{app.captchaPublicKey}',
+										'theme' : 'light',
+										'expired-callback' : onCaptchaExpiredCallback,
+										'callback' : onCaptchaSuccess
+									});
+									$('#loadingOrgCaptcha').hide();
+								};
+								$(document).ready(function(){
+									enableWidgetBySelector('.wizard-submit-org', false);
+									$('.wizard-submit-org').children('.ui-button-text').text('Please challenge the reCAPTCHA');
+								});
+							</script>
+							<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaloadCallback&amp;render=explicit" async="async" defer="defer"></script>
+						</h:panelGroup>
+						<h:panelGroup rendered="#{ideaWizard.showSaveProfileBtn}">
+							<div class="ui-g">
+								<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+									<p:outputLabel value="Save this for next time:" for="saveOrg" />
+								</div>
+								<div class="ui-g ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+									<div class="ui-g-no-pad ui-lg-3 ui-md-5 ui-sm-12">
+										<p:selectBooleanButton id="saveOrg" value="#{ideaWizard.saveProfile}" onLabel="Yes" offLabel="No"  onIcon="fa fa-check" offIcon="fa fa-close" />
+									</div>
+									<div class="ui-g-12">
+										By using "Save this for next time", you allow us to store your email address in our database.<br/>
+									</div>
+								</div>
+							</div>
+						</h:panelGroup>
+						<ui:include src="#{IdesPage.CREATE_ORG_FORM.path}" />
+					</p:panel>
+					<script type="text/javascript">
+						function onCloseOrgResultDialog(enable){
+							closeModalWhenClickMask(true);
+							PF('submitNewOrgResultDialog').hide(); 
+						}
+					</script>
+					<p:dialog id="submitNewOrgResultDialog" widgetVar="submitNewOrgResultDialog" rendered="#{ideaWizard.createNewOrganisationPage}" appendTo="body" header="New client submission result" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" maximizable="false" position="top" closeOnEscape="false" height="150" width="600" closable="false">
+						<div style="width: 100%;">
+							<p:messages showDetail="true" closable="false" />
+						</div>
+						<f:facet name="footer" style="height: 50px;">
+							<div class="ui-g no-space">
+								<div class="ui-g-12">
+									<p:button value="OK" styleClass="no-space" onclick="onCloseOrgResultDialog(true); return false;" rendered="#{!ideaWizard.submitOrganisationSuccess}" />
+									<p:button value="Proceed to create new idea" styleClass="no-space" onclick="onCloseOrgResultDialog(false); PF('wiz').next(); return false;" rendered="#{ideaWizard.submitOrganisationSuccess}" />
+								</div>
+							</div>
+						</f:facet>
+					</p:dialog>
+				</h:panelGroup>
+				<!-- ======================================================================================================================== -->
+			</p:tab>
+
+			<p:tab id="#{WizardStep.CREATE_IDEA}" title="2. Idea Detail">
+				<p:panel styleClass="no-space" header="2. Project idea detail">
+					<div class="ui-g">
+						<h:panelGroup>
+							<div class="ui-g-12 ides-div-border" style="font-weight: bold; text-align: center;">
+								<h:outputText value="All submitted ideas have to be reviewed and approved by the administrator before being shown." />
+							</div>
+							<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel style="font-weight: bold;" value="Organisation: " indicateRequired="true" />
+							</div>
+							<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+								<h:outputText value="#{ideaWizard.selectedOrg.name} (#{ideaWizard.selectedOrg.contact})" />
+							</div>
+						</h:panelGroup>
+					</div>
+					<ui:include src="#{IdesPage.CREATE_IDEA_FORM.path}" />
+				</p:panel>
+			</p:tab>
+			<!-- ==================================== -->
+			<p:tab id="#{WizardStep.REVIEW}" title="3. Confirmation">
+				<p:panel styleClass="no-space" header="Review your project idea" >
+					<h:panelGroup rendered="#{app.enableCaptcha and not auth.loggedIn}">
+						<div class="ui-g">
+							<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Security Check: " indicateRequired="true" />
+							</div>
+							<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+								<div id="loadingIdeaCaptcha"><h:outputText value="Loading reCAPTCHA" /></div>
+								<div id="ideaCaptcha" class="g-recaptcha"></div>
+							</div>
+						</div>
+						<script type="text/javascript">
+							var onCaptchaSuccess = function(token){
+								enableWidgetBySelector('.wizard-submit-idea', true)
+								$('.wizard-submit-idea').children('.ui-button-text').text('Submit');
+							};
+							var onCaptchaExpiredCallback = function(){
+								enableWidgetBySelector('.wizard-submit-idea', false);
+								$('.wizard-submit-org').children('.ui-button-text').text('Please re-challenge the reCAPTCHA');
+							};
+							var onCaptchaloadCallback = function() {
+								grecaptcha.render('ideaCaptcha', {
+									'sitekey': '#{app.captchaPublicKey}',
+									'theme' : 'light',
+									'expired-callback' : onCaptchaExpiredCallback,
+									'callback' : onCaptchaSuccess
+								});
+								$('#loadingIdeaCaptcha').hide();
+								$('.wizard-submit-idea').children('.ui-button-text').text('Please challenge the reCAPTCHA');
+							};
+						</script>
+						<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaloadCallback&amp;render=explicit" async="async" defer="defer"></script>
+					</h:panelGroup>
+					<ui:include src="#{IdesPage.SHOW_IDEA.path}" />
+				</p:panel>
+				<p:panel styleClass="no-space" header="Contact detail: #{ideaWizard.selectedOrg.contact} #{ideaWizard.selectedOrg.name}" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleableHeader="true" >
+					<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+				</p:panel>
+				<script type="text/javascript">
+					function afterClickedSubmitIdeaButton(){
+						closeModalWhenClickMask(false);
+						enableWidgetBySelector('.wizard-submit-idea', false);
+					}
+					function onCloseSubmitIdeaDialog(){
+						closeModalWhenClickMask(true);
+						enableWidgetBySelector('.wizard-submit-idea', true);
+						PF('submitIdeaResultDialog').hide();
+					}
+					
+					$(document).ready(function(){
+						#{app.enableCaptcha and not auth.loggedIn ? 'enableWidgetBySelector(\'.wizard-submit-idea\', false);' : 'countDownSubmitButton(\'.wizard-submit-idea\');'}
+					});
+				</script>
+				<p:remoteCommand name="startOver" actionListener="#{ideaWizard.onStartOver}" oncomplete="closeModalWhenClickMask(true); PF('submitIdeaResultDialog').hide();" update="@form" />
+				<p:dialog id="submitIdeaResultDialog" widgetVar="submitIdeaResultDialog" appendTo="body" header="New idea submission result" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" maximizable="false" position="top" closeOnEscape="false" height="150" width="600" closable="false">
+					<div style="width: 100%;">
+						<p:messages showDetail="true" closable="false" />
+					</div>
+					<f:facet name="footer" style="height: 50px;">
+						<div class="ui-g no-space">
+							<div class="ui-g-12">
+								<p:button value="Close" styleClass="no-space" onclick="onCloseSubmitIdeaDialog(); return false;" rendered="#{!ideaWizard.submitIdeaSuccess}"  />
+								<p:button  value="OK" styleClass="no-space" onclick="startOver(); return false;" rendered="#{ideaWizard.submitIdeaSuccess}"  />
+							</div>
+						</div>
+					</f:facet>
+				</p:dialog>
+			</p:tab>
+			
+			<!-- ==================================== -->
+		</p:wizard>
+		<h:panelGroup id="bottomNavBar">
+			<ui:include src="#{IdesPage.CREATE_IDEA_WIZARD_NAV_BAR.path}" />
+			<span id="scrollBottomNavBar" ></span>
+		</h:panelGroup>
+		<script type="text/javascript">
+			function animateScroll(id){
+				var selectId = '#' + id;
+				$('html, body').animate({
+					scrollTop: $(selectId).offset().top 
+					}, 300);
+			}
+			
+			function countDownSubmitButton(selector){
+				enableWidgetBySelector(selector, false);
+				var btn = $(selector).children('span');
+				var count = #{auth.loggedIn ? '0' : '2'};
+				var countdown = setInterval(function(){
+					btn.text('Ready in ' + count);
+					count--;
+					if (count &lt; 0){
+						clearInterval(countdown);
+						enableWidgetBySelector(selector, true);
+						btn.text('Submit');
+					}
+				}, 1000);
+			}
+		</script>
+	</h:form>
+</ui:fragment>

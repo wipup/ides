@@ -1,0 +1,155 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.model.constant.ProjectType" var="ProjType" allSuffix="ALL_PROJ_TYPE" />
+	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
+
+
+	<div class="ui-g">
+	
+		<h:panelGroup rendered="#{ideaForm.renderReferenceNumber}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Reference number: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{ideaForm.idea.id}"  />
+			</div>
+			<div class="ui-g-12 no-space"></div>
+		</h:panelGroup>
+	
+		<h:panelGroup rendered="#{ideaForm.renderNotSpecificTypeRadio}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel  value="Project Type: " for="fullIdeaProjectType" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:selectOneRadio  id="fullIdeaProjectType" value="#{ideaForm.idea.type}" required="true" requiredMessage="Project type is required!">
+					<f:selectItem itemLabel="#{ProjType.Study.label}" itemValue="#{ProjType.Study}" />
+					<f:selectItem itemLabel="#{ProjType.Engineering.label}" itemValue="#{ProjType.Engineering}" />
+					<f:selectItem itemLabel="#{ProjType.NotSpecific.label}" itemValue="#{ProjType.NotSpecific}" />
+				</p:selectOneRadio>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{!ideaForm.renderNotSpecificTypeRadio}" >
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Project Type: " for="ideaProjectType" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:selectOneRadio id="ideaProjectType" value="#{ideaForm.idea.type}" required="true" requiredMessage="Project type is required!">
+					<f:selectItem itemLabel="#{ProjType.Study.label}" itemValue="#{ProjType.Study}" />
+					<f:selectItem itemLabel="#{ProjType.Engineering.label}" itemValue="#{ProjType.Engineering}" />
+				</p:selectOneRadio>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup>
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Project title: " for="ideaTitle" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:inputText id="ideaTitle" value="#{ideaForm.idea.title}" required="true" requiredMessage="Project title must not be empty!" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup  rendered="#{ideaForm.renderIdeaStatusRadio}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Idea Status: " for="ideaProjectStatus" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:selectOneRadio id="ideaProjectStatus" value="#{ideaForm.idea.status}" disabled="#{ideaForm.enableIdeaStatusRadio}" required="true" requiredMessage="Project status must be specified!">
+					<f:selectItems itemLabel="#{status.label}" itemValue="#{status.value}" value="#{IdeaStatus.ALL_IDEA_STATUS}" var="status" />
+				</p:selectOneRadio>
+			</div>
+		</h:panelGroup>
+		
+		<div class="ui-g-12 no-space"></div>
+		
+		<h:panelGroup  rendered="#{ideaForm.renderIdeaStatus}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Idea Status: " for="ideaProjectStatus" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Approved}">			
+					<span class="status-approved"><h:outputText value="Approved" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Allocated}">			
+					<span class="status-allocated"><h:outputText value="Allocated" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Provisional}">			
+					<span class="status-provisional"><h:outputText value="Provisional" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Withdrawn}">			
+					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{ideaForm.idea.status != IdeaStatus.Withdrawn and ideaForm.idea.status != IdeaStatus.Provisional and ideaForm.idea.status != IdeaStatus.Allocated and ideaForm.idea.status != IdeaStatus.Approved}">
+					<h:outputText value="#{ideaForm.idea.status}" />
+				</h:panelGroup>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup>
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Aims and Objectives: " for="ideaAims" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor id="ideaAims" value="#{ideaForm.idea.aim}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project aims and objective" required="true" requiredMessage="Project aim and objective must not be empty!">
+					<f:facet name="toolbar">
+						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
+					</f:facet>
+				</p:textEditor>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup>
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Academic Question: " for="ideaQuestion" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor id="ideaQuestion" value="#{ideaForm.idea.question}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project academic question">
+					<f:facet name="toolbar">
+						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
+					</f:facet>
+				</p:textEditor>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup>
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Deliverables: " for="ideaDeliverable" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor id="ideaDeliverable" value="#{ideaForm.idea.deliverables}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project deliverables">
+					<f:facet name="toolbar">
+						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
+					</f:facet>
+				</p:textEditor>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup>
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Student for whom project has been devised: " for="ideaStudent" placeholder="Student name" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:inputText id="ideaStudent" value="#{ideaForm.idea.student}" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+	</div>
+
+
+</ui:fragment>

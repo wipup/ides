@@ -1,0 +1,552 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.config.DatasourceType" var="DBConnection" allSuffix="ALL_DB_CONNECTIONS" />
+	<p:importEnum type="ports.soc.ides.model.constant.Role" var="Role" allSuffix="ALL_ROLES" />
+	<p:importConstants type="org.apache.logging.log4j.Level" var="LogLevel" />
+	<p:importConstants type="ports.soc.ides.controller.AdministratorPanelController" var="AdminConst" />
+	<p:importConstants type="ports.soc.ides.logger.LoggerConfigurationFactory" var="LoggerConst" />
+
+	<p:panel header="Administrator Panel" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+
+	<h:form>
+		<script type="text/javascript">
+			function afterChangesApplied(xhr, status, args) {
+				PF('appNotification').hide();
+			}
+			function togglePassword(x){
+			    if (x.type == "password") {
+			        x.type = "text";
+			    } else {
+			        x.type = "password";
+			    }
+		    }
+		    function handleTabChange(index){
+		    	if (index == 1){
+		    		$('#buttonBar').hide();
+		    	} else {
+		    		$('#buttonBar').show();
+		    	}
+		    }
+		</script>
+
+		<p:messages showDetail="true" showSummary="true" closable="true" >
+			<p:autoUpdate />
+		</p:messages>
+
+		<p:tabView id="adminPanelTabs" widgetVar="adminPanelTabs" dynamic="true" cache="true" onTabChange="handleTabChange(index);" effect="fade" effectDuration="fast" styleClass="ui-widget-content">
+			<p:tab title="General" id="generalTab">
+				<f:facet name="actions">
+					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
+					</span>
+				</f:facet>
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Display Announcement " />
+					</div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ui-g">
+						<p:selectBooleanButton value="#{admin.config.autoDisplayAnnouncement}" onLabel="Yes" offLabel="No" onIcon="fa fa-check" offIcon="fa fa-close" />
+					</div>
+					<div class="ui-g-12 ui-g-nopad ui-sm-0"></div>
+
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Content: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:textEditor widgetVar="draftContent" value="#{admin.config.announcement}" placeholder="Announcement detail" required="false">
+							<f:facet name="toolbar">
+								<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
+							</f:facet>
+						</p:textEditor>
+					</div>
+					<div class="ui-g-12 ui-g-nopad"></div>
+					
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:button value="Show current announcement" onclick="changeBack(); PF('appNotification').show(); return false;" icon="fa fa-eye" />
+					</div>
+					<div class="ui-lg-5 ui-md-2 ui-sm-0 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:textEditor widgetVar="oldContent" value="#{app.announcement}" required="false" readonly="true" style="display: none;" />
+						<p:button value="Preview change" widgetVar="announcementButton" onclick="previewAnnouncement(); return false;" icon="fa fa-play-circle-o" />
+						<script type="text/javascript">
+							$(document).ready(function() {
+								var closeBtn = PF('closeAnnouncementBtn');
+								closeBtn.jq.on('click', changeBack);
+
+								var oldContent = PF('oldContent');
+								oldContent.editor = new Quill(oldContent.jqId, readOnlyEditorOptions);
+								
+								var announcement = PF('announcement');
+								if (!announcement.editor){
+									announcement.editor = new Quill(announcement.jqId, readOnlyEditorOptions);
+								}
+							});
+
+							var changeBack = function() {
+								copyPrimeEditorContent('oldContent', 'announcement');
+								PF('appNotification').hide();
+							};
+
+							function previewAnnouncement() {
+								PF('appNotification').show();
+								copyPrimeEditorContent('draftContent', 'announcement');
+							}
+
+							function copyPrimeEditorContent(from, to) {
+								PF(to).editor.setContents(PF(from).editor.getContents());
+							}
+						</script>
+					</div>
+
+				</div>
+
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Idea Deletion Button: " />
+					</div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:selectBooleanButton id="allowIdeaDeletion" value="#{admin.config.enableIdeaDeletion}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+					</div>
+					<div class="ui-g-12 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Client Management Page: " />
+					</div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:selectBooleanButton id="AllowClientDeletion" value="#{admin.config.enableOrgDeletion}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+					</div>
+				</div>
+
+			</p:tab>
+			<!-- ============================================================================================================================================ -->
+			
+			<p:tab title="Client &amp; Organisation Template" >
+				<f:facet name="actions">
+					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
+					</span>
+				</f:facet>
+				
+				<div class="ui-g ides-div-border">
+					<div class="ui-g-12 ides-label-sm ui-widget-header" style="font-weight: bold;">
+						<h:outputText value="Configure default contact profile for staff" />
+					</div>
+				</div>
+				
+				<div class="ui-g ides-div-border">
+					<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Staff Email Domain: " />
+					</div>
+					<div class="ui-lg-5 ui-md-5 ui-sm-12">
+						 <p:selectOneMenu value="#{admin.selectedProfileDomain}" autoWidth="false" widgetVar="profileDomainList" >
+						 	<p:ajax event="change" update="contactProfileDetail, confirmDeleteProfile" />
+						 	<f:selectItems value="#{admin.profileOwners}" var="domain" itemLabel="#{domain}" itemValue="#{domain}"  />
+						 </p:selectOneMenu>
+					</div>
+				</div>
+				
+				<p:outputPanel id="contactProfileDetail">
+					<p:panel header="Profile Detail" rendered="#{not admin.editContactProfile}" >
+					
+						<h:panelGroup rendered="#{empty admin.selectedContactProfile}" >
+							<div class="ui-g">
+								<div class="ui-lg-5 ui-md-5 ui-sm-12 ides-label-sm ides-label-md">
+									<h:outputText value="No profile found for domain " />
+									<h:outputText value="#{admin.selectedProfileDomain}" />
+								</div>
+								<div class="ui-lg-6 ui-md-6 ui-sm-12">
+									<p:commandButton disabled="#{empty admin.profileOwners}" icon="fa fa-pencil-square-o" value="Create a default contact profile for staff of domain #{admin.selectedProfileDomain}" 
+											update="contactProfileDetail, confirmDeleteProfile" actionListener="#{admin.onClickEditProfile}" oncomplete="PF('profileDomainList').disable()"  />
+								</div>
+							</div>
+						</h:panelGroup>
+						
+						<h:panelGroup rendered="#{not empty admin.selectedContactProfile}">
+							<div class="ui-g">
+								<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+									<p:outputLabel value="Staff Email Domain: " />
+								</div>
+								<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+									<h:outputText value="#{admin.selectedProfileDomain}" />
+								</div>
+							</div>
+							<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+							<div class="ui-g ides-div-border">
+								<div class="ui-lg-3 ui-md-3 ui-sm-12">
+									<p:button value="Delete" rendered="#{app.enableProfileDeletion}" icon="fa fa-trash-o" onclick="PF('confirmProfileModalVar').show(); return false;" styleClass="delete-btn" />
+								</div>
+								<div class="ui-lg-5 ui-md-3 ui-sm-12">
+								</div>
+								<div class="ui-lg-3 ui-md-3 ui-sm-12"  style="padding-right: 0;">
+									<p:commandButton value="Edit" icon="fa fa-edit" update="contactProfileDetail" actionListener="#{admin.onClickEditProfile}" oncomplete="PF('profileDomainList').disable()" />
+								</div>
+							</div>
+						</h:panelGroup>
+						
+					</p:panel>
+					
+					<p:panel header="Edit Profile Detail for #{admin.selectedProfileDomain}"  rendered="#{admin.editContactProfile}" >
+						<div class="ui-g">
+							<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Staff Domain: " />
+							</div>
+							<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+								<h:outputText value="#{admin.selectedProfileDomain}" />
+							</div>
+						</div>
+						<ui:include src="#{IdesPage.CREATE_ORG_FORM.path}" />
+						<div class="ui-g">
+							<div class="ui-lg-3 ui-md-3 ui-sm-12">
+								<p:commandButton value="Cancel" icon="fa fa-close" update="contactProfileDetail"  actionListener="#{admin.onClickCancelCreatingProfile}" oncomplete="handleContactProfileCallback(xhr, status, args)" immediate="true" />
+							</div>
+							<div class="ui-lg-5 ui-md-5 ui-sm-12 ui-g-nopad"></div>
+							<div class="ui-lg-3 ui-md-3 ui-sm-12" style="padding-right: 0;">
+								<p:commandButton value="Save" icon="fa fa-save"  update="contactProfileDetail" actionListener="#{admin.onClickSaveProfile}" oncomplete="handleContactProfileCallback(xhr, status, args)"  />
+							</div>
+						</div>
+					</p:panel>
+					
+					<p:remoteCommand name="deleteProfile" actionListener="#{admin.onClickDeleteProfile}" update="contactProfileDetail" oncomplete="handleContactProfileCallback(xhr, status, args)" immediate="true" />
+					<p:remoteCommand name="updateContactProfileDetail" update="contactProfileDetail"  />
+					
+					<p:dialog id="confirmDeleteProfile" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" widgetVar="confirmProfileModalVar" header="Deletion Confirmation" closeOnEscape="true" modal="true" position="top" height="100" width="700" appendTo="body">
+						<div class="ui-g ">
+							<div class="ui-g-12 ides-div-border" style="text-align: center;">
+								<h:outputText value="Are you sure that you want to delete profile of " />
+								<STRONG><h:outputText value="#{admin.selectedProfileDomain}?" /></STRONG>
+							</div>
+						</div>
+						<f:facet name="footer" style="height: 50px;">
+							<div class="ui-g">
+								<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+									<p:button value="Close" icon="fa fa-close" onclick="PF('confirmProfileModalVar').hide();  return false;" />
+								</div>
+								<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+								</div>
+								<div class="ui-lg-4 ui-md-4 ui-sm-12 ui-g-nopad">
+									<p:button value="Delete" icon="fa fa-trash-o" styleClass="delete-btn" onclick="deleteProfile(); return false" />
+								</div>
+							</div>
+						</f:facet>
+					</p:dialog>
+					<script type="text/javascript">
+						function handleContactProfileCallback(xhr, status, args){
+							if (!args){
+								return;
+							}
+							if (args['#{AdminConst.PARAM_CALLBACK_SUCCESS}']){
+								PF('confirmProfileModalVar').hide(); 
+								PF('profileDomainList').enable();
+								updateContactProfileDetail();
+							}
+						}
+					</script>
+				</p:outputPanel>
+			</p:tab>
+
+			<!-- ============================================================================================================================================ -->
+
+			<p:tab title="Security" id="securityTab" rendered="#{app.allowedSecurityConfig}">
+				<f:facet name="actions">
+					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
+					</span>
+				</f:facet>
+				<div class="ui-g ui-widget-content ui-g-12">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Initial Configuration file:  " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<h:outputText value="#{admin.idesConfigPath}" />
+					</div>
+					
+					<div class="ui-g-12 ui-g-nopad ui-sm-0"></div>
+					
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-3 ui-md-3 ui-sm-12">
+						<p:commandButton value="Reload initial setting" icon="fa fa-upload" disabled="#{empty admin.idesConfigPath}" actionListener="#{admin.onReloadSecurityConfig}" update="@form" />
+					</div>
+				</div>
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel for="googleClientId" value="Google Sign-In Client ID:  " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:inputText id="googleClientId" value="#{admin.config.googleSignInclientId}" required="true" requiredMessage="Google Sign-In Client ID must not be empty" />
+					</div>
+				</div>
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="reCAPTCHA:  " />
+					</div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:selectBooleanButton value="#{admin.config.enableCaptcha}" onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close">
+							<p:ajax event="change" update="captchaInfo" />
+						</p:selectBooleanButton>
+					</div>
+
+					<p:outputPanel id="captchaInfo" styleClass="ui-g ui-g-12 no-space">
+						<h:panelGroup rendered="#{admin.config.enableCaptcha}">
+							<div class="ui-g-12 ui-g-nopad"></div>
+
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="captchaPublicKey" value="Public Key:  " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<p:inputText id="captchaPublicKey" value="#{admin.config.captchaPublicKey}" required="true" requiredMessage="Captcha public key must not be empty" />
+							</div>
+
+							<div class="ui-g-12 ui-g-nopad"></div>
+
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="captchaPrivateKey" value="Private Key:  " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<div class="ui-inputgroup">
+									<p:password id="captchaPrivateKey" widgetVar="captchaPrivateKey" value="#{admin.config.captchaPrivateKey}" redisplay="true" required="true" requiredMessage="Captcha private key must not be empty" onchange="togglePassword(this.id);" />
+									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('captchaPrivateKey').jq.get(0));" />
+								</div>
+							</div>
+
+						</h:panelGroup>
+					</p:outputPanel>
+				</div>
+			</p:tab>
+
+			<!-- ============================================================================================================================================ -->
+
+			<p:tab title="Datasource" id="databaseTab" rendered="#{app.allowedDatabaseConfig}">
+				<f:facet name="actions">
+					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
+					</span>
+				</f:facet>
+				<div class="ui-g ui-widget-content ui-g-12">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Initial Configuration file:  " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:outputLabel value="#{admin.dbConfigPath}" />
+					</div>
+					<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-3 ui-md-3 ui-sm-12">
+						<p:commandButton value="Reload database setting" icon="fa fa-upload" disabled="#{empty admin.dbConfigPath}" actionListener="#{admin.onReloadDatabaseConfig}" update="@form" />
+					</div>
+				</div>
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Current Method: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JDBC}" value="1. Manual JDBC URL Connection" />
+						<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JNDI}" value="2. JNDI" />
+					</div>
+					<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Connection Method: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:selectOneButton value="#{admin.dbConfig.datasourceConnectionType}">
+							<p:ajax event="change" update="dbConfigPanel" immediate="true" />
+							<f:selectItem itemLabel="1. Manual JDBC Connection" itemValue="#{DBConnection.JDBC}" />
+							<f:selectItem itemLabel="2. JNDI" itemValue="#{DBConnection.JNDI}" />
+						</p:selectOneButton>
+					</div>
+				</div>
+
+				<p:outputPanel id="dbConfigPanel">
+					<h:panelGroup rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JDBC}">
+
+						<div class="ui-g ui-widget-content">
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel value="Available Drivers:  " for="driverList" />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12" >
+								<p:selectOneMenu id="driverList" value="#{admin.jdbcDriverClassName}" converter="adminJdbcDriverConveter" var="driver" autoWidth="false" >
+									<f:selectItems value="#{admin.driverList}" var="driver" itemLabel="#{driver.class.name} (Version #{driver.majorVersion}.#{driver.minorVersion})" itemValue="#{driver}" noSelectionValue="null" />
+									<p:column>
+										<div class="ui-g">
+											<div class="ui-md-7 ui-sm-12">
+												<h:outputText value="#{driver.class.name}" />
+											</div>
+											<div class="ui-md-4 ui-sm-12">
+												<h:outputText value="(Version #{driver.majorVersion}.#{driver.minorVersion})" />
+											</div>
+											<div class="ui-md-0 ui-sm-12"></div>
+										</div>
+									</p:column>
+								</p:selectOneMenu>
+								<div class="ui-g-12" style="text-align: center; padding-bottom: 0;">
+									<h:outputText value="The system will automatically choose a database driver based on the URL protocol. " />
+								</div>							
+								<p:tooltip for="driverList" value="The system will automatically choose a database driver based on URL protocol." showDelay="50" position="top" hideDelay="1000" />
+							</div>
+							<div class="ui-g-12 ui-g-nopad"></div>
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="dbUrl" value="URL:  " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<p:inputText id="dbUrl" value="#{admin.dbConfig.url}" required="true" placeholder="E.g. jdbc:&lt;DRIVER&gt;://&lt;HOST&gt;:&lt;PORT&gt;/&lt;DATABASE_NAME&gt;" />
+							</div>
+							<div class="ui-g-12 ui-g-nopad"></div>
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="dbUsername" value="Username:  " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<p:inputText id="dbUsername" value="#{admin.dbConfig.username}" required="true" requiredMessage="Database username must not be empty" />
+							</div>
+							<div class="ui-g-12 ui-g-nopad"></div>
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="dbPass" value="Password: " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<div class="ui-inputgroup">
+									<p:password id="dbPass" widgetVar="dbPass" value="#{admin.dbConfig.password}" redisplay="true" required="true" requiredMessage="Database password must not be empty" />
+									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('dbPass').jq.get(0));" />
+								</div>
+							</div>
+						</div>
+					</h:panelGroup>
+					<h:panelGroup rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JNDI}">
+						<div class="ui-g ui-widget-content">
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<h:outputText value="Initial Context: " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<p:inputText value="#{admin.dbConfig.initialContext}" />
+							</div>
+
+							<div class="ui-g-12 ui-g-nopad"></div>
+
+							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+								<p:outputLabel for="dbJndi" value="Datasource: " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12">
+								<p:inputText id="dbJndi" value="#{admin.dbConfig.jndi}" required="true" requiredMessage="Datasource JNDI name must not be empty" />
+							</div>
+						</div>
+					</h:panelGroup>
+				</p:outputPanel>
+
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:commandButton value="Test connection" icon="fa fa-plug" actionListener="#{admin.onTestConnection}" partialSubmit="true" process="databaseTab" />
+					</div>
+				</div>
+
+			</p:tab>
+
+			<!-- ============================================================================================================================================ -->
+
+			<p:tab title="Logging" id="loggingTab">
+				<f:facet name="actions">
+					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
+					</span>
+				</f:facet>
+
+				<div class="ui-g ui-widget-content ui-g-12">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel for="logLevel" value="Log Level: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:selectOneMenu id="logLevel" value="#{admin.logLevel}"  converter="logLevelConveter" required="true">
+							<f:selectItem itemValue="#{LogLevel.OFF}" itemLabel="Off (Not recommended) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.OFF ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.FATAL}" itemLabel="Fatal (Only fatal errors) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.FATAL ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.ERROR}" itemLabel="Error (All errors) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.ERROR ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.WARN}" itemLabel="Warn (All warnings and errors) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.WARN ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.INFO}" itemLabel="Info (Information messages) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.INFO ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.DEBUG}" itemLabel="Debug (Debug and information messages) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.DEBUG ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.TRACE}" itemLabel="Trace (Fine detail) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.TRACE ? '(Default)' : ''}" />
+							<f:selectItem itemValue="#{LogLevel.ALL}" itemLabel="All (All messages including HTTP request headers) #{LoggerConst.DEFAULT_LOG_LEVEL == LogLevel.ALL ? '(Default)' : ''}" />
+						</p:selectOneMenu>
+					</div>
+					<div class="ui-g-12"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<h:outputText value="Log IP Address: " />
+					</div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:selectBooleanButton value="#{admin.logIpAddress}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+					</div>
+				</div>
+
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Log File Location: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<h:outputText value="#{admin.config.outputLogLocation}" />
+					</div>
+					<div class="ui-md-12 ui-sm-0 ui-g-nopad"></div>
+					<div class="ui-md-0 ui-sm-12"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Active Log File: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<h:outputText value="#{LoggerConst.ACTIVE_LOG_FILE_NAME}" />
+					</div>
+					<div class="ui-md-12 ui-sm-12 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Archived File's Date Pattern: " />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<h:outputText value="Year-Month-Day" />
+					</div>
+				</div>
+
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+						<p:outputLabel value="Download Log" />
+					</div>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12">
+						<p:selectOneListbox id="logFileSelector" value="#{admin.selectedLogFile}" converter="logFileWrapperConverter" var="item" filter="true" filterMatchMode="contains" scrollHeight="100">
+							<p:ajax event="change" update="logDownloadBtn" />
+							<f:selectItems value="#{admin.logFiles}" var="item" itemValue="#{item}" noSelectionValue="null" />
+							<p:column>
+								<div class="ui-g ui-g-nopad">
+									<div class="ui-lg-6 ui-md-6 ui-sm-9 ui-g-nopad">
+										<h:outputText value="#{item.name}" />
+									</div>
+									<div class="ui-lg-6 ui-md-6 ui-sm-3 ui-g-nopad ides-label-sm ides-label-md ui-g-nopad" style="font-weight: normal;">
+										<h:outputText value="#{item.size}" />
+									</div>
+									<div class="ui-lg-0 ui-md-0 ui-sm-12 ides-div-border ui-g-nopad"></div>
+								</div>
+							</p:column>
+						</p:selectOneListbox>
+					</div>
+
+					<div class="ui-g-12 ui-g-nopad"></div>
+
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:commandButton value="Refresh" actionListener="#{admin.onRefreshLogFolder}" update="logFileSelector" icon="fa fa-refresh" />
+					</div>
+					<div class="ui-lg-5 ui-md-2 ui-sm-12 ui-g-nopad"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12" style="padding-right: 0">
+						<p:commandButton id="logDownloadBtn" value="Download" ajax="false" icon="fa fa-download" disabled="#{admin.selectedLogFile == null}">
+							<p:fileDownload value="#{admin.downloadableFile}" />
+						</p:commandButton>
+					</div>
+				</div>
+			</p:tab>
+
+			<!-- ============================================================================================================================================ -->
+
+		</p:tabView>
+		<div id="buttonBar" class="ui-tabs ui-widget ui-widget-content ui-corner-all ui-hidden-container ui-tabs-top ui-widget-content" style="padding-top: 0; margin-top: 0;">
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom" style="padding-top: 0; margin-top: 0;">
+				<div class="ui-g ui-widget-content">
+					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12">
+						<p:commandButton value="Revert" icon="fa fa-reply" update="@form" actionListener="#{admin.onClickRevert}" immediate="true" resetValues="true" />
+					</div>
+					<div class="ui-lg-5 ui-md-2 ui-sm-12 ui-g-nopad"></div>
+					<div class="ui-md-0 ui-sm-12"></div>
+					<div class="ui-lg-2 ui-md-3 ui-sm-12" style="padding-right: 0;">
+						<p:commandButton value="Save All &amp; Apply" icon="fa fa-save" actionListener="#{admin.onApplyChange}" onstart="setLoadingMessage('Saving');" oncomplete="afterChangesApplied(xhr, status, args);" update="@form, menu" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</h:form>
+
+</ui:fragment>

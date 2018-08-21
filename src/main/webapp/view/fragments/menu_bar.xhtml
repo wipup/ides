@@ -1,0 +1,157 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+	<p:importConstants type="ports.soc.ides.controller.NavigationController" var="NavConst" />
+	<p:importConstants type="ports.soc.ides.controller.UserController" var="UserConst" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
+
+	<h:form id="menuForm" styleClass="no-space">
+		<p:button id="hamburger" icon="fa fa-bars" onclick="PF('sideMenubar').show(); return false;" styleClass="ui-md-0 hamburger-btn" />
+		<script type="text/javascript">
+			function sideMenuLogin(){
+				var btn = $('#googleSignIn > div');
+				PF('sideMenubar').hide();
+				if (btn.length > 0){
+					btn.trigger('click');	
+				} else {
+					alert("Unable to connect to Google's service");
+				}
+			}
+		</script>
+		<p:sidebar id="smallMenu" widgetVar="sideMenubar" position="right" baseZIndex="10000" styleClass="ui-md-0" style="width: 97%;">
+			<p:panel closable="false" toggleable="false" style="height: 90%; border: 0;" styleClass="mobile-menu ">
+				<p:menu style="height: 100%; border: 0;" styleClass="mobile-menu">
+					<p:submenu label="Your Profile" expanded="true" onclick="return false;" disabled="true" rendered="#{auth.loggedIn}" styleClass="mimic-button">
+						<p:menuitem value=" #{auth.user.name}" disabled="true" styleClass="mimic-label mobile-menu" icon="fa fa-user" style="border: 0; border-left: #d5d5d5; border-left-width: 1px; border-left-style: solid; border-right: #d5d5d5; border-right-width: 1px; border-right-style: solid;" />
+						<p:menuitem value=" #{auth.user.email}" disabled="true" styleClass="mimic-label mobile-menu" icon="fa fa-envelope" style="border: 0; border-left: #d5d5d5; border-left-width: 1px; border-left-style: solid; border-right: #d5d5d5; border-right-width: 1px; border-right-style: solid;" />
+						<p:menuitem value=" #{auth.user.displayRole}" disabled="true" styleClass="mimic-label mobile-menu" icon="fa fa-sitemap" style="border: 0; border-left: #d5d5d5; border-left-width: 1px; border-left-style: solid; border-right: #d5d5d5; border-right-width: 1px; border-right-style: solid;" />
+						<p:menuitem value=" Sign out" onclick="PF('sideMenubar').hide(); signOut();" icon="fa fa-sign-out" rendered="#{auth.loggedIn}" styleClass="ui-widget-header"  />
+					</p:submenu>
+					
+					<p:submenu label="Account" expanded="true" onclick="return false;" disabled="true" rendered="#{!auth.loggedIn}" styleClass="mimic-button">
+						<p:menuitem value=" Sign in" onclick="sideMenuLogin();" styleClass="mobile-menu ui-widget-header sidemenu-signin" icon="fa fa-google" />
+					</p:submenu>
+					
+					<p:menuitem value="" onclick="return false;" styleClass="mobile-menu mimic-label" disabled="true" style="border: 0; height: 10px;" />
+					
+					<p:submenu label="What to do " expanded="true" onclick="return false;" disabled="true" styleClass="mimic-button">
+						<p:menuitem value=" Browse ideas" actionListener="#{nav.navigateTo}" onclick="PF('sideMenubar').hide();" update="body" styleClass="mobile-menu ui-widget-header" icon="fa fa-list-alt">
+							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.IDEA_LIST.pageId}" />
+						</p:menuitem>
+
+						<p:menuitem value=" Submit a new idea" actionListener="#{nav.navigateTo}" onclick="PF('sideMenubar').hide();" update="body" styleClass="mobile-menu ui-widget-header" icon="fa fa-plus">
+							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.CREATE_IDEA_WIZARD.pageId}" />
+						</p:menuitem>
+
+						<p:menuitem value=" Help and how to use" actionListener="#{nav.navigateTo}" update="body" onclick="PF('sideMenubar').hide();" styleClass="mobile-menu ui-widget-header" icon="fa fa-question-circle">
+							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.HOW_TO_USE.pageId}" />
+						</p:menuitem>
+						
+					</p:submenu>
+					
+					<p:menuitem value="" onclick="return false;" rendered="#{auth.loggedIn and auth.admin}" styleClass="mobile-menu mimic-label" disabled="true" style="border: 0; height: 10px;" />
+					<p:submenu label="Administrator Tools" expanded="true" onclick="return false;" disabled="true" rendered="#{auth.admin}" styleClass="mimic-button">
+						<p:menuitem value=" Administrator Panel" actionListener="#{nav.navigateTo}" update="body" onclick="PF('sideMenubar').hide();"  icon="fa fa-gears" styleClass="mobile-menu ui-widget-header">
+							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ADMIN_TOOLS.pageId}" />
+						</p:menuitem>
+						<p:menuitem value=" Manage Clients" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin and app.enableOrgDeletion}" icon="fa fa-group" onclick="PF('sideMenubar').hide();"  styleClass="mobile-menu ui-widget-header"  >
+							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ORG_LIST.pageId}" />
+						</p:menuitem>
+					</p:submenu>
+			
+					<p:menuitem value="" onclick="return false;" styleClass="mobile-menu mimic-label" disabled="true" style="border: 0; height: 10px;" />
+
+					<p:menuitem value=" Close" onclick="PF('sideMenubar').hide(); return false;" icon="fa fa-close" style="bottom: 0; position: absolute;" styleClass="mobile-menu ui-widget-header" />
+
+				</p:menu>
+			</p:panel>
+		</p:sidebar>
+
+
+		<p:menubar id="menuBar" styleClass="no-space ui-sm-0">
+		
+			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;" />
+			<p:menuitem value=" Browse ideas" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-list-alt">
+				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.IDEA_LIST.pageId}" />
+			</p:menuitem>
+			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;" />
+			
+			
+			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;" />
+			<p:menuitem value=" Submit a new idea" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-plus" >
+				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.CREATE_IDEA_WIZARD.pageId}" />
+			</p:menuitem>
+			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;"  />
+			
+			
+			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;"  />
+			<p:menuitem id="howToUseBtn" value=" Help and how to use" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-question-circle" >
+				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.HOW_TO_USE.pageId}" />
+			</p:menuitem>
+			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;"  />
+			
+			
+			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;" rendered="#{auth.admin and app.enableOrgDeletion}" />
+			<p:menuitem value=" Manage Clients" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin and app.enableOrgDeletion}" icon="fa fa-group" >
+				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ORG_LIST.pageId}" />
+			</p:menuitem>
+			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;" rendered="#{auth.admin and app.enableOrgDeletion}" />
+			
+			
+			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;" rendered="#{auth.admin}" />
+			<p:menuitem value=" Administrator Panel" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin}" icon="fa fa-gears" >
+				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ADMIN_TOOLS.pageId}" />
+			</p:menuitem>
+			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;" rendered="#{auth.admin}" />
+
+			<p:submenu label="#{auth.user.name} (#{auth.user.displayRole})" icon="google-profile" rendered="#{auth.loggedIn}" styleClass="google-profile-wrapper" style="float: right;">
+				<p:menuitem value=" #{auth.user.name}" disabled="true" styleClass="mimic-label" icon="fa fa-user" />
+				<p:menuitem value=" #{auth.user.email}" disabled="true" styleClass="mimic-label" icon="fa fa-envelope" />
+				<p:menuitem value=" #{auth.user.displayRole}" disabled="true" styleClass="mimic-label" icon="fa fa-sitemap" />
+				<p:separator />
+				<p:separator />
+				<p:menuitem value=" Sign out" onclick="signOut();" icon="fa fa-sign-out" />
+			</p:submenu>
+			<f:facet name="options">
+				<p:remoteCommand name="idesLogout" actionListener="#{auth.actionSignOut}" onstart="setLoadingMessage('Signing out');"  />
+				<p:remoteCommand name="idesLogin" actionListener="#{auth.actionSignIn}" update="@form, body, message" onstart="setLoadingMessage('Signing in');" oncomplete="handleSignIn(xhr, status, args);" />
+				<h:panelGroup rendered="#{!auth.loggedIn}">
+					<span id="googleSignIn" class="g-signin2" data-onsuccess="onSignIn">Unable to connect to Google's service</span>
+				</h:panelGroup>
+			</f:facet>
+		</p:menubar>
+
+		<h:panelGroup rendered="#{auth.loggedIn}">
+			<style>
+					span.ui-menuitem-icon.ui-icon.fa {
+						padding-left: .7em;
+						padding-right: .2em;
+					}
+					.ui-menu .ui-menu-parent .ui-menu-child {
+						width: 95% !important;
+					}
+					li.google-profile-wrapper>a>span.ui-menuitem-text {
+						padding: 0;
+						line-height: 1.2em;
+					}
+					
+					.ui-icon.google-profile {
+						background-image: url(#{auth.user.imageUrl}) !important;
+						background-size: 20px 20px;
+						width: 20px;
+						height: 20px;
+						margin-right: 5px;
+					}
+					
+					a.mimic-label>span.ui-menuitem-text, a.mimic-label {
+						opacity: 1 !important;
+						color: #4f4f4f !important;
+						
+					}
+				</style>
+		</h:panelGroup>
+		<script type="text/javascript">
+			var email_param = "#{UserConst.PARAM_ID_EMAIL}";
+			var name_param = "#{UserConst.PARAM_ID_TOKEN}";
+			var callback_signin_success = "#{UserConst.PARAM_CALLBACK_LOGGED_IN}";
+		</script>
+	</h:form>
+</ui:fragment>

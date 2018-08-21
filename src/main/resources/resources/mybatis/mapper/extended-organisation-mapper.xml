@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ports.soc.ides.dao.mybatis.ExtendedOrganisationMapper">
+	
+	<select id="selectOrganisationWithIdeaCountForListing" resultMap="selectOrganisationWithIdeaCountResultMap" useCache="false">
+		SELECT orgid, orgname, orgcontact, orgemail, projid, projtitle, projapproved, projcreate, projdate
+		FROM CONTACTS
+		LEFT JOIN IDEAS2 ON projorg = orgid
+		ORDER BY orgname, orgid ASC
+	</select>
+	
+	<select id="selectOrganisationWithIdeaCountForListingAndSearch" resultMap="selectOrganisationWithIdeaCountResultMap" useCache="false">
+		SELECT orgid, orgname, orgcontact, orgemail, projid, projtitle, projapproved, projcreate, projdate
+		FROM CONTACTS
+		LEFT JOIN IDEAS2 ON projorg = orgid
+		WHERE
+			lower(to_char(orgid)) LIKE '%' || lower(#{searchText})  || '%' OR
+				lower(orgname) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgcontact) LIKE '%' || lower(#{searchText}) || '%' OR
+				lower(orgemail) LIKE '%' || lower(#{searchText}) || '%'
+		ORDER BY orgname, orgid ASC
+	</select>
+	
+	<select id="countIdeaAssociatingWithOrganisation" resultType="long" useCache="false">
+		SELECT COUNT(projid)
+		FROM CONTACTS
+		LEFT JOIN IDEAS2 ON projorg = orgid
+		WHERE orgid = #{id}
+	</select>
+	
+	<resultMap id="selectOrganisationWithIdeaCountResultMap" type="ports.soc.ides.controller.helper.ExtendedOrganisation">
+		<id property="id" column="orgid" jdbcType="INTEGER" />
+		<result property="name" column="orgname" jdbcType="VARCHAR" />
+		<result property="typeOfWork" column="orgdoes" jdbcType="VARCHAR" />
+		<result property="address" column="orgaddr" jdbcType="VARCHAR" />
+		<result property="postcode" column="orgpostcode" jdbcType="VARCHAR" />
+		<result property="contact" column="orgcontact" jdbcType="VARCHAR" />
+		<result property="email" column="orgemail" jdbcType="VARCHAR" />
+		<result property="telephone" column="orgtel" jdbcType="VARCHAR" />
+		<collection property="ideas" ofType="ports.soc.ides.model.Idea" notNullColumn="projid" >
+			<result property="id" column="projid" jdbcType="INTEGER" />
+			<result property="title" column="projtitle" jdbcType="VARCHAR" />
+			<result property="status" column="projapproved" jdbcType="VARCHAR" typeHandler="ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler" />
+			<result property="createTime" column="projcreate" jdbcType="TIMESTAMP" />
+			<result property="timestamp" column="projdate" jdbcType="TIMESTAMP" />
+		</collection>
+	</resultMap>
+
+	
+	
+</mapper>

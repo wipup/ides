@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ports.soc.ides.dao.mybatis.OrganisationMapper">
+
+	<cache size="2048" readOnly="true" />
+
+	<select id="selectOrgById"  resultMap="organisationResult" >
+		SELECT *
+		FROM CONTACTS
+		WHERE orgid = #{id}
+	</select>
+	
+	<select id="selectOrganisationsForListing" resultMap="organisationResult">
+		SELECT *
+		FROM CONTACTS
+		ORDER BY orgname ASC
+	</select>
+	
+	<select id="selectNextId" resultType="long" useCache="false" >
+			SELECT contacts_sequence.nextval FROM dual
+	</select>
+	
+	<resultMap type="ports.soc.ides.model.Organisation" id="organisationResult">
+		<id property="id" column="orgid" jdbcType="INTEGER" />
+		<result property="name" column="orgname" jdbcType="VARCHAR" />
+		<result property="typeOfWork" column="orgdoes" jdbcType="VARCHAR" />
+		<result property="address" column="orgaddr" jdbcType="VARCHAR" />
+		<result property="postcode" column="orgpostcode" jdbcType="VARCHAR" />
+		<result property="contact" column="orgcontact" jdbcType="VARCHAR" />
+		<result property="email" column="orgemail" jdbcType="VARCHAR" />
+		<result property="telephone" column="orgtel" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertOrganisation" flushCache="true" useGeneratedKeys="true" parameterType="ports.soc.ides.model.Organisation">
+		INSERT INTO CONTACTS (orgid, orgname, orgdoes, orgaddr, orgpostcode, orgcontact, orgemail, orgtel)
+		VALUES (
+			#{org.id},
+			#{org.name},
+			#{org.typeOfWork},
+			#{org.address},
+			#{org.postcode},
+			#{org.contact},
+			#{org.email},
+			#{org.telephone}
+		)
+	</insert>
+	
+	<delete id="deleteOrganisationById">
+		DELETE FROM CONTACTS
+			WHERE orgid = #{id}
+	</delete>
+	
+</mapper>

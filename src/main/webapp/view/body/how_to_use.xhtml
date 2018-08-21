@@ -1,0 +1,179 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
+
+	<p:panel header="Help and how to use" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+	<p:panel>
+		<p:tabView>
+			<p:tab title="How to use">
+				<p:accordionPanel activeIndex="">
+					<p:tab title="How to submit an idea?">
+						Before submitting an idea, please make sure that you have all information prepared.<br/>
+						There are two types of information that are needed in order to create an idea.
+						<ul>
+							<li><b>Project Client</b><br/>
+								Every project must have a client. 
+								The information of your client that is needed consists of full name of your client, email address and the name &amp; address of organisation/company that your client is working for.
+								<br/> <br/>
+							</li>
+							<li><b>Project Detail</b><br/>
+								Information of your idea of the project such as project title, aims and objectives, academic questions and project deliverables. <br/>
+								Also, it is important to know what kind of your project will be, either study project or engineering project.
+							</li>
+						</ul>
+						
+						After you have got all of the information needed, you are ready to submit a new idea. <br/> <br/>
+						<div class="ui-sm-0">
+							First, navigating to "Submit a new idea" page by clicking the link at the menu bar on the top of the page. 
+							The link on the menu bar looks like the one below.<br/><br/>
+							
+							<div class="ui-g">
+								<div class="ui-g-12" style="text-align: center;">
+									<h:form style="width: fit-content;">
+										<p:menubar style="width: fit-content;">
+											<p:menuitem value=" Submit a new idea"  icon="fa fa-plus" ajax="false" onclick="return false;"   />
+										</p:menubar>
+									</h:form>
+								</div>
+							</div>
+							
+						</div>
+						<div class="ui-md-0">
+							If you are using a mobile phone, you can open the menu by clicking on a blue button located on the top right of your screen.
+							The button looks like the one below.<br/><br/>
+							
+							<div class="ui-g" >
+								<div class="ui-g-12" >
+									<p:button id="hamburger" icon="fa fa-bars" onclick="return false;" style="width: 48px; height: 48px;" /><br/>
+								</div>
+							</div>
+							
+						</div>
+						
+						In the "Submit a new idea" page, there is a wizard that will help you create your new idea step-by-step. <br/>
+						The wizard divides the process of creating a new idea into 3 easy steps<br/><br/>
+						
+						<b>1. The first step is to provide the detail of your project client. </b><br/><br/>
+						You can search for you client and choose from the list by clicking a row in the list.
+						After clicking a record in the list, the detail of your chosen client will be shown on the panel below the list.
+						Then click the next button to proceed to the next step. Both buttons are the same, you can click any of them. 
+						<br/><br/>
+						
+						There is also a textbox that lets you easily filter the records and find your client. 						
+						The filter textbox will search for through contact name, organisation name and the reference number.<br/><br/>
+						
+						If you can't find your client you can submit new client &amp; organisation by clicking on the "Create new client and organisation" button.
+						The button should look like the one below.<br/>	<br/>
+						
+						<div class="ui-g ui-g-nopad">
+							<div class="ui-lg-5 ui-md-8 ui-sm-12 ui-g-nopad">
+								<p:button value="Create new client and organisation" onclick="return false;"  icon="fa fa-pencil" />
+							</div>
+						</div>
+						
+						<br/><br/>
+						
+						After you have finished filling the detail, click on the submit button to create your new client &amp; organisation. 
+						Don't forget to click on the reCAPTCHA for the security check. <br/>
+						If you don't want to waste your time with the reCAPTCHA, sign in using the university email.
+						Also, there are other features that facilitate your idea submission if you signed in such as pre-filling forms.
+						<br/><br/>
+						
+						<b>2. The second step is to provide the detail of your project idea.</b>
+						<br/><br/>
+						There are 3 fields that come with tools that help you add styles and format your text. <br/>
+						Please note that fields with an asterisk (*) are required fields. 
+	
+						<br/><br/>
+						
+						<b>3. The last step is just to review your idea detail before submission.</b>
+						<br/><br/>
+						If you are not satisfied with the information of your idea, you can click the back button and edit as many times as you want.
+						And again, if you don't sign in, there will be a reCAPTCHA appearing to prevent spamming.<br/>
+						Once you are sure with your idea detail, click the submit button and every thing is done. <br/><br/>
+						
+						Now the next process is to wait for our administrator to review and approve your idea. 
+						All submitted idea will be reviewd by our administrator. Only the approved ideas will be able to be listed on the "Browse idea" page.
+						<br/><br/>
+						
+						
+						
+					</p:tab>
+					
+					<p:tab title="How to register/create an account?  ">
+						If you are a staff or a student of University of Portsmouth, you can sign in using your university email right away.<br/>
+						If you are none of the above, unfortunately, there is currently no feature that allows visitors to create an account.
+					</p:tab>
+
+				</p:accordionPanel>
+			</p:tab>
+			
+			<p:tab title="FAQ">
+				<p:accordionPanel activeIndex="" >
+					<p:tab title="1. What are the differences between an engineering project and a study project?">
+						<div>
+							<ul> 
+								<li><strong>The engineering project</strong> usually involves building a piece of software to solve a problem. 
+								An example of the sort of thing you might do would be building an information system to address a 
+								specific organisationu2019s requirements. 
+								</li>
+								<li><strong>The study project</strong> usually involves undertaking a study of an information systems problem domain. 
+								An example of the sort of thing you might do for a study project would be an evaluation of the information systems 
+								impact of mobile devices on an organisation.
+								</li> 
+							</ul> 
+						</div>
+					</p:tab>
+					<p:tab title="2. Why can't I see my submitted idea?">
+						<div>
+							All submitted ideas have to be reviewed by the administrator before being listed on the page. 
+							If your submitted idea is not listed on the page, that would be because of only one of these two reasons. 
+							<ul>
+								<li>Your idea has not been reviewd by the adminstrator yet. </li> 
+								<li>Your idea has been reviewed but has been rejected by the adminstrator. </li> 
+							</ul>
+						</div>
+					</p:tab>
+					<p:tab title="3. Why does a submitted idea have to be reviewd and approved?">
+						<div>
+							To ensure that the project originated from the idea will be suitable for the university courses and meet the university standard.
+						</div>
+					</p:tab>
+					<p:tab title="4. How long does it take for my idea to be approved?">
+						<div>
+							It depends on the admnistrator. Normally, it should not take longer than a week.
+						</div>
+					</p:tab>
+					<p:tab title="5. How can I know if my idea has been approved?">
+						<div>
+							Currently, the only way to check if your idea has been approved is to search your idea on the idea list.
+						</div>
+					</p:tab>
+					<p:tab title="6. What are the benefits of signing in?">
+						<div>
+							<ul>
+								<li>Automatic form filling when creating idea and client
+									<ul>
+										<li>For student users, student name will be filled automatically when creating a new idea.</li>
+										<li>For staff users, all client &amp; organisation detail will be filled automatically with the default information set by the administrator.</li>
+									</ul>
+								</li>
+								<li>For every signed in user, there is no reCAPTCHA before submitting new ideas and new clients</li>
+							</ul>
+						</div>
+					</p:tab>
+					<p:tab title="7.Why can't I sign in with my Gmail account?">
+						<div>
+							Only emails of University of Portsmouth (@port.ac.uk and @myport.ac.uk) can be used to sign in.
+						</div>
+					</p:tab>
+				</p:accordionPanel>
+			</p:tab>
+			<p:tab title="Terms of Service" rendered="false">
+				<ui:include src="#{Page.AGREEMENT_CONTENT.path}" />
+			</p:tab>
+		</p:tabView>
+	</p:panel>
+
+</ui:fragment>

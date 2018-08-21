@@ -1,0 +1,147 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
+
+	<div class="ui-g">
+		<h:panelGroup rendered="#{showIdea.renderId}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Reference number: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:outputLabel value="#{showIdea.idea.id &lt;= 0 ? '' : showIdea.idea.id}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderTitle}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Idea title: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:outputLabel value="#{showIdea.idea.title}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderType}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Project type: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showIdea.idea.type.label}" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderStatus}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Idea status: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Approved}">
+					<span class="status-approved"><h:outputText value="Approved" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Allocated}">
+					<span class="status-allocated"><h:outputText value="Allocated" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Provisional}">
+					<span class="status-provisional"><h:outputText value="Provisional" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Withdrawn}">
+					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{showIdea.idea.status != IdeaStatus.Withdrawn and showIdea.idea.status != IdeaStatus.Provisional and showIdea.idea.status != IdeaStatus.Allocated and showIdea.idea.status != IdeaStatus.Approved}">
+					<h:outputText value="#{showIdea.idea.status}" />
+				</h:panelGroup>
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderAim}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Aims and objectives: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor widgetVar="showIdeaAim" value="#{showIdea.idea.aim}" readonly="true" toolbarVisible="false" required="false" styleClass="highlight-target readonly-editor" style="min-height: auto;" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderQuestion}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Academic question: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor widgetVar="showIdeaQuestion" value="#{showIdea.idea.question}" readonly="true" toolbarVisible="false" required="false" styleClass="highlight-target readonly-editor" style="min-height: auto;" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderDeliverables}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Deliverables: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:textEditor widgetVar="showIdeaDeliver" value="#{showIdea.idea.deliverables}" readonly="true" toolbarVisible="false" required="false" styleClass="highlight-target readonly-editor" style="min-height: auto;" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{showIdea.renderStudent}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Student for whom project has been devised: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:outputLabel value="#{showIdea.idea.student}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+
+		<h:panelGroup rendered="#{not empty showIdea.idea.timestamp}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Last update: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showIdea.formatLongDateTime(showIdea.idea.timestamp)}" />
+				&#160;&#160;&#160;(<time class="timeago" datetime="#{showIdea.idea.timestamp}">#{showIdea.formatLongDateTime(showIdea.idea.timestamp)}</time>)
+			</div>
+		</h:panelGroup>
+		
+		<h:panelGroup rendered="#{not empty showIdea.idea.createTime}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Created: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showIdea.formatLongDateTime(showIdea.idea.createTime)}" />
+				&#160;&#160;&#160;(<time class="timeago" datetime="#{showIdea.idea.createTime}">#{showIdea.formatLongDateTime(showIdea.idea.createTime)}</time>)
+			</div>
+		</h:panelGroup>
+		
+		<h:panelGroup rendered="#{not empty showIdea.shareableLink}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Shareable Link: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<div class="ui-inputgroup">
+					<p:inputText widgetVar="shareLink" value="#{showIdea.shareableLink}" readonly="true" />
+					<p:button value="Copy to clipboard" onclick="copyToClipboard(PF('shareLink').jqId); return false;" style="white-space: nowrap;" />
+				</div>
+			</div>
+		</h:panelGroup>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			initTimeAgo();
+		});
+	</script>
+</ui:fragment>

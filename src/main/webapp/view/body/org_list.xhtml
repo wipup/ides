@@ -1,0 +1,311 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
+	<p:importEnum type="ports.soc.ides.model.constant.ProjectType" var="ProjType" allSuffix="ALL_PROJ_TYPE" />
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
+	<p:importConstants type="ports.soc.ides.controller.AbstractIdesController" var="Const" />
+	<p:importConstants type="ports.soc.ides.controller.OrganisationListController" var="OrgListConst" />
+
+	<p:panel header="Manage Clients &amp; Organisations" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+
+	<h:form id="orgForm" styleClass="no-space">
+		<script type="text/javascript">
+			function updateTableAfterAjax() {
+				removeDataTableInlineWidth();
+				safeHighlight();
+				updateRppDropdownText();
+			}
+			$(document).ready(function() {
+				refreshModalSetting();
+				updateTableAfterAjax();
+			});
+			function safeHighlight(){
+				var searchKeyword = PF('savedSearchTxt').jq.val();
+				#{not empty orgList.savedSearchTxt ? 'highlightText(searchKeyword);' : ''}	
+			}
+			function updateRppDropdownText(){					
+				var rpp = $('.ui-paginator-rpp-options');
+				rpp.each(function(index){
+					var options = $(this).children();
+					options.each(function(){
+						var opt = $(this);
+						opt.text("Show " + opt.val() + " records per page");
+					});
+					
+					options.last().text("Show all records");
+				});
+			}
+		</script>
+		
+		<p:panel header="Search &amp; Filter Options" toggleable="true">
+			<div class="ui-g">
+				<div class="ui-g ui-g-12">
+					<div class="ui-g-2 ui-lg-3 ui-md-6 ui-sm-12 ui-g-nopad">
+						<p:outputLabel value="Number of associating ideas: " for="ideaCount" style="font-weight: bold;" />
+					</div>
+					<div class=" ui-g-6 ui-lg-6 ui-md-6 ui-sm-12 ui-g-nopad">
+						<div class="ui-inputgroup">
+							<p:selectOneMenu  value="#{orgList.ideaCountSearchCondition}">
+								<f:selectItem itemLabel="equals" itemValue="#{OrgListConst.PARAM_IDEA_COUNT_EQUALS}" />
+								<f:selectItem itemLabel="more than" itemValue="#{OrgListConst.PARAM_IDEA_COUNT_MORE_THAN}" />
+								<f:selectItem itemLabel="less than" itemValue="#{OrgListConst.PARAM_IDEA_COUNT_LESS_THAN}" />
+							</p:selectOneMenu>
+							<p:inputNumber id="ideaCount" value="#{orgList.associatingIdeaCount}" emptyValue="empty" minValue="0" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ PF('filterIdeaCountBtn').jq.click(); }" placeholder="Number of associating ideas" decimalPlaces="0" />
+							<p:commandButton icon="fa fa-search" value="Apply" widgetVar="filterIdeaCountBtn" onclick="PF('searchOrgBtn').jq.click();" />
+						</div>
+					</div>
+				</div>
+			
+				<div class="ui-g ui-g-12 no-space">
+					<div class="ui-g-2 ui-lg-3 ui-md-6 ui-sm-12 ui-g-nopad">
+						<p:outputLabel value="Search client &amp; organisation: " for="searchTxt" style="font-weight: bold;" />
+					</div>
+					<div class="ui-inputgroup ui-g-6 ui-lg-6 ui-md-6 ui-sm-12 ui-g-nopad">
+						<p:inputText id="searchTxt" widgetVar="searchTxt"  value="#{orgList.searchText}" placeholder="Search keyword" maxlength="50" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ PF('searchOrgBtn').jq.click(); }" />
+						<p:commandButton value="Search" icon="fa fa-search" widgetVar="searchOrgBtn" styleClass="white-button" title="Search Client" actionListener="#{orgList.onClickSearch}" oncomplete="PF('orgDataTableVar').getPaginator().setPage(0); safeHighlight();" update="@form"  />
+					</div>
+				</div>
+				<p:inputText type="hidden" widgetVar="savedSearchTxt" value="#{orgList.savedSearchTxt}" />
+				<hr style="width: 100%;" />
+				<div class="ui-lg-3 ui-md-4 ui-sm-12">
+					<p:commandButton value="Refresh" icon="fa fa-refresh" actionListener="#{orgList.onRefreshOrgList}" update="@form" oncomplete="PF('orgDataTableVar').getPaginator().setPage(0);" />
+				</div>
+			</div>
+		</p:panel>
+			
+		<p:dataTable rowHover="true" var="o" id="orgDataTable" widgetVar="orgDataTableVar" rowIndexVar="i" value="#{orgList.orgList}" 
+			resizableColumns="true" resizeMode="expand" rows="25" paginator="true" tableStyle="table-layout: auto;" 
+			first="0" 
+			sortBy="#{o.totalIdeas}" 
+			sortOrder="ascending" reflow="true" rowsPerPageTemplate="10,15,25,50,100,200,500"
+			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" 
+			currentPageReportTemplate="Page {currentPage} of {totalPages} (Total {totalRecords} ideas)"			>
+			
+			<p:ajax event="page" oncomplete="updateTableAfterAjax()" />
+			<p:ajax event="sort" oncomplete="updateTableAfterAjax()" />
+			<p:ajax event="rowReorder" oncomplete="updateTableAfterAjax()" />
+			
+			<f:facet name="header">
+				<ui:param name="searchApplied" value="#{not empty orgList.savedSearchTxt}" />
+				<ui:param name="ideaCountApplied" value="#{not empty orgList.associatingIdeaCount and not empty orgList.ideaCountSearchCondition}" />
+				<div class="ui-g ui-g-nopad">
+					<div class="ui-g-12 ui-sm-12 #{searchApplied and ideaCountApplied ? '' : 'ui-g-nopad'} " style="align-content: center; text-align: center;">
+						<p:commandButton value="Clear all filter" icon="fa fa-close" actionListener="#{orgList.onClearAllFilters}"  iconPos="right" style="width: auto !important;" styleClass="no-space ui-sm-12" 
+								rendered="#{searchApplied and ideaCountApplied}"  update="@form" oncomplete="PF('orgDataTableVar').getPaginator().setPage(0);" />
+					</div>
+					<div class="ui-g-12 ui-sm-12 #{searchApplied ? '' : 'ui-g-nopad'} " style="align-content: center; text-align: center;">
+						<p:outputLabel value="Find client and organisation with keyword: &#160;" rendered="#{searchApplied}" styleClass="ui-sm-12" />
+						<p:commandButton value="#{orgList.savedSearchTxt}" icon="fa fa-close" actionListener="#{orgList.onClickClearSearch}"  iconPos="right" style="width: auto !important;" styleClass="no-space ui-sm-12" 
+								rendered="#{searchApplied}" title="Remove &quot;#{org.searchText}&quot; keyword" update="@form" oncomplete="PF('orgDataTableVar').getPaginator().setPage(0);" />
+					</div>
+					<div class="ui-g-12 ui-sm-12 #{ideaCountApplied ? '' : 'ui-g-nopad'} " style="align-content: center; text-align: center;">
+						<p:outputLabel value="Show only client with the number of associating ideas #{orgList.ideaCountSearchCondition}  " rendered="#{ideaCountApplied}" styleClass="ui-sm-12" />
+						<p:commandButton value="#{orgList.intAssociatingIdeaCount}" icon="fa fa-close" actionListener="#{orgList.onClickClearIdeaCount}"  iconPos="right" style="width: auto !important;" styleClass="no-space ui-sm-12" 
+								rendered="#{ideaCountApplied}" title="Remove &quot;#{orgList.intAssociatingIdeaCount}&quot; keyword" update="@form" oncomplete="PF('orgDataTableVar').getPaginator().setPage(0);" />
+					</div>
+				</div>
+			</f:facet>
+
+			<p:column headerText="#" footerText="#" sortBy="#{o.id}"  styleClass="column-md-ref column-sm-ref">
+				<span class="highlight-target"><h:outputText value="##{o.id}" /></span>
+			</p:column>
+
+			<p:column headerText="Contact" footerText="Contact" sortBy="#{o.contact}" >
+				<p:commandLink value="#{o.contact}" actionListener="#{orgList.onSelectOrg}" update="showOrgPanel"  onerror="PF('orgDetailModal').hide();" styleClass="highlight-target">
+					<f:param name="#{OrgListConst.PARAM_ORG_INDEX}" value="#{i}" />
+					<f:param name="#{Const.PARAM_MODAL_VAR}" value="orgDetailModal" />
+				</p:commandLink>
+			</p:column>
+			
+			<p:column headerText="Name" footerText="Name" sortBy="#{o.name}" >
+				<p:commandLink value="#{o.name}" actionListener="#{orgList.onSelectOrg}" update="showOrgPanel"  onerror="PF('orgDetailModal').hide();" styleClass="highlight-target">
+					<f:param name="#{OrgListConst.PARAM_ORG_INDEX}" value="#{i}" />
+					<f:param name="#{Const.PARAM_MODAL_VAR}" value="orgDetailModal" />
+				</p:commandLink>
+			</p:column>
+
+			<p:column headerText="Email" footerText="Email" sortBy="#{o.email}"  priority="6" >
+				<h:outputText value="#{o.email}" />
+			</p:column>
+
+			<p:column headerText="Total Ideas" footerText="Total Ideas" sortBy="#{o.totalIdeas}">
+				<div class="ui-sm-0" style="text-align: right;">
+					<h:outputText value="#{o.totalIdeas}" />
+				</div>
+				<span class="ui-md-0">
+					<h:outputText value="#{o.totalIdeas}" />
+				</span>
+			</p:column>
+
+			<p:column headerText="Action" footerText="Action" styleClass="column-md-btn column-sm-btn no-space" resizable="false"  >
+				<div class="ui-g" style="padding: 2px;">
+					<h:panelGroup styleClass="ui-g-12"  style="padding: 5px 2px;">
+						<p:commandButton value="Delete" icon="fa fa-trash-o" styleClass="cell-btn delete-btn" rendered="#{o.totalIdeas gt 0}" disabled="true" >
+						</p:commandButton>
+						<p:commandButton value="Delete" icon="fa fa-trash-o" actionListener="#{orgList.onConfirmDeleteOrg}" update="confirmOrgPanel" styleClass="cell-btn delete-btn" rendered="#{o.totalIdeas lt 1}" >
+							<f:param name="#{OrgListConst.PARAM_ORG_INDEX}" value="#{i}" />
+							<f:param name="#{Const.PARAM_MODAL_VAR}" value="confirmOrgModal" />
+						</p:commandButton>
+					</h:panelGroup>
+				</div>
+			</p:column>
+
+		</p:dataTable>
+		
+		<p:remoteCommand name="deleteOrg" actionListener="#{orgList.onDeleteOrg}" oncomplete="PF('confirmOrgModal').hide(); " update="@form" />
+	</h:form>
+
+	<p:dialog id="confirmOrgModal" header="Are you sure that you want to delete this client?" onShow="fixSmallModalSize(this.id); safeHighlight();  enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="200" width="1000" widgetVar="confirmOrgModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+		<h:panelGroup id="confirmOrgPanel" styleClass="no-space">
+			<p:panel styleClass="no-space" >
+				<div class="ui-g">
+					<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+						<h:outputText value="Reference number: " />
+					</div>
+					<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+						<span class="highlight-target"><h:outputText value="#{orgList.selectedOrg.id}" /></span>
+					</div>
+					<div class="ui-g-12 no-space"></div>
+					<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+						<h:outputText value="Organisation name: " />
+					</div>
+					<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+						<h:outputText value="#{orgList.selectedOrg.name}" styleClass="highlight-target" />
+					</div>
+					<div class="ui-g-12 no-space"></div>
+					<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+						<h:outputText value="Contact name: " />
+					</div>
+					<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+						<h:outputText value="#{orgList.selectedOrg.contact}" styleClass="highlight-target" />
+					</div>
+					<div class="ui-g-12 no-space"></div>
+					<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+						<h:outputText value="Email address: " styleClass="highlight-target"  />
+					</div>
+					<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+						<h:outputText value="#{orgList.selectedOrg.email}" />
+					</div>
+				</div>
+			</p:panel>
+		</h:panelGroup>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Cancel" icon="fa fa-close" onclick="PF('confirmOrgModal').hide();  return false;" />
+				</div>
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-md-0 ui-sm-12"></div>
+				<div class="ui-md-4 ui-sm-12 ui-g-nopad">
+					<p:button value="Delete" icon="fa fa-trash-o" onclick="PF('confirmOrgModal').hide(); deleteOrg();  return false;" styleClass="no-space dialog-btn delete-btn" />
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+
+
+	<p:dialog id="orgDetailModal" header="Client Detail" onShow="fixModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="500" width="1300" widgetVar="orgDetailModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+		<h:panelGroup id="showOrgPanel" styleClass="no-space">
+			<script>
+				$(document).ready(function(){
+					initTimeAgo();
+					$('.show-org-email').addClass('highlight-target');
+					safeHighlight();
+				});
+			</script>
+			<p:panel styleClass="no-space" header="Client &amp; organisation detail" toggleable="true" toggleSpeed="500" closeSpeed="500" style="margin-top: .3em !important">
+				<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+			</p:panel>
+			<p:panel styleClass="no-space" header="Associating Ideas (#{orgList.selectedOrg.totalIdeas} ideas)" toggleable="true" toggleSpeed="500" closeSpeed="500" style="margin-top: .3em !important">
+				<h:outputText value="Not associating idea found" rendered="#{empty orgList.selectedOrg.ideas}" />
+				<p:dataScroller value="#{orgList.selectedOrg.ideas}" var="idea" rowIndexVar="i" chunkSize="5" styleClass="no-space" rendered="#{not empty orgList.selectedOrg.ideas}" >
+					<f:facet name="loader">
+			            <p:commandButton type="button" value="Load more associating ideas" icon="ui-icon-circle-triangle-s" rendered="#{orgList.selectedOrg.totalIdeas > 5}" />
+			        </f:facet>
+					<p:outputPanel styleClass="no-space">
+						<div class="ui-g no-space">					
+							<div class="ui-lg-1 ui-md-1 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="#{i + 1}" />
+							</div>
+							<div class="ui-lg-2 ui-md-3 ui-sm-6 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Reference number: " />
+							</div>
+							<div class="ui-lg-3 ui-md-8 ui-sm-6 ides-div-border">
+								<p:outputLabel value="#{idea.id &lt;= 0 ? '' : idea.id}" />
+							</div>
+							<div class="ui-lg-0 ui-md-12 ui-sm-0 ui-g-nopad"></div>
+							
+							<div class="ui-lg-3 ui-md-4 ui-sm-6 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Status: " />
+							</div>
+							<div class="ui-lg-3 ui-md-8 ui-sm-6 ides-div-border">
+								<h:panelGroup rendered="#{idea.status == IdeaStatus.Approved}">			
+									<span class="status-approved"><h:outputText value="Approved" /></span>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{idea.status == IdeaStatus.Allocated}">			
+									<span class="status-allocated"><h:outputText value="Allocated" /></span>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{idea.status == IdeaStatus.Provisional}">			
+									<span class="status-provisional"><h:outputText value="Provisional" /></span>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{idea.status == IdeaStatus.Withdrawn}">			
+									<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{idea.status != IdeaStatus.Withdrawn and idea.status != IdeaStatus.Provisional and idea.status != IdeaStatus.Allocated and idea.status != IdeaStatus.Approved}">
+									<h:outputText value="#{idea.status}" />
+								</h:panelGroup>
+							</div>
+							<div class="ui-lg-12 ui-g-nopad"></div>
+							
+							<div class="ui-lg-3 ui-md-4 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Idea title: " />
+							</div>
+							<div class="ui-lg-9 ui-md-8 ui-sm-12 ides-div-border">
+								<p:outputLabel value="#{idea.title}" />
+							</div>
+							<div class="ui-lg-12 ui-g-nopad"></div>
+							
+							<div class="ui-lg-3 ui-md-4 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Last update: " />
+							</div>
+							<div class="ui-lg-3 ui-md-8 ui-sm-12 ides-div-border">
+								<h:outputText value="#{orgList.formatLongDateTime(idea.timestamp)}    " /><br/>
+								(<time class="timeago" datetime="#{idea.timestamp}">#{orgList.formatDateTime(idea.timestamp)}</time>)
+							</div>
+							<div class="ui-lg-3 ui-md-4 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+								<p:outputLabel value="Created: " />
+							</div>
+							<div class="ui-lg-3 ui-md-8 ui-sm-12 ides-div-border">
+								<h:outputText value="#{orgList.formatLongDateTime(idea.createTime)}    " /><br/>
+								(<time class="timeago" datetime="#{idea.timestamp}">#{orgList.formatDateTime(idea.createTime)}</time>)
+							</div>
+							<div class="ui-g-12" style="background-color: #d5d5d5;"></div>
+						</div>
+						<script type="text/javascript">
+							$(document).ready(function(){
+								initTimeAgo();
+							});
+						</script>
+					</p:outputPanel>
+				</p:dataScroller>
+			</p:panel>
+		</h:panelGroup>
+		<f:facet name="footer" style="height: 50px;">
+			<div class="ui-g">
+				<div class="ui-lg-4 ui-md-3 ui-sm-12 ui-g-nopad">
+					<p:commandButton value="Close" onclick="PF('orgDetailModal').hide();" icon="fa fa-close" />
+				</div>
+				<div class="ui-g-8 ui-md-8 ui-sm-0" style="line-height: 1.8em; text-align: right;">
+					<h:outputText value="You can press ESC to close this window. "/>
+				</div>
+			</div>
+		</f:facet>
+	</p:dialog>
+
+
+
+
+</ui:fragment>
