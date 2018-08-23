@@ -2,11 +2,28 @@
 
 ## 1. Required software
 
+Write later
+
 ## 2. How to setup
+
+Write later
+
+### Setup JVM system property
+
+Please refer to file [JVM-Property.MD](JVM-Property.MD)
+
+### Setup required property files
+  - database configuration property file [sample-db-config.properties](sample-db-config.properties)
+  - application configuration property file [sample-ides-config.properties](sample-ides-config.properties)
+
+### Setup database
+
+For SQL commands, please refer to file [database.sql.MD](database.sql.MD)
+
 
 ## 3. 
 
-
+Write later
 
 
 ## 4. Fix expired certificate in Glassfish
