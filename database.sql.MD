@@ -1,13 +1,13 @@
-# Setup Database 
+# How to setup the database 
 ```
 sqlplus / as sysdba
 CREATE USER your_username IDENTIFIED BY your_password;
 GRANT ALL PRIVILEGES TO your_username;
 ```
 
-# Client table
+# 1. Client and organisation table
 
-## Creating new table
+## 1.1 Create a new table
 ```
 CREATE TABLE CONTACTS
 (
@@ -23,16 +23,16 @@ CREATE TABLE CONTACTS
 CREATE UNIQUE INDEX PRIMARY_CONTACTS_INDEX ON CONTACTS(ORGID);
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
-## Migrating/Updating old table
+## 1.2 Migrate/Update old table
 ```
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ALTER SEQUENCE contacts_sequence INCREMENT BY 2706;
 SELECT contacts_sequence.nextval FROM dual;
 ALTER SEQUENCE contacts_sequence increment by 1;
 ```
-# Idea Table
+# 2. Idea Table
 
-## Creating table
+## 2.1 Create a new table
 ```
 CREATE TABLE IDEAS2
 (  PROJAIMS clob,
@@ -52,7 +52,7 @@ CREATE UNIQUE INDEX IDEAS2_PRIMARY_INDEX ON IDEAS2(PROJID);
 CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
 
-## Migrating/Updating old table
+## 2.2 Migrate/Update old table
 ```
 CREATE TABLE IDEAS2
 (  PROJAIMS clob,
@@ -80,7 +80,7 @@ SELECT ideas2_sequence.nextval FROM dual;
 ALTER SEQUENCE ideas2_sequence increment by 1;
 ```
 
-# Client Profile table
+# 3. Client Profile table
 
 ```
 CREATE TABLE CONTACT_PROFILE
