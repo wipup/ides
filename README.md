@@ -29,7 +29,7 @@ Write later
 ## 4. Fix known bugs/issues
 
 ### 4.1 Method not found in Glassfish (Security-related method)
-Solution taken from (Stackoverflow.com)[https://stackoverflow.com/questions/49383650/sun-security-ssl-sslsessionimpl-not-found]
+Solution taken from [Stackoverflow.com](https://stackoverflow.com/questions/49383650/sun-security-ssl-sslsessionimpl-not-found)
 Exception caused by java.lang.NoSuchMethodError: sun.security.ssl.SSLSessionImpl.
 Solution: downgrade the Java version to Java 1.8.0-151 or use other version of Glassfish
 
