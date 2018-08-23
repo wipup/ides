@@ -10,8 +10,13 @@
 
 
 ## 4. Fix expired certificate in Glassfish
+
+The only way of fixing this problem is simple, delete the expired certificate.
+
   1. Find the certificate file.
-    Glassfish's certificate file is cacerts.jks which is normally located in /glassfish/domains/domain1/config/
+  
+  Glassfish's certificate file is cacerts.jks which is normally located in /glassfish/domains/domain1/config/
+    
   2. Use keytool to list the certificates and their alias name
   
 ```
