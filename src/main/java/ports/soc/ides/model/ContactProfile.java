@@ -40,54 +40,6 @@ public class ContactProfile extends Organisation {
 		return sb.toString();
 	}
 
-	public long getId() {
-		return id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getTypeOfWork() {
-		return typeOfWork;
-	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public String getPostcode() {
-		return postcode;
-	}
-
-	public String getTelephone() {
-		return telephone;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setTypeOfWork(String typeOfWork) {
-		this.typeOfWork = typeOfWork;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	public void setPostcode(String postcode) {
-		this.postcode = postcode;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
 	public String getOwner() {
 		return owner;
 	}
@@ -100,7 +52,7 @@ public class ContactProfile extends Organisation {
 		this.owner = owner;
 	}
 
-	public void setOwnerType(OwnerType type) {
-		this.ownerType = type;
+	public void setOwnerType(OwnerType ownerType) {
+		this.ownerType = ownerType;
 	}
 }
