@@ -26,9 +26,15 @@ For SQL commands, please refer to file [database.sql.MD](database.sql.MD)
 Write later
 
 
-## 4. Fix known bugs/Issues
+## 4. Fix known bugs/issues
 
-### 4.1 Expired certificate in Glassfish
+### 4.1 Method not found in Glassfish (Security-related method)
+Solution taken from (Stackoverflow.com)[https://stackoverflow.com/questions/49383650/sun-security-ssl-sslsessionimpl-not-found]
+Exception caused by java.lang.NoSuchMethodError: sun.security.ssl.SSLSessionImpl.
+Solution: downgrade the Java version to Java 1.8.0-151 or use other version of Glassfish
+
+
+### 4.2 Expired certificate in Glassfish
 
 The only way of fixing this problem is simple, delete the expired certificate.
 
