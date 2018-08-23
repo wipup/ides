@@ -26,7 +26,9 @@ For SQL commands, please refer to file [database.sql.MD](database.sql.MD)
 Write later
 
 
-## 4. Fix expired certificate in Glassfish
+## 4. Fix known bugs/Issues
+
+### 4.1 Expired certificate in Glassfish
 
 The only way of fixing this problem is simple, delete the expired certificate.
 
