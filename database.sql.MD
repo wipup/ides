@@ -1,5 +1,9 @@
-# Setup Schema 
-
+# Setup Database 
+```
+sqlplus / as sysdba
+CREATE USER your_username IDENTIFIED BY your_password;
+GRANT ALL PRIVILEGES TO your_username;
+```
 
 # Client table
 
@@ -20,12 +24,12 @@ CREATE UNIQUE INDEX PRIMARY_CONTACTS_INDEX ON CONTACTS(ORGID);
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
 ## Migrating/Updating old table
-
+```
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ALTER SEQUENCE contacts_sequence INCREMENT BY 2706;
 SELECT contacts_sequence.nextval FROM dual;
 ALTER SEQUENCE contacts_sequence increment by 1;
-
+```
 # Idea Table
 
 ## Creating table
