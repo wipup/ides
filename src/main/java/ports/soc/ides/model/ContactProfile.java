@@ -34,12 +34,11 @@ public class ContactProfile extends Organisation {
 
 	@Override
 	public String printDetail() {
-		String detail = super.printDetail();
 		StringBuilder sb = new StringBuilder();
-		sb.append("ContactProfile[owner=").append(owner).append(", ownerType=").append(ownerType).append(", detail=").append(detail).append("]");
+		sb.append("ContactProfile[owner=").append(owner).append(", ownerType=").append(ownerType).append(", detail=").append(super.printDetail()).append("]");
 		return sb.toString();
 	}
-
+ 
 	public String getOwner() {
 		return owner;
 	}

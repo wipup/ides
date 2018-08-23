@@ -66,16 +66,18 @@
 			<ui:include src="#{nav.currentPage.path}" />
 		</h:panelGroup>
 		
-		
 		<script type="text/javascript">
 			var defaultMessage = "Loading";
 			var ajaxStatusMessage = "Loading";
+			
 			function setLoadingMessage(message){
 				ajaxStatusMessage = message;
 			}
+			
 			function updateAjaxMessage(){
 				$("#globalAjaxMessage").text(ajaxStatusMessage);
 			}
+			
 			function disableFormSubmitOnEnter(){
 				//taken from https://stackoverflow.com/questions/28116894/primefaces-disable-submit-on-pressing-enter-key
 				$('form').off('keypress.disableAutoSubmitOnEnter').on('keypress.disableAutoSubmitOnEnter', function(event) {
@@ -84,14 +86,16 @@
 				    }
 				});
 			}
+			
 			function handleError(e){
 				PF('status').hide(); 
 				PF('ajaxErrorDialog').show(); 
 				setLoadingMessage(defaultMessage);
 			};
+			
 		</script>
 		<p:ajaxStatus onstart="updateAjaxMessage(); PF('status').show()" onsuccess="PF('status').hide(); setLoadingMessage(defaultMessage)" onerror="handleError(event)" oncomplete="disableFormSubmitOnEnter()" />
-		<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage);">
+		<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage)">
 			<div>
 				<div id="globalAjaxMessage" style="text-align: center;">
 					Loading...
@@ -112,7 +116,7 @@
 			</div>
 		</p:dialog>
 
-		<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show();"  />
+		<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show()"  />
 		<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top" >
 			<f:facet name="message">
 				<h:outputText value="You have been inactive for too long. Your session has expired." />
