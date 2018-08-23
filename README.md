@@ -12,7 +12,7 @@
 keytool -v -list -keystore ./cacerts.jks
 ```
 
-  The default password of Glassfish' keystore is changeit
+  The default password of Glassfish's keystore is changeit
     
   3. Delete the expired certificate using its alias name
   
