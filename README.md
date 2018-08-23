@@ -17,13 +17,13 @@ keytool -v -list -keystore ./cacerts.jks
   3. Delete the expired certificate using its alias name
   
 ```
-keytool -delete -keystore cacerts.jks -alias aliasname
+keytool -delete -keystore ./cacerts.jks -alias aliasname
 ```
 
-  E.g. the Equifax Secure Certificate Authority which is expired on Wed Aug 22 17:41:51 BST 2018
+  E.g. the Equifax Secure Certificate Authority which is just expired on 22nd August 17:41:51 BST 2018
     
   It's alias name is equifaxsecureca
     
 ```
-keytool -delete -keystore cacerts.jks -alias equifaxsecureca
+keytool -delete -keystore ./cacerts.jks -alias equifaxsecureca
 ```
