@@ -13,7 +13,7 @@
 
 The only way of fixing this problem is simple, delete the expired certificate.
 
-  1. Find the certificate file.
+  1. Find the keystore file.
   
   Glassfish's certificate file is cacerts.jks which is normally located in /glassfish/domains/domain1/config/
     
