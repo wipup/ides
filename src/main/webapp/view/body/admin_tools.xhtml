@@ -9,7 +9,7 @@
 	<p:panel header="Administrator Panel" toggleable="false" collapsed="true" styleClass="main-background" >
 	</p:panel>
 
-	<h:form>
+	<h:form rendered="#{auth.admin}">
 		<script type="text/javascript">
 			function afterChangesApplied(xhr, status, args) {
 				PF('appNotification').hide();

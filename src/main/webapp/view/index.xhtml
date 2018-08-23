@@ -39,12 +39,12 @@
 		<h:panelGroup id="menu">
 			<ui:include src="#{IdesPage.MENU_BAR.path}" />
 		</h:panelGroup>
+
 		<h:panelGroup id="notification">
-			<p:notificationBar id="notificationBar" widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" styleClass="notification-bar" effectSpeed="slow">
+			<p:notificationBar id="announcementBar" widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" rendered="#{app.autoDisplayAnnouncement or auth.admin}" styleClass="notification-bar" effectSpeed="slow">
 				<div class="ui-g ui-g-nopad">
 					<div class="ui-md-12 ui-sm-11 ui-g-nopad">
-						<p:textEditor widgetVar="announcement" value="#{app.announcement}" style="min-height: auto;" styleClass="readonly-editor"
-							readonly="true" toolbarVisible="false" required="false"  />
+						<p:textEditor widgetVar="announcement" value="#{app.announcement}" style="min-height: auto;" styleClass="readonly-editor" readonly="true" toolbarVisible="false" required="false" />
 					</div>
 					<div class="ui-lg-2 ui-md-4 ui-sm-11 ui-g-nopad" style="margin-top: 1px;">
 						<p:button widgetVar="closeAnnouncementBtn" value="Close" onclick="PF('appNotification').hide(); return false;" style="width: 100%;" />
@@ -61,7 +61,7 @@
 			</p:notificationBar>
 			<p:growl id="#{Const.ID_COMPONENT_MESSAGE}" showDetail="true" life="4000" />
 		</h:panelGroup>
-	
+
 		<h:panelGroup id="body">
 			<ui:include src="#{nav.currentPage.path}" />
 		</h:panelGroup>
