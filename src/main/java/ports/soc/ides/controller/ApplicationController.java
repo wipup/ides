@@ -51,7 +51,7 @@ public class ApplicationController extends AbstractIdesController {
 				log.fatal(e);
 				throw e;
 			}
-			log.error(e);
+			log.fatal("error initialise application" ,e);
 		}
 	}
 
@@ -96,7 +96,7 @@ public class ApplicationController extends AbstractIdesController {
 		//If logLcation is not set in JVM system property, find config in a file instead
 		String logFileOutputLocation = jvmConfigReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 		if (IdesUtils.isEmpty(logFileOutputLocation)) {
-			log.error("No log file location specified in JVM system property. Attempt to fix by acquiring location from file: " + configurationFilePath );
+			log.warn("No log file location specified in JVM system property. Attempt to fix by acquiring location from file: " + configurationFilePath );
 			logFileOutputLocation = configFileReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 			
 			if (!IdesUtils.isEmpty(logFileOutputLocation)) {

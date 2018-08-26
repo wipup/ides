@@ -168,7 +168,7 @@ public class SqlSessionProvider {
 		if (db == null) {
 			return false;
 		}
-		log.info("Test connection using: " + String.valueOf(db));
+		log.info("Test database connection using: " + String.valueOf(db));
 		if (db.getDatasourceConnectionType() == DatasourceType.JDBC) {
 			String driverName = db.getDriverClassName();
 			Class.forName(driverName);

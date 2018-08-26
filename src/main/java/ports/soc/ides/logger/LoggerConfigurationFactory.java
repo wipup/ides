@@ -36,6 +36,8 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 	public static final String LOG_FILE_PREFIX = "ides-log";
 	public static final String ACTIVE_LOG_FILE_NAME = LOG_FILE_PREFIX + ".log";
 	
+	public static final String LOG_CHARSET = "UTF-8";
+	
 	public static final Level HUNT = Level.forName("HUNT", 700);
 	
 	public static boolean LOG_IP_ADDRESS = false;
@@ -85,11 +87,13 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 			logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}][%X{" + LOG_IP_ADDRESS_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		}
 		
-		AppenderComponentBuilder consoleAppenderBuilder = builder.newAppender("ConsoleAppender", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
-		consoleAppenderBuilder.add(builder.newLayout("PatternLayout").addAttribute("pattern", logPattern));
+		AppenderComponentBuilder consoleAppenderBuilder = builder
+				.newAppender("ConsoleAppender", "CONSOLE").addAttribute("target", ConsoleAppender.Target.SYSTEM_OUT);
+		consoleAppenderBuilder.add(builder.newLayout("PatternLayout").addAttribute("pattern", logPattern).addAttribute("charset", LOG_CHARSET));
 		builder.add(consoleAppenderBuilder);
 
-		LayoutComponentBuilder fileAppenderLayoutBuilder = builder.newLayout("PatternLayout").addAttribute("pattern", logPattern + "%n");
+		LayoutComponentBuilder fileAppenderLayoutBuilder = builder
+				.newLayout("PatternLayout").addAttribute("pattern", logPattern + "%n").addAttribute("charset", LOG_CHARSET);
 		ComponentBuilder fileAppenderTriggeringPolicy = builder.newComponent("Policies").addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100 MB"))
 				.addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("interval", "1").addAttribute("modulate", "true"));
 

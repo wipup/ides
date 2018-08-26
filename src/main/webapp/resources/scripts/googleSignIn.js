@@ -67,6 +67,7 @@ function signOut(){
 function handleSignIn(xhr, status, args) {
 	if (!args){
 		disconnectGoogle();
+		return;
 	}
 	
 	var signedIn = args[callback_signin_success]; 

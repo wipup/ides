@@ -11,6 +11,7 @@ import ports.soc.ides.dao.IdeaDAO;
 import ports.soc.ides.dao.SqlSessionProvider;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
+import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @Named("share")
@@ -32,6 +33,7 @@ public class ShareableIdeaController extends AbstractIdesController {
 	
 	@PostConstruct
 	private void init() {
+		FacesUtils.startLoggingSessionId();
 		allowed = false;
 		
 		Idea i = getIdeaFromParameters();
@@ -42,25 +44,36 @@ public class ShareableIdeaController extends AbstractIdesController {
 		IdeaStatus status = i.getStatus();
 		if (status == IdeaStatus.Approved || status == IdeaStatus.Allocated) {
 			showIdea.initDefault(i);
-			if (!IdesUtils.isEmpty(showIdea.getShareableLink()) && i.getOrganisation() != null) {
-				allowed = true;
-				showOrg.initDefault(i.getOrganisation());
+			if (IdesUtils.isEmpty(showIdea.getShareableLink())) {
+				log.error("shareable link of idea ref=" + i.getId() + " is empty, sharing halt");
+				return;
 			}
+			if (i.getOrganisation() == null) {
+				log.error("organisation of idea ref=" + i.getId() + " is null");
+				return;
+			}
+			
+			allowed = true;
+			showOrg.initDefault(i.getOrganisation());
+			
+		} else {
+			log.warn("idea ref=" + i.getId() + " with status=" + status + " is not shareable. No idea rendered");
 		}
 	}
 	
 	private Idea getIdeaFromParameters() {
 		try {
-			int ideaRef = getIntParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA);
-			if (ideaRef < 0) {
-				return null; 
-			}
+			int ideaRef = getIntParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA);			
+			log.info("Fetching idea for sharing, idea reference=" + ideaRef);
 			
 			IdeaDAO dao = new IdeaDAO(sqlProvider);
+			Idea requestedIdea = dao.selectIdeaById(ideaRef); 
 			
-			return dao.selectIdeaById(ideaRef);
+			log.info("Fetched idea for sharing=" + requestedIdea);
+			
+			return requestedIdea; 
 		} catch (Exception e) {
-			log.error("error retrieving shareable idea by parameter, idea reference no=" + getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA));
+			log.error("error retrieving shareable idea by parameter, " + e.getMessage() + ", idea reference no=" + getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA));
 			return null;
 		}
 	}

@@ -137,14 +137,16 @@ public class IdeaListController extends AbstractIdesController implements Serial
 
 	@LogPerformance(note = "select idea from data table", level = "DEBUG")
 	public void onSelectRow(ActionEvent event) {
+		String ind = "";
 		try {
-			String ind = getParameter(PARAM_IDEA_INDEX);
+			ind = getParameter(PARAM_IDEA_INDEX);
 
 			log.debug("Receiving parameter: " + PARAM_IDEA_INDEX + " = " + ind);
 			int index = Integer.parseInt(ind);
 				
 			Idea lazyIdea = lazyIdeaDataModel.getIdeaByIndex(index);
 			if (lazyIdea == null) {
+				log.error("Unable to get idea with index=" + ind + ", where ideaList size=" + lazyIdeaDataModel.getDatasourceSize());
 				addMessageError("Error", "The requested idea doesn't exist or has been removed.");
 				return;
 			}
@@ -153,6 +155,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			IdeaDAO ideaDAO = new IdeaDAO(sqlProvider);
 			Idea selectedIdea = ideaDAO.selectIdeaById(ideaId);
 			if (selectedIdea == null) {
+				log.error("Failed to query idea with reference=" + ideaId);
 				addMessageError("Error", "The requested idea doesn't exist or has been removed.");
 				return;
 			}
@@ -166,6 +169,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				}
 			}
 			showIdea.initDefault(selectedIdea);
+			log.info("Showing detail of idea reference=" + selectedIdea.getId());
 
 			if (selectedIdea != null) {
 				log.debug("Selected idea=" + selectedIdea.printDetail());
@@ -177,7 +181,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 		} catch (Exception e) {
 			showIdea.initDefault();
 			addMessageError("Error", "Unable to load idea detail");
-			log.error("Error onSelectRow", e);
+			log.error("Error onSelectRow, requested index=" + ind, e);
 		}
 	}
 
@@ -206,7 +210,6 @@ public class IdeaListController extends AbstractIdesController implements Serial
 	public void onSubmitEditIdea(ActionEvent event) {
 		LocalDateTime oldTimestamp = null;
 		setAutoUpdateOverlayNotification(true);
-
 		try {
 
 			Idea i = ideaForm.getIdea();
@@ -227,7 +230,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			
 			
 			processIdeaFilterOption();
-			addMessageInfo("Success", "The idea #" + i.getId() + " has been updated");
+			addMessageInfo("Success", "Idea #" + i.getId() + " has been updated");
 		} catch (Exception e) {
 			Idea idea = ideaForm.getIdea();
 			log.error("fail to submit editted idea: " + DataModel.printDetail(idea), e);
@@ -244,29 +247,31 @@ public class IdeaListController extends AbstractIdesController implements Serial
 	@LogPerformance
 	public void onShowEditIdeaModal(ActionEvent event) {
 		try {
-
 			String indexParam = getParameter(PARAM_IDEA_INDEX);
 			int index = Integer.parseInt(indexParam);
 
 			log.debug("Receive requested idea edit for index: " + index);
 			Idea lazyIdea = lazyIdeaDataModel.getIdeaByIndex(index);
 			if (lazyIdea == null) {
+				log.error("Unable to get idea with index=" + index + ", where ideaList size=" + lazyIdeaDataModel.getDatasourceSize());
 				addMessageError("Error", "The requested idea doesn't exist or has been removed");
 				return;
 			}
-			log.debug("The requested idea to edit is: " + lazyIdea);
+			log.info("Rendering idea editing modal for idea reference=" + lazyIdea.getId());
 
 			IdeaDAO dao = new IdeaDAO(sqlProvider);
-			Idea fullDetailIdea = dao.selectIdeaById(lazyIdea.getId());
-			if (fullDetailIdea == null) {
+			long ideaId = lazyIdea.getId();
+			Idea selectedIdea = dao.selectIdeaById(ideaId);
+			if (selectedIdea == null) {
+				log.error("Failed to query idea with reference=" + ideaId);
 				addMessageError("Error", "Fail to fetch idea data");
 				renderEditIdeaForm = false;
 				return;
 			}
 
-			log.debug("Get idea info from database: " + fullDetailIdea);
+			log.debug("Get idea info from database: " + selectedIdea);
 
-			ideaForm.initDefault(fullDetailIdea);
+			ideaForm.initDefault(selectedIdea);
 			ideaForm.setRenderNotSpecificTypeRadio(false);
 			ideaForm.setRenderIdeaStatus(true);
 			ideaForm.setRenderIdeaStatusRadio(false);
@@ -274,9 +279,8 @@ public class IdeaListController extends AbstractIdesController implements Serial
 
 			renderEditIdeaForm = true;
 			showRequestedModal();
-			log.debug("End of editIdea success");
 		} catch (Exception e) {
-			log.error("onEditIdea", e);
+			log.error("fail to show idea editing modal", e);
 			addMessageError("Error", "Unable to load idea");
 			renderEditIdeaForm = false;
 		}
@@ -294,6 +298,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			
 			Idea targetIdea = lazyIdeaDataModel.getIdeaByIndex(index);
 			if (targetIdea == null) {
+				log.error("Unable to get idea with index=" + index + ", where ideaList size=" + lazyIdeaDataModel.getDatasourceSize());
 				addMessageError("Error", "The requested idea doesn't exist or has been removed");
 				return;
 			}
@@ -327,7 +332,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			
 			processIdeaFilterOption();
 		} catch (Exception e) {
-			log.error("onApproveIdea", e);
+			log.error("error on processing idea", e);
 			addMessageError("Error", "Unable to update requested idea");
 		}
 	}
@@ -354,6 +359,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 		try {
 			String mode = getParameter(PARAM_CONFIRM_MODE);
 			if (IdesUtils.isEmpty(mode) || IdesUtils.isEmpty(confirmModalMode)) {
+				log.error("error on processing selected idea, invalid parameter=" + mode);
 				addMessageError("Error", "Unrecognised requested action");
 				PrimeFaces.current().ajax().addCallbackParam(PARAM_CALLBACK, false);
 				return;
@@ -380,7 +386,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				addMessageInfo("Success", "Updating " + selectedIdeas.size() + " ideas completed");
 			} else {
 				if (!app.isEnableIdeaDeletion()) {
-					addMessageError("Error", "Idea deletion has not been enabled");
+					addMessageError("Error", "Idea deletion function has not been enabled");
 					return;
 				}
 				
@@ -393,7 +399,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			processIdeaFilterOption();
 			
 		} catch (Exception e) {
-			log.error("onProcessSelectedIdeas", e);
+			log.error("error on process selected ideas", e);
 			addMessageError("Error", "Unexpected error happened when processing selected ideas");
 			PrimeFaces.current().ajax().addCallbackParam(PARAM_CALLBACK, false);
 		}
@@ -442,7 +448,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			}
 
 		} catch (Exception e) {
-			log.error("onProcessSelectedIdeas", e);
+			log.error("error on confirming selected ideas", e);
 		}
 	}
 
@@ -491,7 +497,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				}
 			}
 
-			log.debug("idea filter option=[selectedStatus=" + IdesUtils.deepPrint(selectedStatus) + ", selectedProjType=" + IdesUtils.deepPrint(selectedProjType)
+			log.debug("set idea filter option=[selectedStatus=" + IdesUtils.deepPrint(selectedStatus) + ", selectedProjType=" + IdesUtils.deepPrint(selectedProjType)
 					+", searchKeyword=" + searchKeyword + "]");
 
 			if (!IdesUtils.isEmpty(searchKeyword)) {
@@ -511,6 +517,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 
 			UIComponent comp = FacesContext.getCurrentInstance().getViewRoot().findComponent(IDEA_TABLE_FORM_ID + ":" + IDEA_TABLE_FORM_DATATABLE_ID);
 			if (comp instanceof DataTable) {
+				//fix datatable's multiple ajax requests
 				DataTable dt = (DataTable) comp;
 				dt.setFirst(0);
 				int rowsPerPage = dt.getRows();

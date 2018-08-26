@@ -54,7 +54,7 @@ public enum IdesPage {
 		return path;
 	}
 	
-	public static final IdesPage getPage(String keyLabel) {
-		return ALL_PAGES.get(keyLabel);
+	public static final IdesPage getPage(String pageId) {
+		return ALL_PAGES.get(pageId);
 	}
 }

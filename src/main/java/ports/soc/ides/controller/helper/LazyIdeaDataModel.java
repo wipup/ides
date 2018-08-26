@@ -50,7 +50,7 @@ public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 			int index = Integer.parseInt(rowKey);
 			return dataSource.get(index);
 		} catch (Exception e) {
-			log.error("getRowData: rowKey=" + rowKey, e);
+			log.warn("getRowData: rowKey=" + rowKey, e);
 		}
 		return null;
 	}
@@ -116,4 +116,7 @@ public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 		this.searchKeyword = searchKeyword;
 	}
 
+	public int getDatasourceSize() {
+		return dataSource.size();
+	}
 }

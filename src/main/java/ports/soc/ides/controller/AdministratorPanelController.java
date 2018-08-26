@@ -162,7 +162,7 @@ public class AdministratorPanelController extends AbstractIdesController {
 	@LogPerformance
 	@IdesRoleAllowed({Role.Administrator})
 	public void onApplyChange(ActionEvent event) {
-		log.debug("Applying new setting");
+		log.info("Applying new configurations");
 
 		boolean updateSettingSuccess = true;
 
@@ -311,7 +311,7 @@ public class AdministratorPanelController extends AbstractIdesController {
 		} catch (Exception e) {
 			configError = e;
 			valid = false;
-			log.error("Error testing connection of: " + dbConfig.toString(), e);
+			log.warn("Error testing database connection using " + String.valueOf(dbConfig), e);
 		}
 
 		if (valid) {

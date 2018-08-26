@@ -60,7 +60,7 @@ public class NavigationController extends AbstractIdesController {
 				requestedPage = DEFAULT_PAGE;
 			}
 			
-			log.debug("Navigate to page: " + requestedPage.getPageId());
+			log.info("Navigate to page: " + requestedPage);
 
 			if (auth.isAllowedToAccess(requestedPage)) {
 				currentPage = requestedPage;
@@ -74,7 +74,7 @@ public class NavigationController extends AbstractIdesController {
 			log.trace("Firing event: " + e.toString());
 			idesEvent.fire(e);
 		} catch (Exception e) {
-			log.error("Error on navigateTo", e);
+			log.error("Error on navigating to " + requestedPage, e);
 		}
 	}
 

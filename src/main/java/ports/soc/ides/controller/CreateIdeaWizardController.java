@@ -92,7 +92,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			log.trace("CreateIdeaWizardController Init");
 			initWizard(true);
 		} catch (Exception e) {
-			log.error("Error initialising wizard", e);
+			log.fatal("Error initialising wizard", e);
 		}
 	}
 
@@ -140,6 +140,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 		showOrganisationDetail(selectedOrg);
 	}
 
+	
 	public String handleWizardFlow(FlowEvent event) {
 		String nextStep = event.getNewStep();
 		String oldStep = event.getOldStep();
@@ -163,10 +164,13 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			showOrganisationDetail(selectedOrg);
 			
 		} else if (currentStep == CreateIdeaWizardStep.CREATE_IDEA) {
+			log.info("selected client and organisation=" + selectedOrg);
 			if (selectedOrg == null ||  !orgs.contains(selectedOrg)) {
 				currentStep = CreateIdeaWizardStep.CREATE_ORGANISATION;
 				addMessageError("Error", "Please select your client and organisation");
 			} else {
+				log.info("Render idea creation form");
+				
 				// Second step
 				Idea idea = ideaForm.getIdea();
 				if (idea == null) {
@@ -181,6 +185,8 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 				fillIdeaAttribute(idea);
 			}
 		} else if (currentStep == CreateIdeaWizardStep.REVIEW) {
+			log.info("Rendering idea reviewing form before submission");
+			
 			ideaForm.trimAllFields();
 			Idea i = ideaForm.getIdea();
 			boolean valid = validateIdeaBeforeInsertion(i);
@@ -197,8 +203,6 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 
 			showOrganisationDetail(selectedOrg);
 
-//			enableBackBtn = true;
-//			enableNextBtn = false;
 		}
 
 		PrimeFaces.current().ajax().update(CREATE_IDEA_FORM_WIZARD_ID);
@@ -327,6 +331,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 
 	@LogPerformance(level = "TRACE")
 	public void onClickCreateOrganisationButton(ActionEvent event) {
+		log.info("Render client creation form");
 		createNewOrganisationPage = true;
 		submitOrganisationSuccess = false;
 		Organisation org = new Organisation();
@@ -356,20 +361,20 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			ContactProfileDAO dao = new ContactProfileDAO(sqlProvider);
 
 			// select user owned first, expect one
-			log.debug("Finding a contact profile of " + user.getEmail());
+			log.info("Finding a contact profile of " + user.getEmail());
 			List<ContactProfile> profiles = dao.selectProfile(user.getEmail(), OwnerType.EMAIL); 
 			if (profiles.isEmpty()) {
 				// select domain, expect one
-				log.debug("Finding a contact profile of " + user.getEmailDomain());
+				log.info("Finding a contact profile of domain " + user.getEmailDomain());
 				profiles = dao.selectProfile(user.getEmailDomain(), OwnerType.DOMAIN);
 			}
 			if (profiles.isEmpty()) {
-				log.debug("No contact profile found");
+				log.info("No contact profile found");
 				profileTemplate = null;
 				return;
 			}
 			profileTemplate = profiles.get(profiles.size() - 1); //get last profile
-			log.debug("Found contact profile: count=" + profiles.size() + ", selected=" + profileTemplate.printDetail());
+			log.info("Found contact profile: count=" + profiles.size() + ", profile=" + profileTemplate.printDetail());
 		} catch (Exception e) {
 			log.error("Error retrieving contact profile of email=" + user.getEmail() + " and domain=" + user.getEmailDomain(), e);
 		}

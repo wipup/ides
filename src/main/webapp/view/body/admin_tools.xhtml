@@ -14,11 +14,11 @@
 			function afterChangesApplied(xhr, status, args) {
 				PF('appNotification').hide();
 			}
-			function togglePassword(x){
-			    if (x.type == "password") {
-			        x.type = "text";
+			function togglePassword(e){
+			    if (e.type == "password") {
+			        e.type = "text";
 			    } else {
-			        x.type = "password";
+			        e.type = "password";
 			    }
 		    }
 		    function handleTabChange(index){
