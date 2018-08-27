@@ -38,7 +38,9 @@ Solution taken from [Stackoverflow.com](https://stackoverflow.com/questions/4938
 
 ### 4.2 Expired certificate in Glassfish
 
-The only way of fixing this problem is simple, delete the expired certificate.
+Having error about expired certificate sometimes cause the logger (log4j2) to stop working.
+
+One of the ways to fix this problem is to delete the expired certificates.
 
   1. Find the certificate file.
   
