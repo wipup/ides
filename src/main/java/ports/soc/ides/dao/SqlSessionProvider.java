@@ -73,7 +73,7 @@ public class SqlSessionProvider {
 			throw new IdesException(error);
 		}
 
-		log.info("Attempt to read database configuration file: " + databaseConfigFilePath);
+		log.info("Read database configuration file: " + databaseConfigFilePath);
 		File f = new File(databaseConfigFilePath);
 		if (!f.isFile() || !f.canRead()) {
 			final String error = "Failed to load database configuration settings at " + f.getAbsolutePath();

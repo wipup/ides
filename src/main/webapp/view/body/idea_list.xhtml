@@ -115,7 +115,7 @@
 	<h:form id="#{IdeaListConst.IDEA_TABLE_FORM_ID}">
 		<p:inputText type="hidden" widgetVar="hiddenSearchTxt" value="#{ideaList.searchKeyword}" readonly="true" disabled="true" />
 		<script type="text/javascript">
-			function updateRppDropdownText(){					
+			function updateRppDropdownText(){				
 				var rpp = $('.ui-paginator-rpp-options');
 				rpp.each(function(index){
 					var options = $(this).children();
@@ -123,7 +123,11 @@
 						var opt = $(this);
 						opt.text("Show " + opt.val() + " ideas per page");
 					});
-					options.last().text("Show all ideas");
+					
+					var enableShowingAllIdeas = #{auth.loggedIn};
+					if (enableShowingAllIdeas){
+						options.last().text("Show all ideas");
+					}
 				});
 			}
 			function safeHighlight(){
@@ -149,11 +153,15 @@
 				return false;
 			}
 		</script>
+		
+		<ui:param name="rppTemplateForVisitors" value="#{IdeaListConst.ROWS_PER_PAGE_TEMPLATE}"/>
+		<ui:param name="rppTemplateForSignedInUsers" value="#{IdeaListConst.ROWS_PER_PAGE_TEMPLATE},#{ideaList.lazyIdeaDataModel.rowCount}"/>
+		
 		<p:dataTable id="#{IdeaListConst.IDEA_TABLE_FORM_DATATABLE_ID}" rowHover="true" var="idea" rowIndexVar="i" value="#{ideaList.lazyIdeaDataModel}" lazy="true" 
 			resizableColumns="true" resizeMode="expand" rows="#{IdeaListConst.DEFAULT_ROWS_PER_PAGE}" paginator="true" tableStyle="table-layout: auto;"
 			first="0" sortBy="#{IdeaConst.COLUMN_TIMESTAMP}" sortOrder="descending" reflow="true"
 			paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}  {RowsPerPageDropdown}"
-			rowsPerPageTemplate="#{IdeaListConst.ROWS_PER_PAGE_TEMPLATE},#{ideaList.lazyIdeaDataModel.rowCount}"
+			rowsPerPageTemplate="#{auth.loggedIn ? rppTemplateForSignedInUsers : rppTemplateForVisitors}"
 			currentPageReportTemplate="Page {currentPage} of {totalPages} pages (Total {totalRecords} ideas)">
 			
 			<p:ajax event="page" oncomplete="updateTableAfterAjax();" />

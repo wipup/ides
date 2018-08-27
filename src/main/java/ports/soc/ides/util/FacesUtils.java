@@ -23,6 +23,9 @@ public class FacesUtils {
 
 	private static final Logger log = LogManager.getRootLogger();
 
+	/**
+	 * For debugging and testing only
+	 */
 	public static void randomError() {
 		if (IdesUtils.randomIntValue(10)) {
 			log.error("Test random error");

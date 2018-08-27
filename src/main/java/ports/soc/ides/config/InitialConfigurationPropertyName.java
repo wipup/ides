@@ -16,7 +16,9 @@ public class InitialConfigurationPropertyName {
 	public static final String EMAIL_STAFF = "ides.role.staff.email";
 	public static final String EMAIL_STUDENTS = "ides.role.student.email";
 	
+	@Deprecated
 	public static final String EMAIL_DOMAIN_ADMINSTRATOR = "ides.role.administrator.emailDomain";
+	
 	public static final String EMAIL_DOMAIN_STAFF = "ides.role.staff.emailDomain";	
 	public static final String EMAIL_DOMAIN_STUDENTS = "ides.role.student.emailDomain";
 	

@@ -5,7 +5,7 @@
 		<welcome-file>view/index.xhtml</welcome-file>
 	</welcome-file-list>
 	<session-config>
-		<session-timeout>120</session-timeout>
+		<session-timeout>60</session-timeout>
 	</session-config>
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>

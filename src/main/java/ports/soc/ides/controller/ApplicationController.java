@@ -81,7 +81,7 @@ public class ApplicationController extends AbstractIdesController {
 			throw new IdesConfigurationException(error);
 		}
 		
-		log.info("Attempt to read configuration file: " + configurationFilePath);
+		log.info("Read configuration file: " + configurationFilePath);
 		File f = new File(configurationFilePath);
 		if (!f.isFile() || !f.canRead()) {
 			final String error = "Failed to load configuration settings at: " + f.getAbsolutePath();  

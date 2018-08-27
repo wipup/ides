@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -116,7 +117,7 @@ public class AdministratorPanelController extends AbstractIdesController {
 
 	@LogPerformance(note = "download a log file")
 	@IdesRoleAllowed({Role.Administrator})
-	public StreamedContent getDownloadableFile() {
+	public StreamedContent getDownloadableLogFile() {
 		if (selectedLogFile == null) {
 			return null;
 		}
@@ -134,27 +135,44 @@ public class AdministratorPanelController extends AbstractIdesController {
 		return null;
 	}
 
-	@LogPerformance(level = "DEBUG")
+	@LogPerformance
 	@IdesRoleAllowed({Role.Administrator})
 	public void onRefreshLogFolder(ActionEvent event) {
 		try {
 			selectedLogFile = null;
 			logFiles = new ArrayList<>();
 			String logFolder = config.getOutputLogLocation();
-			if (!IdesUtils.isEmpty(logFolder)) {
-				File outputFolder = new File(logFolder);
-				if (outputFolder.isDirectory()) {
-					File[] files = outputFolder.listFiles(new LogFileFilter());
-					for (int i = files.length - 1; i >= 0; i--) {
-						//descending order to make the most recent files come first
-						File f = files[i];
-						FileWrapper fw = new FileWrapper(f);
-						logFiles.add(fw);
-					}
-				}
+			if (IdesUtils.isEmpty(logFolder)) {
+				log.warn("invalid output log folder=" + logFolder);
+				return;
 			}
+			
+			File outputFolder = new File(logFolder);
+			if (!outputFolder.isDirectory()) {
+				log.error("output log folder=" + outputFolder.getAbsolutePath() + " is not a valid directory");
+				return;
+			}
+			
+			File[] files = outputFolder.listFiles(new LogFileFilter());
+			for(File f : files) {
+				FileWrapper fw = new FileWrapper(f);
+				logFiles.add(fw);
+			}
+			
+			// sort files in descending order to make the most recent files appear first on the top
+			logFiles.sort(new Comparator<FileWrapper>() {
+				@Override
+				public int compare(FileWrapper fw1, FileWrapper fw2) {
+					try {
+						return Math.negateExact(fw1.getName().compareTo(fw2.getName()));
+					} catch (Exception e) {
+					}
+					return 0;
+				}
+			});	
+
 		} catch (Exception e) {
-			log.error("Error occured while refreshing list of log files", e);
+			log.error("Error occured while loading list of log files", e);
 			addAllExceptionCausesToMessage(e);
 		}
 	}

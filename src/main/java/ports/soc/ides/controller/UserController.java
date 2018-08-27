@@ -69,12 +69,13 @@ public class UserController extends AbstractIdesController {
 		uso.setEventSource(this);
 		
 		try {
-			log.info("User requested to sign in");
+			log.trace("User requested to sign in");
 			
 			email = getParameter(PARAM_ID_EMAIL);
 			idToken = getParameter(PARAM_ID_TOKEN);
 			
-			log.trace("User requested to sign in with email: " + email);
+			// TODO log email
+			log.info("User requested to sign in with email: " + email);
 			
 			if (!IdesUtils.isEmpty(idToken)) {
 				User prevUser = user;
@@ -154,6 +155,7 @@ public class UserController extends AbstractIdesController {
 		GoogleIdToken idToken = verifier.verify(idTokenString);
 
 		if (idToken == null) {
+			log.warn("idToken is null");
 			throw new IdesException("Error", "Invalid credential");
 		}
 		
@@ -161,13 +163,14 @@ public class UserController extends AbstractIdesController {
 		String aud = (String) payload.getAudience();
 		
 		if (!clientId.equals(aud)) { // invalid google-client id
+			log.error("invalid google application audience");
 			throw new IdesException("Sign in failed", "Please contact administrator");
 		}
 
+		// TODO log email
 		String email = payload.getEmail();
 		String domainName = payload.getHostedDomain();
-		log.trace("Google Account sign in API: User email=" + email);
-		log.trace("Google Account sign in API: User domain=" + domainName);
+		log.info("user authentication by id token completed, user email=" + email + ", domain=" + domainName);
 		
 		Set<Role> roles = getRole(email, domainName);
 		

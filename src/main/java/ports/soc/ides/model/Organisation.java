@@ -2,6 +2,8 @@ package ports.soc.ides.model;
 
 import javax.validation.constraints.Size;
 
+import ports.soc.ides.util.IdesUtils;
+
 public class Organisation extends DataModel {
 
 	private static final long serialVersionUID = -3695863190798188566L;
@@ -106,7 +108,7 @@ public class Organisation extends DataModel {
 	@Override
 	public String printDetail() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Organisation [id=").append(id).append(", name=").append(name).append(", typeOfWork=").append(typeOfWork).append(", address=").append(address)
+		sb.append("Organisation [id=").append(id).append(", name=").append(name).append(", typeOfWork=").append(typeOfWork).append(", address=").append(IdesUtils.replaceNewlineToBr(address))
 				.append(", postcode=").append(postcode).append(", contact=").append(contact).append(", email=").append(email).append(", telephone=").append(telephone).append("]");
 		return sb.toString();
 	}

@@ -41,10 +41,10 @@
 		</h:panelGroup>
 
 		<h:panelGroup id="notification">
-			<p:notificationBar id="announcementBar" widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" rendered="#{app.autoDisplayAnnouncement or auth.admin}" styleClass="notification-bar" effectSpeed="slow">
+			<p:notificationBar widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" styleClass="notification-bar" effectSpeed="slow">
 				<div class="ui-g ui-g-nopad">
 					<div class="ui-md-12 ui-sm-11 ui-g-nopad">
-						<p:textEditor widgetVar="announcement" value="#{app.announcement}" style="min-height: auto;" styleClass="readonly-editor" readonly="true" toolbarVisible="false" required="false" />
+						<p:textEditor widgetVar="announcement" value="#{app.announcement}" rendered="#{app.autoDisplayAnnouncement or auth.admin}" style="min-height: auto;" styleClass="readonly-editor" readonly="true" toolbarVisible="false" required="false" />
 					</div>
 					<div class="ui-lg-2 ui-md-4 ui-sm-11 ui-g-nopad" style="margin-top: 1px;">
 						<p:button widgetVar="closeAnnouncementBtn" value="Close" onclick="PF('appNotification').hide(); return false;" style="width: 100%;" />
@@ -121,7 +121,7 @@
 			<f:facet name="message">
 				<h:outputText value="You have been inactive for too long. Your session has expired." />
 				<br/>
-				<h:outputText value="Please refresh the page." />
+				<h:outputText value="Please backup all your information and refresh the page." />
 			</f:facet>
 			<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide();" icon="fa fa-close" />
 		</p:confirmDialog>

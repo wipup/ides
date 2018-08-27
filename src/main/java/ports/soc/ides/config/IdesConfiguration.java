@@ -19,7 +19,7 @@ public class IdesConfiguration extends AbstractConfiguration {
 	/**
 	 * SESSION_TIMEOUT must equal to the value in web.xml
 	 */
-	public static final long DEFAULT_SESSION_TIMEOUT = 120;
+	public static final long DEFAULT_SESSION_TIMEOUT = 60; //60 minute
 	public static final long DEFAULT_SESSION_TIMEOUT_IN_MILLISEC = DEFAULT_SESSION_TIMEOUT * 60 * 1000;
 	
 	private String googleSignInclientId;
@@ -63,7 +63,7 @@ public class IdesConfiguration extends AbstractConfiguration {
 		mapEmailsToRole(userRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_STAFF), Role.Staff);
 		mapEmailsToRole(userRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_STUDENTS), Role.Student);
 
-		mapEmailsToRole(domainRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_DOMAIN_ADMINSTRATOR), Role.Administrator);
+		//mapEmailsToRole(domainRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_DOMAIN_ADMINSTRATOR), Role.Administrator);
 		mapEmailsToRole(domainRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_DOMAIN_STAFF), Role.Staff);
 		mapEmailsToRole(domainRoleMap, loader.getManyStringProperties(InitialConfigurationPropertyName.EMAIL_DOMAIN_STUDENTS), Role.Student);
 		

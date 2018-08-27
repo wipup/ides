@@ -134,7 +134,6 @@ public class IdeaListController extends AbstractIdesController implements Serial
 		selectedIdeas = new ArrayList<>();
 	}
 
-
 	@LogPerformance(note = "select idea from data table", level = "DEBUG")
 	public void onSelectRow(ActionEvent event) {
 		String ind = "";

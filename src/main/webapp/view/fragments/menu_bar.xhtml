@@ -112,7 +112,7 @@
 			</p:submenu>
 			<f:facet name="options">
 				<p:remoteCommand name="idesLogout" actionListener="#{auth.actionSignOut}" onstart="setLoadingMessage('Signing out');"  />
-				<p:remoteCommand name="idesLogin" actionListener="#{auth.actionSignIn}" update="@form, body, notification" onstart="setLoadingMessage('Signing in');" oncomplete="handleSignIn(xhr, status, args);" />
+				<p:remoteCommand name="idesLogin" actionListener="#{auth.actionSignIn}" update="@form, body, @widgetVar(appNotification)" onstart="setLoadingMessage('Signing in');" oncomplete="handleSignIn(xhr, status, args);" />
 				<h:panelGroup rendered="#{!auth.loggedIn}">
 					<span id="googleSignIn" class="g-signin2" data-onsuccess="onSignIn">Unable to connect to Google's service</span>
 				</h:panelGroup>

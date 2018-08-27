@@ -302,7 +302,7 @@
 							<div class="ui-lg-9 ui-md-8 ui-sm-12">
 								<div class="ui-inputgroup">
 									<p:password id="captchaPrivateKey" widgetVar="captchaPrivateKey" value="#{admin.config.captchaPrivateKey}" redisplay="true" required="true" requiredMessage="Captcha private key must not be empty" onchange="togglePassword(this.id);" />
-									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('captchaPrivateKey').jq.get(0));" />
+									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('captchaPrivateKey').jq.get(0));" title="Show password"  />
 								</div>
 							</div>
 
@@ -400,7 +400,7 @@
 							<div class="ui-lg-9 ui-md-8 ui-sm-12">
 								<div class="ui-inputgroup">
 									<p:password id="dbPass" widgetVar="dbPass" value="#{admin.dbConfig.password}" redisplay="true" required="true" requiredMessage="Database password must not be empty" />
-									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('dbPass').jq.get(0));" />
+									<p:selectBooleanButton onLabel="" offLabel="" onIcon="fa fa-eye" offIcon="fa fa-eye-slash" onchange="togglePassword(PF('dbPass').jq.get(0));" title="Show password" />
 								</div>
 							</div>
 						</div>
@@ -523,7 +523,7 @@
 					<div class="ui-lg-5 ui-md-2 ui-sm-12 ui-g-nopad"></div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12" style="padding-right: 0">
 						<p:commandButton id="logDownloadBtn" value="Download" ajax="false" icon="fa fa-download" disabled="#{admin.selectedLogFile == null}">
-							<p:fileDownload value="#{admin.downloadableFile}" />
+							<p:fileDownload value="#{admin.downloadableLogFile}" />
 						</p:commandButton>
 					</div>
 				</div>

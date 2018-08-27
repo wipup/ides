@@ -16,7 +16,7 @@ import ports.soc.ides.util.IdesUtils;
 
 @Named("share")
 @RequestScoped
-public class ShareableIdeaController extends AbstractIdesController {
+public class IdeaSharingController extends AbstractIdesController {
 
 	private static final long serialVersionUID = 3350207201789855790L;
 	
@@ -69,7 +69,7 @@ public class ShareableIdeaController extends AbstractIdesController {
 			IdeaDAO dao = new IdeaDAO(sqlProvider);
 			Idea requestedIdea = dao.selectIdeaById(ideaRef); 
 			
-			log.info("Fetched idea for sharing=" + requestedIdea);
+			log.info("Fetched idea for sharing result=" + requestedIdea);
 			
 			return requestedIdea; 
 		} catch (Exception e) {

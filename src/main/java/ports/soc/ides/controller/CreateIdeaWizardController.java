@@ -140,11 +140,11 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 		showOrganisationDetail(selectedOrg);
 	}
 
-	
+	@LogPerformance(logParameters = false)
 	public String handleWizardFlow(FlowEvent event) {
 		String nextStep = event.getNewStep();
 		String oldStep = event.getOldStep();
-		log.debug("handleWizardFlow from=" + oldStep + ", to=" + nextStep);
+		log.info("handle wizard flow, from step=" + oldStep + ", to=" + nextStep);
 
 		createNewOrganisationPage = false;
 		submitOrganisationSuccess = false;
@@ -361,6 +361,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			ContactProfileDAO dao = new ContactProfileDAO(sqlProvider);
 
 			// select user owned first, expect one
+			// TODO log email
 			log.info("Finding a contact profile of " + user.getEmail());
 			List<ContactProfile> profiles = dao.selectProfile(user.getEmail(), OwnerType.EMAIL); 
 			if (profiles.isEmpty()) {
