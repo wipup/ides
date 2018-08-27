@@ -60,8 +60,10 @@ keytool -delete -keystore ./cacerts.jks -alias aliasname
 
   E.g. the Equifax Secure Certificate Authority which is just expired on 22nd August 17:41:51 BST 2018
     
-  It's alias name is equifaxsecureca
+  It's alias name is *equifaxsecureca*
     
 ```
 keytool -delete -keystore ./cacerts.jks -alias equifaxsecureca
 ```
+
+  Current known expired *certificates* are *gtecybertrustglobalca* and *equifaxsecureca*.
