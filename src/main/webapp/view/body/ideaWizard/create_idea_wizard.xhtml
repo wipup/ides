@@ -89,7 +89,7 @@
 									enableWidgetBySelector('.wizard-submit-org', false);
 									$('.wizard-submit-org').children('.ui-button-text').text('Please re-challenge the reCAPTCHA');
 								};
-								var onCaptchaloadCallback = function() {
+								var onCaptchaLoadedCallback = function() {
 									grecaptcha.render('orgCaptcha', {
 										'sitekey': '#{app.captchaPublicKey}',
 										'theme' : 'light',
@@ -103,7 +103,7 @@
 									$('.wizard-submit-org').children('.ui-button-text').text('Please challenge the reCAPTCHA');
 								});
 							</script>
-							<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaloadCallback&amp;render=explicit" async="async" defer="defer"></script>
+							<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadedCallback&amp;render=explicit" async="async" defer="defer"></script>
 						</h:panelGroup>
 						<h:panelGroup rendered="#{ideaWizard.showSaveProfileBtn}">
 							<div class="ui-g">
@@ -185,7 +185,7 @@
 								enableWidgetBySelector('.wizard-submit-idea', false);
 								$('.wizard-submit-org').children('.ui-button-text').text('Please re-challenge the reCAPTCHA');
 							};
-							var onCaptchaloadCallback = function() {
+							var onCaptchaLoadedCallback = function() {
 								grecaptcha.render('ideaCaptcha', {
 									'sitekey': '#{app.captchaPublicKey}',
 									'theme' : 'light',
@@ -196,7 +196,7 @@
 								$('.wizard-submit-idea').children('.ui-button-text').text('Please challenge the reCAPTCHA');
 							};
 						</script>
-						<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaloadCallback&amp;render=explicit" async="async" defer="defer"></script>
+						<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadedCallback&amp;render=explicit" async="async" defer="defer"></script>
 					</h:panelGroup>
 					<ui:include src="#{IdesPage.SHOW_IDEA.path}" />
 				</p:panel>

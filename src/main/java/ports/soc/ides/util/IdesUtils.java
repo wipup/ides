@@ -30,11 +30,15 @@ public class IdesUtils {
 	 * @param txt
 	 * @return
 	 */
-	public static String replaceNewlineToBr(String txt) {
+	public static String replaceNewlineWithBr(String txt) {
+		return replaceNewline(txt, "<br/>");
+	}
+	
+	public static String replaceNewline(String txt, String replacement) {
 		if (IdesUtils.isEmpty(txt)) {
 			return txt;
 		}
-		return txt.replaceAll("(\n)|(\r\n)", "<br/>");
+		return txt.replaceAll("(\n)|(\r\n)", replacement);
 	}
 	
 	public static boolean randomIntValue(int i) {

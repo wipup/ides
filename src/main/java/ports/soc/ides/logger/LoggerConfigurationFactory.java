@@ -71,16 +71,21 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 		
 		DEFAULT_LOG_LEVEL = defaultLevel;
 	}
+	
+	public static Configuration createConfiguration(String name, ConfigurationBuilder<BuiltConfiguration> builder) {
+		return createConfiguration(name, builder, DEFAULT_LOG_LEVEL);
+	}
 
 	@SuppressWarnings("rawtypes")
-	public static Configuration createConfiguration(String name, ConfigurationBuilder<BuiltConfiguration> builder) {
+	public static Configuration createConfiguration(String name, ConfigurationBuilder<BuiltConfiguration> builder, Level logLevel) {
 		System.out.println("Creating configuration for IDES Logger");
 		System.out.println("Log file name = " + ACTIVE_LOG_FILE_NAME);
 		System.out.println("Default Log level = " + DEFAULT_LOG_LEVEL.name());
+		System.out.println("Desired Log level = " + logLevel.name());
 		System.out.println("Log IP Address = " + LOG_IP_ADDRESS);
 		
 		builder.setConfigurationName(name);
-		builder.setStatusLevel(DEFAULT_LOG_LEVEL);
+		builder.setStatusLevel(logLevel);
 
 		String logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		if (LOG_IP_ADDRESS) {
@@ -112,7 +117,7 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 		}
 		
 		builder.add(fileAppenderBuilder)
-				.add(builder.newRootLogger(DEFAULT_LOG_LEVEL)
+				.add(builder.newRootLogger(logLevel)
 				.add(builder.newAppenderRef("ConsoleAppender"))
 				.add(builder.newAppenderRef("RollingFileAppender")));
 

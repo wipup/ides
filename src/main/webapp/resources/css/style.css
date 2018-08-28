@@ -21,18 +21,27 @@ time.timeago {
 	height: auto !important;
 }
 
+.allocate-btn{
+	background-color: #D2691E !important;
+	color: #FFFFFF;
+}
+
+button.allocate-btn:hover {
+	color: #000000 !important;
+}
+
 .withdraw-btn {
 	background-color: #FF0000 !important;
 	color: #FFFFFF;
 }
 
+button.withdraw-btn:hover {
+	color: #000000 !important;
+}
+
 .delete-btn {
 	background-color: #000000 !important;
 	color: #FFFFFF;
-}
-
-button.withdraw-btn:hover {
-	color: #000000 !important;
 }
 
 button.delete-btn:hover {

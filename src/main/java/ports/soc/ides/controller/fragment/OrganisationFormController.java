@@ -101,6 +101,5 @@ public class OrganisationFormController extends AbstractIdesController {
 	public void setRenderTelephoneNumber(boolean renderTelephoneNumber) {
 		this.renderTelephoneNumber = renderTelephoneNumber;
 	}
-	
-	
+
 }

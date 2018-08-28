@@ -1,7 +1,5 @@
 package ports.soc.ides.interceptor;
 
-import java.io.IOException;
-
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
@@ -63,9 +61,8 @@ public class RestoreViewPhaseListener implements PhaseListener {
 		
 		try {
 			log.trace("Received Ajax request having invalid session id");
-			FacesUtils.forceClearCache();
-			FacesUtils.redirectToWelcomePage();
-		} catch (IOException e) {
+			FacesUtils.handleInvalidSessionId(FacesContext.getCurrentInstance());
+		} catch (Exception e) {
 			log.error("Error redirect at phase listener beforePhase " + getPhaseId(), e);
 		}
 	}

@@ -37,12 +37,10 @@ public class ActionLogger implements Serializable {
 		String level = annotation.level().toUpperCase();
 		boolean logParameters = annotation.logParameters();
 		
-		FacesUtils.startLoggingSessionId();
+		FacesUtils.startLoggingSessionId(); //***
 		try {
 			return invocationContext.proceed();
-		} finally {
-			FacesUtils.startLoggingSessionId();
-			
+		} finally {			
 			long time = System.currentTimeMillis() - start;
 			StringBuilder sb = new StringBuilder();
 			sb.append("method=").append(method.getName())

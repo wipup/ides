@@ -108,7 +108,7 @@ public class Organisation extends DataModel {
 	@Override
 	public String printDetail() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Organisation [id=").append(id).append(", name=").append(name).append(", typeOfWork=").append(typeOfWork).append(", address=").append(IdesUtils.replaceNewlineToBr(address))
+		sb.append("Organisation [id=").append(id).append(", name=").append(name).append(", typeOfWork=").append(typeOfWork).append(", address=").append(IdesUtils.replaceNewlineWithBr(address))
 				.append(", postcode=").append(postcode).append(", contact=").append(contact).append(", email=").append(email).append(", telephone=").append(telephone).append("]");
 		return sb.toString();
 	}

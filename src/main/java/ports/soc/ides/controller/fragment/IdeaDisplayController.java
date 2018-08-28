@@ -81,9 +81,9 @@ public class IdeaDisplayController extends AbstractIdesController {
 	private void fixNewlineIssue() {
 		//replace newline with <br/> tag
 		if (idea != null) {
-			idea.setAim(IdesUtils.replaceNewlineToBr(idea.getAim()));
-			idea.setQuestion(IdesUtils.replaceNewlineToBr(idea.getQuestion()));
-			idea.setDeliverables(IdesUtils.replaceNewlineToBr(idea.getDeliverables()));
+			idea.setAim(IdesUtils.replaceNewlineWithBr(idea.getAim()));
+			idea.setQuestion(IdesUtils.replaceNewlineWithBr(idea.getQuestion()));
+			idea.setDeliverables(IdesUtils.replaceNewlineWithBr(idea.getDeliverables()));
 		}
 	}
 	

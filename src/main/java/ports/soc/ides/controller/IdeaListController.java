@@ -39,6 +39,7 @@ import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.model.constant.ProjectType;
 import ports.soc.ides.model.constant.Role;
+import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @FacesConfig // Required to enable JSF 2.3
@@ -120,6 +121,8 @@ public class IdeaListController extends AbstractIdesController implements Serial
 
 	@PostConstruct
 	public void init() {		
+		FacesUtils.startLoggingSessionId();
+		
 		log.trace("IdeaListController init");
 		
 		renderEditIdeaForm = false;

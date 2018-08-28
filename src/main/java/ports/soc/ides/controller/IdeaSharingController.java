@@ -73,7 +73,7 @@ public class IdeaSharingController extends AbstractIdesController {
 			
 			return requestedIdea; 
 		} catch (Exception e) {
-			log.error("error retrieving shareable idea by parameter, " + e.getMessage() + ", idea reference no=" + getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA));
+			log.error("error retrieving shareable idea by parameter, " + IdesUtils.replaceNewline(e.getMessage(), "") + ", idea reference no=" + IdesUtils.replaceNewline(getParameter(IdeaDisplayController.SHAREABLE_URL_PARAMETER_IDEA), ""));
 			return null;
 		}
 	}

@@ -16,6 +16,8 @@ public class IdesConfiguration extends AbstractConfiguration {
 
 	private static final long serialVersionUID = -1160763844263519830L;
 
+	public static final String PARAM_DONT_REDIRECT_IF_SESSION_EXPIRED = "ignoreRedirect";
+	
 	/**
 	 * SESSION_TIMEOUT must equal to the value in web.xml
 	 */
@@ -47,7 +49,6 @@ public class IdesConfiguration extends AbstractConfiguration {
 		
 		userRoleMap = new LinkedHashMap<>();
 		domainRoleMap = new LinkedHashMap<>();
-		 
 	}
 	
 	@Override

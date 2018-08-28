@@ -1,6 +1,7 @@
 package ports.soc.ides.controller.fragment;
 
 import javax.annotation.PostConstruct;
+import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 
@@ -13,7 +14,7 @@ import ports.soc.ides.util.IdesUtils;
 public class IdeaFormController extends AbstractIdesController {
 
 	private static final long serialVersionUID = 6824528599356833103L;
-
+	
 	private Idea idea;
 
 	private boolean renderNotSpecificTypeRadio;
@@ -23,6 +24,8 @@ public class IdeaFormController extends AbstractIdesController {
 	private boolean enableIdeaStatusRadio;
 	private boolean renderIdeaStatus;
 
+	private boolean keepSessionAlive;
+	
 	@PostConstruct
 	public void initDefault() {
 		initDefault(new Idea());
@@ -38,13 +41,15 @@ public class IdeaFormController extends AbstractIdesController {
 		enableIdeaStatusRadio = false;
 		renderReferenceNumber = false;
 		renderIdeaStatus = false;
+		
+		keepSessionAlive = false;
 	}
 	
 	private void fixNewlineIssue() {
 		if (idea != null) {
-			idea.setAim(IdesUtils.replaceNewlineToBr(idea.getAim()));
-			idea.setQuestion(IdesUtils.replaceNewlineToBr(idea.getQuestion()));
-			idea.setDeliverables(IdesUtils.replaceNewlineToBr(idea.getDeliverables()));
+			idea.setAim(IdesUtils.replaceNewlineWithBr(idea.getAim()));
+			idea.setQuestion(IdesUtils.replaceNewlineWithBr(idea.getQuestion()));
+			idea.setDeliverables(IdesUtils.replaceNewlineWithBr(idea.getDeliverables()));
 		}
 	}
 
@@ -57,6 +62,10 @@ public class IdeaFormController extends AbstractIdesController {
 		idea.setQuestion(IdesUtils.trim(idea.getQuestion()));
 		idea.setDeliverables(IdesUtils.trim(idea.getDeliverables()));
 		idea.setStudent(IdesUtils.trim(idea.getStudent()));
+	}
+	
+	public void keepAlive(ActionEvent event) {
+		//do nothing, just keep session alive
 	}
 
 	public Idea getIdea() {
@@ -107,4 +116,15 @@ public class IdeaFormController extends AbstractIdesController {
 	public void setRenderIdeaStatus(boolean renderIdeaStatus) {
 		this.renderIdeaStatus = renderIdeaStatus;
 	}
+
+	public boolean isKeepSessionAlive() {
+		return keepSessionAlive;
+	}
+
+	public void setKeepSessionAlive(boolean keepSessionAlive) {
+		this.keepSessionAlive = keepSessionAlive;
+	}
+
+	
+	
 }

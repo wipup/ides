@@ -32,7 +32,12 @@
 	<div class="ui-fluid">
 		<h:panelGroup id="banner">
 			<div style="line-height: 4em; text-align: center;" class="main-background">
-				<span style="padding: .5em; font-size: 1.5em; font-weight: bold;">IDES <span class="ui-sm-0"> Project Idea Database</span></span>
+				<a style="color: white; padding: .5em; font-size: 1.5em; font-weight: bold; text-decoration: none;" href="#{request.contextPath}">
+					IDES 
+					<span class="ui-sm-0"> 
+					Project Idea Database
+					</span>
+				</a>
 			</div>
 		</h:panelGroup>
 
@@ -117,13 +122,13 @@
 		</p:dialog>
 
 		<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show()"  />
-		<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top" >
+		<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top"  >
 			<f:facet name="message">
 				<h:outputText value="You have been inactive for too long. Your session has expired." />
 				<br/>
 				<h:outputText value="Please backup all your information and refresh the page." />
 			</f:facet>
-			<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide();" icon="fa fa-close" />
+			<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide(); disableAllWidget();" icon="fa fa-close" />
 		</p:confirmDialog>
 	</div>
 

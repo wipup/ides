@@ -26,7 +26,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configurator;
 import org.apache.logging.log4j.core.config.builder.api.ConfigurationBuilderFactory;
 import org.primefaces.PrimeFaces;
 import org.primefaces.model.DefaultStreamedContent;
@@ -290,18 +289,15 @@ public class AdministratorPanelController extends AbstractIdesController {
 			log.debug("Desired log level: " + logLevel);
 
 			if (!logger.getLevel().equals(logLevel) || LoggerConfigurationFactory.LOG_IP_ADDRESS != logIpAddress) {
-				
-				Configurator.setRootLevel(logLevel);
 				if (LoggerConfigurationFactory.LOG_IP_ADDRESS != logIpAddress) {
 					LoggerConfigurationFactory.LOG_IP_ADDRESS = logIpAddress;
-					logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder()));
-					addMessageInfo("Success", "Logging IP Address has been set to " + logIpAddress);
-				} else {
-					logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder()));
 				}
+				logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder(), logLevel));
 				
-				addMessageInfo("Success", "Log level has been set to " + logLevel.toString());
-				log.info("Log level changed to: " + logLevel);
+				addMessageInfo("Success", "Logging IP Address has been set to " + (logIpAddress ? "enable" : "disable"));
+				addMessageInfo("Success", "Log level has been set to " + logCtx.getRootLogger().getLevel());
+				
+				log.info("Log level changed to: " + logCtx.getRootLogger().getLevel());
 				log.info("Log IP Address: " + logIpAddress);
 			}
 			if (logLevel == Level.OFF) {

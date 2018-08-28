@@ -177,6 +177,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 					ideaForm.initDefault();
 					idea = ideaForm.getIdea();
 				}
+				ideaForm.setKeepSessionAlive(true);
 
 				idea.setOrganisation(selectedOrg);
 				idea.setType(ProjectType.Study);

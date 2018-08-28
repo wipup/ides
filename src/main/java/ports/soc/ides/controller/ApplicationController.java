@@ -25,6 +25,7 @@ import ports.soc.ides.exception.IdesException;
 import ports.soc.ides.interceptor.annotation.IdesRoleAllowed;
 import ports.soc.ides.logger.LoggerConfigurationFactory;
 import ports.soc.ides.model.constant.Role;
+import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @Named(value = "app")
@@ -41,6 +42,8 @@ public class ApplicationController extends AbstractIdesController {
 	
 	@PostConstruct
 	private void init() {
+		FacesUtils.startLoggingSessionId();
+		
 		log.info("ApplicationController init");
 		allowedDatabaseConfig = false;
 		allowedSecurityConfig = false;

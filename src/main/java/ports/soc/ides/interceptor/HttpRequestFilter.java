@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.logger.LoggerConfigurationFactory;
+import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @WebFilter(servletNames = { "Faces Servlet" })
@@ -29,21 +30,21 @@ public class HttpRequestFilter implements Filter {
 
 	private static final Logger log = LogManager.getRootLogger();
 	
-	
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
 
 		HttpServletRequest httpReq = null;
-		HttpServletResponse res = null;
-		if (req instanceof HttpServletRequest && res instanceof HttpServletResponse) {
+		HttpServletResponse httpResp = null;
+		if (req instanceof HttpServletRequest && resp instanceof HttpServletResponse) {
 			httpReq = (HttpServletRequest) req;
-			res = (HttpServletResponse) resp;
+			httpResp = (HttpServletResponse) resp;
 			
+			String sessionId = httpReq.getRequestedSessionId();
+			String ipAddress = httpReq.getRemoteHost();
 			if (!httpReq.isRequestedSessionIdValid()) {
-				log.info("Invalid requested session: " + httpReq.getRequestedSessionId());
-				res.sendRedirect(httpReq.getContextPath());
-				return;
+				sessionId += "(invalid session ID)";
 			}
+			FacesUtils.startLoggingSessionId(sessionId, ipAddress);
 			
 			if (log.getLevel().isLessSpecificThan(LoggerConfigurationFactory.HUNT)) {
 				log.log(LoggerConfigurationFactory.HUNT, createHttpLogMessage(httpReq));
@@ -52,7 +53,7 @@ public class HttpRequestFilter implements Filter {
 			if (!isAllowed(httpReq) && (resp instanceof HttpServletResponse)) {
 				String uri = httpReq.getRequestURI();
 				log.error("invalid requested uri=" + uri + ". Redirect to " + httpReq.getContextPath());
-				res.sendRedirect(httpReq.getContextPath());
+				httpResp.sendRedirect(httpReq.getContextPath());
 				return;
 			}
 		}
@@ -70,7 +71,8 @@ public class HttpRequestFilter implements Filter {
 				}
 				params = IdesUtils.deepPrint(httpReq.getParameterMap());
 			}
-
+			
+			FacesUtils.stopLoggingSessionId();
 			log.error("Error on HTTP Request[sessionId=" + sessionId + ", parameter=" + params + "]", e);
 			throw e;
 		}
@@ -120,8 +122,6 @@ public class HttpRequestFilter implements Filter {
 	}
 	
 	private String createHttpLogMessage(HttpServletRequest httpReq) {
-		String sessionId = httpReq.getRequestedSessionId();
-		
 		StringBuilder sb = new StringBuilder();
 
 		HttpSession session = httpReq.getSession(false);
@@ -136,14 +136,14 @@ public class HttpRequestFilter implements Filter {
 			createDt = ZonedDateTime.ofInstant(Instant.ofEpochMilli(createTime), ZoneOffset.UTC);
 		}
 
-		sb.append("Http headers: requestedSessionId=").append(sessionId)
-		//.append(", sessionId=").append(id)
-		.append(", last access=").append(lastDt)
-		.append(", creation time=").append(createDt)
-		.append(", method=").append(httpReq.getMethod())
+		sb.append("Http headers: ")
+		.append("method=").append(httpReq.getMethod())
+		.append(", url=").append(httpReq.getRequestURL())
+		.append(", session last access=").append(lastDt)
+		.append(", session creation time=").append(createDt)
 		.append(", IP Address=").append(httpReq.getRemoteAddr())
 		.append(", host=").append(httpReq.getRemoteHost())
-		.append(", url=").append(httpReq.getRequestURL());
+		;
 
 		sb.append(", headers={");
 		Enumeration<String> headerNames = httpReq.getHeaderNames();

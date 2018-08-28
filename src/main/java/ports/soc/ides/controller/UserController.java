@@ -56,6 +56,7 @@ public class UserController extends AbstractIdesController {
 
 	@PostConstruct
 	public void init() {
+		FacesUtils.startLoggingSessionId();
 		log.trace("UserController init");
 	}
 	

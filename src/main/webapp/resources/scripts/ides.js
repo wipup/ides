@@ -12,6 +12,19 @@ $.ajaxSetup({
     //Timeout = 1 minute
 });
 
+function disableAllWidget(){
+	$("a").attr("onclick", "").attr("href", "#").click(function(e) {
+	    e.preventDefault();
+	});
+	
+	$("button").each(function(e){
+		var widget = PrimeFaces.getWidgetById(this.id);
+		if (widget){
+			widget.disable();
+		}
+	});
+}
+
 function copyToClipboard(id){
 	$(id).get(0).select();
 	document.execCommand("copy");
@@ -204,9 +217,11 @@ function fixModalSize(modalId) {
 
 function enablePageScrollbar(enable){
 	if (enable){
-		$("html").css("overflow", "auto");
+		$("html, body").css("overflow", "auto");
+		$("body").css("position", "");
 	} else {
-		$("html").css("overflow", "hidden");
+		$("html, body").css("overflow", "hidden");
+		$("body").css("position", "relative");
 	}
 }
 

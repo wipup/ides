@@ -188,7 +188,7 @@
 							<p:button widgetVar="confirmApproveSelectionBtn" styleClass="no-space approve-btn" value="Approve" icon="fa fa-check-square-o" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}'}]); return false;" />
 						</div>
 						<div class="ui-g-2 ui-sm-6 ui-g-nopad">
-							<p:button widgetVar="confirmAllocateSelectionBtn" styleClass="no-space" value="Allocate" icon="fa fa-lock" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}'}]); return false;" />
+							<p:button widgetVar="confirmAllocateSelectionBtn" styleClass="no-space allocate-btn" value="Allocate" icon="fa fa-lock" disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}'}]); return false;" />
 						</div>
 						<div class="ui-g-2 ui-sm-6 ui-g-nopad">
 							<p:button widgetVar="confirmWithdrawSelectionBtn" styleClass="no-space withdraw-btn" value="Withdraw" icon="fa fa-minus-circle"  disabled="true" onclick="confirmAction([{name:'#{IdeaListConst.PARAM_CONFIRM_MODE}', value:'#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}'}]); return false;" />
@@ -299,7 +299,7 @@
 						<p:button value="Approve" icon="fa fa-check-square-o" styleClass="cell-btn approve-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
 					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Approved}" style="padding: 5px 2px;">
-						<p:button value="Allocate" icon="fa fa-lock" styleClass="cell-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
+						<p:button value="Allocate" icon="fa fa-lock" styleClass="cell-btn allocate-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
 					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Provisional}" style="padding: 5px 2px;">
 						<p:button value="Withdraw" icon="fa fa-minus-circle" styleClass="cell-btn withdraw-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
@@ -465,6 +465,7 @@
 					PF('confirmOneIdeaBtn').jq.removeClass('approve-btn');
 					PF('confirmOneIdeaBtn').jq.removeClass('delete-btn');
 					PF('confirmOneIdeaBtn').jq.removeClass('withdraw-btn');
+					PF('confirmOneIdeaBtn').jq.removeClass('allocate-btn');
 					
 					if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}"){
 						header = "Idea Approval confirmation";
@@ -475,6 +476,7 @@
 						header = "Idea Allocation confirmation";
 						message = "Are you sure that you want to mark this idea as allocated?";
 						buttonTxt = "Allocate";
+						PF('confirmOneIdeaBtn').jq.addClass('allocate-btn');
 					}  else if (action == "#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}"){
 						header = "Idea Withdrawal confirmation";
 						message = "Are you sure that you want to withdraw this idea?";
@@ -616,7 +618,7 @@
 							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}'}]); return false;" />
 					<p:button value="Withdraw" icon="fa fa-minus-circle" styleClass="no-space dialog-btn withdraw-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}"  
 							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}'}]); return false;" />
-					<p:button value="Allocate" icon="fa fa-lock"  styleClass="no-space dialog-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}"  
+					<p:button value="Allocate" icon="fa fa-lock"  styleClass="no-space dialog-btn allocate-btn" rendered="#{ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}"  
 							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}'}]); return false;" />
 					<p:button value="Delete" icon="fa fa-trash-o" styleClass="no-space dialog-btn delete-btn"  rendered="#{app.enableIdeaDeletion and ideaList.confirmModalMode == IdeaListConst.PARAM_CONFIRM_MODE_DELETE}"  
 							onclick="enableWidgetBySelector(PrimeFaces.escapeClientId(this.id), false); processSelectedIdeas([{name: '#{IdeaListConst.PARAM_CONFIRM_MODE}', value: '#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}'}]); return false;" />

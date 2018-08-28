@@ -15,7 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
+import ports.soc.ides.config.IdesConfiguration;
 import ports.soc.ides.controller.AbstractIdesController;
+import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.exception.IdesException;
 import ports.soc.ides.logger.LoggerConfigurationFactory;
 
@@ -41,6 +43,27 @@ public class FacesUtils {
 	 * Force adding sessionId to logger thread context
 	 * Also if sessionId is incorrect, replace with the correct one 
 	 */
+	public static void startLoggingSessionId(String sessionId, String ipAddress) {		
+		if (!ThreadContext.containsKey(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY)) {
+			ThreadContext.put(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY, sessionId);
+			ThreadContext.put(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY, ipAddress);
+			//log.trace("Add session id to logger: " + sessionId);
+			return;
+		}
+
+		String session = ThreadContext.get(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY);
+		if (!sessionId.equals(session)) {
+			//log.trace("Incorrect logged sessionId, replace new one");
+			ThreadContext.put(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY, sessionId);
+			//log.trace("Add session id to logger: " + sessionId);
+		}
+		
+		String threadIpAddress = ThreadContext.get(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY);
+		if (!ipAddress.equals(threadIpAddress)) {
+			ThreadContext.put(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY, ipAddress);
+		}
+	}
+	
 	public static void startLoggingSessionId() {
 		FacesContext ctx = FacesContext.getCurrentInstance();
 		if (ctx == null) {
@@ -63,27 +86,7 @@ public class FacesUtils {
 			HttpServletRequest httpReq = (HttpServletRequest) req;
 			currentIpAddress = httpReq.getRemoteAddr();
 		}
-		
-		if (!ThreadContext.containsKey(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY)) {
-			ThreadContext.put(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY, sessionId);
-			ThreadContext.put(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY, currentIpAddress);
-			log.trace("Added session id to logger: " + sessionId);
-			log.trace("User-Agent: " + ex.getRequestHeaderMap().get("User-Agent"));
-			return;
-		}
-
-		String session = ThreadContext.get(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY);
-		if (!sessionId.equals(session)) {
-			log.trace("Incorrect logged sessionId, replace new one");
-			ThreadContext.put(LoggerConfigurationFactory.LOG_SESSION_ATTRIBUTE_KEY, sessionId);
-			log.trace("Added session id to logger: " + sessionId);
-			log.trace("User-Agent: " + ex.getRequestHeaderMap().get("User-Agent"));
-		}
-		
-		String threadIpAddress = ThreadContext.get(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY);
-		if (!currentIpAddress.equals(threadIpAddress)) {
-			ThreadContext.put(LoggerConfigurationFactory.LOG_IP_ADDRESS_ATTRIBUTE_KEY, currentIpAddress);
-		}
+		startLoggingSessionId(sessionId, currentIpAddress);
 	}
 
 	public static void stopLoggingSessionId() {
@@ -92,6 +95,28 @@ public class FacesUtils {
 		}
 	}
 
+	public static void handleInvalidSessionId(FacesContext context) throws Exception {
+		FacesUtils.forceClearCache((HttpServletResponse) context.getExternalContext().getResponse());
+
+		HttpServletRequest req = (HttpServletRequest) context.getExternalContext().getRequest();
+		String agreementPath = req.getContextPath() + IdesPage.AGREEMENT.getPath();
+		if (req.getRequestURI().equals(agreementPath)) {
+			FacesUtils.redirectTo(agreementPath);
+			return;
+		}
+
+		boolean shouldRedirect = true;
+
+		String dontRedirect = req.getParameter(IdesConfiguration.PARAM_DONT_REDIRECT_IF_SESSION_EXPIRED);
+		if (IdesConfiguration.PARAM_DONT_REDIRECT_IF_SESSION_EXPIRED.equals(dontRedirect)) {
+			shouldRedirect = false;
+		}
+
+		if (shouldRedirect) {
+			FacesUtils.redirectToWelcomePage();
+		}
+	}
+	
 	public static void redirectToWelcomePage(boolean responseComplete) throws IOException {
 		FacesContext fctx = FacesContext.getCurrentInstance();
 		ExternalContext ectx = fctx.getExternalContext();

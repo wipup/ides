@@ -1,6 +1,5 @@
 package ports.soc.ides.exception;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import javax.faces.application.ViewExpiredException;
@@ -9,12 +8,10 @@ import javax.faces.context.ExceptionHandlerWrapper;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.util.FacesUtils;
 
 /**
@@ -38,21 +35,11 @@ public class IdesExceptionHandler extends ExceptionHandlerWrapper {
 		}
 		return false;
 	}
-	
-	protected void handleViewExpiredException() {
+
+	private void handleViewExpiredException() {
 		try {
-			
-			FacesUtils.forceClearCache();
-			
-			HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-			String agreementPath = req.getContextPath() + IdesPage.AGREEMENT.getPath();
-			if (req.getRequestURI().equals(agreementPath)) {
-				FacesUtils.redirectTo(agreementPath);
-				return;
-			}
-			
-			FacesUtils.redirectToWelcomePage();
-		} catch (IOException e) {
+			FacesUtils.handleInvalidSessionId(FacesContext.getCurrentInstance());
+		} catch (Exception e) {
 			log.fatal("Error while handling view expired exception", e);
 		}
 	}
