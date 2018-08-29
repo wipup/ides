@@ -34,7 +34,6 @@
 	</h:panelGroup>
 
 	<div class="ui-g">
-	
 		<h:panelGroup rendered="#{ideaForm.renderReferenceNumber}">
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
 				<p:outputLabel value="Reference number: " />
@@ -64,11 +63,41 @@
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
 				<p:outputLabel value="Project Type: " for="ideaProjectType" />
 			</div>
-			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:selectOneRadio id="ideaProjectType" value="#{ideaForm.idea.type}" required="true" requiredMessage="Project type is required!" onchange="keepingSessionAlive(null, null, null);" >
-					<f:selectItem itemLabel="#{ProjType.Study.label}" itemValue="#{ProjType.Study}" />
-					<f:selectItem itemLabel="#{ProjType.Engineering.label}" itemValue="#{ProjType.Engineering}" />
+			<div class="ui-g ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:selectOneRadio id="ideaProjectType" value="#{ideaForm.idea.type}" layout="custom" required="true" requiredMessage="Project type is required!" onchange="keepingSessionAlive(null, null, null);" >
+					<f:selectItem itemLabel="Study Project" itemValue="#{ProjType.Study}" />
+					<f:selectItem itemLabel="Engineering Project" itemValue="#{ProjType.Engineering}" />
 				</p:selectOneRadio>
+				
+				<div class="ui-g-12 ides-sm-pad ui-g-nopad">
+					<p:radioButton id="projectTypeStudy" for="ideaProjectType" itemIndex="0" />
+					<p:outputLabel for="projectTypeStudy" value="Study Project" styleClass="filter-radiobox-label" />
+				</div>
+				<div class="ui-md-12 ui-sm-0"></div>
+				<div class="ui-g-12 ides-sm-pad ui-g-nopad">
+					<p:radioButton id="projectTypeEng" for="ideaProjectType" itemIndex="1" />
+					<p:outputLabel for="projectTypeEng" value="Engineering Project" styleClass="filter-radiobox-label" />
+				</div>
+				
+				<h:panelGroup rendered="#{ideaForm.renderProjectTypeHelp}">
+					<div class="ui-md-12 ui-sm-0"></div>
+					<div>
+						<p:button value="What type is my project?" onclick="$('#projectTypeHelp').toggle(); return false;" iconPos="left" icon="fa fa-question-circle" />
+					</div>
+					<div id="projectTypeHelp" class="ui-g-12" style="display: none;">
+						<ul style="margin: 0;">
+							<li><strong>A study project</strong> 
+								<span>usually involves undertaking a study of an information systems problem domain. </span><br/>
+								<span>An example of the sort of thing you might do for a study project would be an evaluation of the information systems impact of mobile devices on an organisation. </span>
+								<br/><br/>
+							</li>
+							<li><strong>An engineering project</strong> 
+								<span>usually involves building a piece of software to solve a problem. </span><br/>
+								<span>An example of the sort of thing you might do would be building an information system to address a specific organisation's requirements. </span>
+							</li>
+						</ul>
+					</div>
+				</h:panelGroup>
 			</div>
 		</h:panelGroup>
 
@@ -76,10 +105,10 @@
 
 		<h:panelGroup>
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Project title: " for="ideaTitle" />
+				<p:outputLabel value="Project Title: " for="ideaTitle" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:inputText id="ideaTitle" value="#{ideaForm.idea.title}" required="true" requiredMessage="Project title must not be empty!" onblur="keepingSessionAlive(null, null, null);" />
+				<p:inputText id="ideaTitle" value="#{ideaForm.idea.title}" required="true" requiredMessage="Project title must not be empty!" onblur="keepingSessionAlive(null, null, null);" placeholder="Enter your project name" />
 			</div>
 		</h:panelGroup>
 
@@ -100,7 +129,7 @@
 		
 		<h:panelGroup  rendered="#{ideaForm.renderIdeaStatus}">
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Idea Status: " for="ideaProjectStatus" />
+				<p:outputLabel value="Idea Status: " />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Approved}">			
@@ -128,7 +157,7 @@
 				<p:outputLabel value="Aims and Objectives: " for="ideaAims" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:textEditor id="ideaAims" widgetVar="ideaAims" value="#{ideaForm.idea.aim}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project aims and objective" required="true" requiredMessage="Project aim and objective must not be empty!" >
+				<p:textEditor id="ideaAims" widgetVar="ideaAims" value="#{ideaForm.idea.aim}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project aims and objectives" required="true" requiredMessage="Project aim and objective must not be empty!" >
 					<f:facet name="toolbar">
 						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
 					</f:facet>
@@ -140,10 +169,10 @@
 
 		<h:panelGroup>
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Academic Question: " for="ideaQuestion" />
+				<p:outputLabel value="Academic Questions: " for="ideaQuestion" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:textEditor id="ideaQuestion" widgetVar="ideaQuestion" value="#{ideaForm.idea.question}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project academic question">
+				<p:textEditor id="ideaQuestion" widgetVar="ideaQuestion" value="#{ideaForm.idea.question}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project academic questions">
 					<f:facet name="toolbar">
 						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
 					</f:facet>
@@ -155,10 +184,10 @@
 
 		<h:panelGroup>
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Deliverables: " for="ideaDeliverable" />
+				<p:outputLabel value="Project Deliverables: " for="ideaDeliverable" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:textEditor id="ideaDeliverable" widgetVar="ideaDeliverable" value="#{ideaForm.idea.deliverables}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project deliverables">
+				<p:textEditor id="ideaDeliverable" widgetVar="ideaDeliverable" value="#{ideaForm.idea.deliverables}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project deliverables, e.g., dissertation report, software and hardware">
 					<f:facet name="toolbar">
 						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
 					</f:facet>
@@ -170,10 +199,10 @@
 
 		<h:panelGroup>
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Student for whom project has been devised: " for="ideaStudent" placeholder="Student name" />
+				<p:outputLabel value="Student for whom project has been devised: " for="ideaStudent"  />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:inputText id="ideaStudent" value="#{ideaForm.idea.student}" onblur="keepingSessionAlive(null, null, null);" />
+				<p:inputText id="ideaStudent" value="#{ideaForm.idea.student}" onblur="keepingSessionAlive(null, null, null);" placeholder="Student name" />
 			</div>
 		</h:panelGroup>
 

@@ -95,10 +95,10 @@ public abstract class AbstractIdesController implements Serializable {
 	 * @param severity
 	 *            Severity of the message e.g. Fatal, Warning or Error
 	 */
-	protected void addMessage(String summary, String detail, FacesMessage.Severity severity) {
+	public void addMessage(String summary, String detail, FacesMessage.Severity severity) {
 		log.info("Add message(" + String.valueOf(severity) + ")[header=" + summary + ", detail=" + detail + "]");
 		FacesMessage message = new FacesMessage(severity, summary, detail);
-		FacesContext.getCurrentInstance().addMessage(null, message);
+		FacesContext.getCurrentInstance().addMessage(ID_COMPONENT_MESSAGE, message);
 		if (isUpdateGrowl()) {
 			updateMessage();
 		}

@@ -278,6 +278,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			ideaForm.setRenderIdeaStatus(true);
 			ideaForm.setRenderIdeaStatusRadio(false);
 			ideaForm.setRenderReferenceNumber(true);
+			ideaForm.setRenderProjectTypeHelp(false);
 
 			renderEditIdeaForm = true;
 			showRequestedModal();

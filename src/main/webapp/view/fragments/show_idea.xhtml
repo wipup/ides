@@ -131,8 +131,8 @@
 				<p:outputLabel value="Shareable Link: " />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<div class="ui-inputgroup">
-					<p:inputText widgetVar="shareLinkTxt" value="#{showIdea.shareableLink}" readonly="true" />
+				<div class="ui-inputgroup" >
+					<p:inputText widgetVar="shareLinkTxt" value="#{showIdea.shareableLink}" readonly="true" styleClass="no-boxshadow" />
 					<p:button value="Copy to clipboard" onclick="copyToClipboard(PF('shareLinkTxt').jqId); return false;" style="white-space: nowrap;" />
 				</div>
 			</div>

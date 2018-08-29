@@ -23,6 +23,8 @@ public class IdeaFormController extends AbstractIdesController {
 
 	private boolean enableIdeaStatusRadio;
 	private boolean renderIdeaStatus;
+	
+	private boolean renderProjectTypeHelp;
 
 	private boolean keepSessionAlive;
 	
@@ -41,6 +43,7 @@ public class IdeaFormController extends AbstractIdesController {
 		enableIdeaStatusRadio = false;
 		renderReferenceNumber = false;
 		renderIdeaStatus = false;
+		renderProjectTypeHelp = true;
 		
 		keepSessionAlive = false;
 	}
@@ -123,6 +126,14 @@ public class IdeaFormController extends AbstractIdesController {
 
 	public void setKeepSessionAlive(boolean keepSessionAlive) {
 		this.keepSessionAlive = keepSessionAlive;
+	}
+
+	public boolean isRenderProjectTypeHelp() {
+		return renderProjectTypeHelp;
+	}
+
+	public void setRenderProjectTypeHelp(boolean renderProjectTypeHelp) {
+		this.renderProjectTypeHelp = renderProjectTypeHelp;
 	}
 
 	

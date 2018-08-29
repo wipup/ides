@@ -87,7 +87,7 @@ public class UserController extends AbstractIdesController {
 				
 				log.info("sign in completed successfully");
 				if (!user.equals(prevUser) && isLoggedIn()) {
-					addMessageInfo("Success", "Signed in as " + user.getName() + " (" + Role.getRoleForDisplaying(user.getRoles()) + ")");
+					addMessageInfo("Sign in successfully", "Signed in as " + user.getName() + " (" + Role.getRoleForDisplaying(user.getRoles()) + ")");
 				}
 			} else {
 				addMessageError("Unable to sign in", "Sent credential is empty");

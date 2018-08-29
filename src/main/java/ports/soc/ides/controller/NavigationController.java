@@ -8,11 +8,13 @@ import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import ports.soc.ides.controller.event.IdesEvent;
 import ports.soc.ides.controller.event.PageChangeEvent;
 import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.interceptor.annotation.LogPerformance;
+import ports.soc.ides.util.FacesUtils;
 
 @Named("nav")
 @ViewScoped
@@ -106,10 +108,12 @@ public class NavigationController extends AbstractIdesController {
 	 */
 	public String onPostBack() {
 		try {
+			FacesUtils.startLoggingSessionId();
 			log.trace("onPostBack");
 			
 			ExternalContext ex = FacesContext.getCurrentInstance().getExternalContext();
-			String sessionId = ex.getSessionId(false);
+			HttpServletRequest req = (HttpServletRequest) ex.getRequest();
+			String sessionId = req.getRequestedSessionId();
 			log.debug("Received a postback request with sessionId: " + sessionId);
 			
 			currentPage = IdesPage.IDEA_LIST;

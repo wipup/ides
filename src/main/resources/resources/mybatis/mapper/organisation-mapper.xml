@@ -14,7 +14,7 @@
 	<select id="selectOrganisationsForListing" resultMap="organisationResult">
 		SELECT *
 		FROM CONTACTS
-		ORDER BY orgname ASC
+		ORDER BY orgcontact ASC
 	</select>
 	
 	<select id="selectNextId" resultType="long" useCache="false" >

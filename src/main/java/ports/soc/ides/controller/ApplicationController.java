@@ -5,6 +5,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.faces.application.ProjectStage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.apache.logging.log4j.Level;
@@ -40,9 +42,16 @@ public class ApplicationController extends AbstractIdesController {
 	private boolean allowedDatabaseConfig;
 	private boolean allowedSecurityConfig;
 	
+	private ProjectStage projectStage;
+	
 	@PostConstruct
 	private void init() {
 		FacesUtils.startLoggingSessionId();
+		
+		projectStage = FacesContext.getCurrentInstance().getApplication().getProjectStage();
+		if (projectStage == null) {
+			projectStage = ProjectStage.Production;
+		}
 		
 		log.info("ApplicationController init");
 		allowedDatabaseConfig = false;
@@ -216,5 +225,17 @@ public class ApplicationController extends AbstractIdesController {
 
 	public boolean isEnableProfileDeletion() {
 		return config.isEnableProfileDeletion();
+	}
+
+	public ProjectStage getProjectStage() {
+		return projectStage;
+	}
+
+	public void setProjectStage(ProjectStage projectStage) {
+		this.projectStage = projectStage;
+	}
+	
+	public boolean isProductionStage() {
+		return projectStage == ProjectStage.Production;
 	}
 }

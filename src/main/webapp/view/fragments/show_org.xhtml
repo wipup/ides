@@ -13,6 +13,17 @@
 
 		<div class="ui-g-12 no-space"></div>
 		
+		<h:panelGroup rendered="#{showOrg.renderContact}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<h:outputText value="Client name: " />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<h:outputText value="#{showOrg.organisation.contact}" styleClass="highlight-target" />
+			</div>
+		</h:panelGroup>
+
+		<div class="ui-g-12 no-space"></div>
+		
 		<h:panelGroup rendered="#{showOrg.renderName}">
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
 				<h:outputText value="Organisation name: " />
@@ -52,17 +63,6 @@
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<h:outputText value="#{showOrg.organisation.typeOfWork}"  />
-			</div>
-		</h:panelGroup>
-
-		<div class="ui-g-12 no-space"></div>
-		
-		<h:panelGroup rendered="#{showOrg.renderContact}">
-			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<h:outputText value="Contact name: " />
-			</div>
-			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<h:outputText value="#{showOrg.organisation.contact}" styleClass="highlight-target" />
 			</div>
 		</h:panelGroup>
 

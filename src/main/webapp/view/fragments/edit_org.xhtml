@@ -3,13 +3,26 @@
 	
 
 	<div class="ui-g">
+		<h:panelGroup rendered="#{orgForm.renderContactName}">
+			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+				<p:outputLabel value="Client name: " for="orgContact" />
+			</div>
+			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+				<p:inputText id="orgContact" value="#{orgForm.organisation.contact}" required="true" requiredMessage="Contact name must not be empty!" 
+					 title="Contact name" alt="Contact name" 
+						placeholder="First name and last name" />
+			</div>
+		</h:panelGroup>
+		
+		<div class="ui-g-12 no-space"></div>
+			
 		<h:panelGroup>
 			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
 				<p:outputLabel value="Organisation Name: " for="orgName" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<p:inputText id="orgName" value="#{orgForm.organisation.name}" required="#{orgForm.requireOrganisationName}" requiredMessage="Name must not be empty!" 
-					autocomplete="organization" title="Organisation name" alt="Organisation name"  placeholder="Organisation name" />
+					autocomplete="organization" title="Organisation name" alt="Organisation name"  placeholder="Organisation where your client works for" />
 			</div>
 		</h:panelGroup>
 		
@@ -21,7 +34,7 @@
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<p:inputTextarea id="orgAddress" value="#{orgForm.organisation.address}" 
-						placeholder="Postal address" rows="2" 
+						placeholder="Organisation's postal address" rows="2" 
 						autocomplete="street-address" title="Organisation street address" alt="Organisation street address"
 						required="#{orgForm.requirePostalAddress}" requiredMessage="Address must not be empty!" />
 			</div>
@@ -35,8 +48,8 @@
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<p:inputText id="orgPostcode" value="#{orgForm.organisation.postcode}" requiredMessage="Postcode must not be empty!" 
-					autocomplete="postal-code" title="Organisation postcode" alt="Organisation postcode" 
-					placeholder="Postcode" />
+					autocomplete="postal-code" title="Organisation's postcode" alt="Organisation postcode" 
+					placeholder="Organisation's postcode" />
 			</div>
 		</h:panelGroup>
 		
@@ -48,23 +61,10 @@
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">			
 				<p:inputText id="orgWork" value="#{orgForm.organisation.typeOfWork}" 
-						placeholder="E.g. Education, School, Charity, Hospital, etc." 
+						placeholder="E.g. Education, School, Research centre, Charity, Hospital, etc." 
 						autocomplete="postal-code" title="Organisation street address"  
 						alt="Organisation postcode"
 						requiredMessage="Postcode must not be empty!"  />
-			</div>
-		</h:panelGroup>
-		
-		<div class="ui-g-12 no-space"></div>
-
-		<h:panelGroup rendered="#{orgForm.renderContactName}">
-			<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-				<p:outputLabel value="Contact name: " for="orgContact" />
-			</div>
-			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:inputText id="orgContact" value="#{orgForm.organisation.contact}" required="true" requiredMessage="Contact name must not be empty!" 
-					 title="Contact name" alt="Contact name" 
-						placeholder="The name of your client" />
 			</div>
 		</h:panelGroup>
 		
@@ -75,8 +75,8 @@
 				<p:outputLabel value="Telephone number: " for="orgTel" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:inputText id="orgTel" value="#{orgForm.organisation.telephone}" autocomplete="tel" title="Contact telephone number" alt="Contact telephone number"
-					  placeholder="Telephone number" />
+				<p:inputText id="orgTel" value="#{orgForm.organisation.telephone}" autocomplete="tel" title="Contact telephone number" alt="Client telephone number"
+					  placeholder="Client's contact number" />
 			</div>
 		</h:panelGroup>
 		
@@ -88,7 +88,7 @@
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 				<p:inputText  id="orgEmail" type="email" value="#{orgForm.organisation.email}" required="true" requiredMessage="Email address name must not be empty!" 
-					validatorMessage="Incorrect email address" autocomplete="email" placeholder="Email address of your client">
+					validatorMessage="Incorrect email address" autocomplete="email" placeholder="Client's email address">
 					<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
 				</p:inputText>
 			</div>

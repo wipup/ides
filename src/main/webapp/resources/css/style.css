@@ -21,6 +21,12 @@ time.timeago {
 	height: auto !important;
 }
 
+.no-boxshadow{
+	box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+}
+
 .allocate-btn{
 	background-color: #D2691E !important;
 	color: #FFFFFF;

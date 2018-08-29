@@ -106,14 +106,14 @@
 						<h:outputText value="Idea Deletion Button: " />
 					</div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12">
-						<p:selectBooleanButton id="allowIdeaDeletion" value="#{admin.config.enableIdeaDeletion}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+						<p:selectBooleanButton id="allowIdeaDeletion" value="#{admin.config.enableIdeaDeletion}"  onLabel="Enabled" offLabel="Disabled" onIcon="fa fa-check" offIcon="fa fa-close" />
 					</div>
 					<div class="ui-g-12 ui-g-nopad"></div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
 						<h:outputText value="Client Management Page: " />
 					</div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12">
-						<p:selectBooleanButton id="AllowClientDeletion" value="#{admin.config.enableOrgDeletion}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+						<p:selectBooleanButton id="AllowClientDeletion" value="#{admin.config.enableOrgDeletion}"  onLabel="Enabled" offLabel="Disabled" onIcon="fa fa-check" offIcon="fa fa-close" />
 					</div>
 				</div>
 
@@ -245,26 +245,30 @@
 
 			<!-- ============================================================================================================================================ -->
 
-			<p:tab title="Security" id="securityTab" rendered="#{app.allowedSecurityConfig}">
+			<p:tab title="User Authentication" id="securityTab" rendered="#{app.allowedSecurityConfig}">
 				<f:facet name="actions">
 					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
 					</span>
 				</f:facet>
-				<div class="ui-g ui-widget-content ui-g-12">
-					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-						<h:outputText value="Initial Configuration file:  " />
+				
+				<h:panelGroup rendered="#{!app.productionStage}">
+					<div class="ui-g ui-widget-content ui-g-12">
+						<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+							<h:outputText value="Initial Configuration file:  " />
+						</div>
+						<div class="ui-lg-9 ui-md-8 ui-sm-12">
+							<h:outputText value="#{admin.idesConfigPath}" />
+						</div>
+						
+						<div class="ui-g-12 ui-g-nopad ui-sm-0"></div>
+						
+						<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+						<div class="ui-lg-3 ui-md-3 ui-sm-12">
+							<p:commandButton value="Reload initial setting" icon="fa fa-upload" disabled="#{empty admin.idesConfigPath}" actionListener="#{admin.onReloadSecurityConfig}" update="@form" />
+						</div>
 					</div>
-					<div class="ui-lg-9 ui-md-8 ui-sm-12">
-						<h:outputText value="#{admin.idesConfigPath}" />
-					</div>
-					
-					<div class="ui-g-12 ui-g-nopad ui-sm-0"></div>
-					
-					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
-					<div class="ui-lg-3 ui-md-3 ui-sm-12">
-						<p:commandButton value="Reload initial setting" icon="fa fa-upload" disabled="#{empty admin.idesConfigPath}" actionListener="#{admin.onReloadSecurityConfig}" update="@form" />
-					</div>
-				</div>
+				</h:panelGroup>
+				
 				<div class="ui-g ui-widget-content">
 					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
 						<p:outputLabel for="googleClientId" value="Google Sign-In Client ID:  " />
@@ -272,15 +276,24 @@
 					<div class="ui-lg-9 ui-md-8 ui-sm-12">
 						<p:inputText id="googleClientId" value="#{admin.config.googleSignInclientId}" required="true" requiredMessage="Google Sign-In Client ID must not be empty" />
 					</div>
+					
 				</div>
 				<div class="ui-g ui-widget-content">
 					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
 						<p:outputLabel value="reCAPTCHA:  " />
 					</div>
-					<div class="ui-lg-2 ui-md-3 ui-sm-12">
-						<p:selectBooleanButton value="#{admin.config.enableCaptcha}" onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close">
-							<p:ajax event="change" update="captchaInfo" />
-						</p:selectBooleanButton>
+					<div class="ui-lg-9 ui-md-8 ui-sm-12 ui-g">
+						<div class="ui-g-12 ui-g-nopad">
+							reCAPTCHA helps protecting website from spam, abuse and automation tool.<br/>
+							If enabled, reCAPTCHA will appear on idea submission page and client submission page. <br/>
+							reCAPTCHA will not appear if the user is signed in.
+						</div>
+						<div class="ui-g-12"></div>
+						<div class="ui-lg-2 ui-md-3 ui-sm-12 ui-g-nopad">
+							<p:selectBooleanButton value="#{admin.config.enableCaptcha}" onLabel="Enabled" offLabel="Disabled" onIcon="fa fa-check" offIcon="fa fa-close">
+								<p:ajax event="change" update="captchaInfo" />
+							</p:selectBooleanButton>
+						</div>
 					</div>
 
 					<p:outputPanel id="captchaInfo" styleClass="ui-g ui-g-12 no-space">
@@ -288,7 +301,7 @@
 							<div class="ui-g-12 ui-g-nopad"></div>
 
 							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-								<p:outputLabel for="captchaPublicKey" value="Public Key:  " />
+								<p:outputLabel for="captchaPublicKey" value="reCAPTCHA Public Key:  " />
 							</div>
 							<div class="ui-lg-9 ui-md-8 ui-sm-12">
 								<p:inputText id="captchaPublicKey" value="#{admin.config.captchaPublicKey}" required="true" requiredMessage="Captcha public key must not be empty" />
@@ -297,7 +310,7 @@
 							<div class="ui-g-12 ui-g-nopad"></div>
 
 							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-								<p:outputLabel for="captchaPrivateKey" value="Private Key:  " />
+								<p:outputLabel for="captchaPrivateKey" value="reCAPTCHA Private Key:  " />
 							</div>
 							<div class="ui-lg-9 ui-md-8 ui-sm-12">
 								<div class="ui-inputgroup">
@@ -318,30 +331,38 @@
 					<span class="ui-sm-0"> <p:outputLabel value="Current Server Time: " /> <p:clock syncInterval="10000" pattern="HH:mm:ss &#160;&#160; dd MMMM yyyy" mode="server" />
 					</span>
 				</f:facet>
-				<div class="ui-g ui-widget-content ui-g-12">
-					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-						<p:outputLabel value="Initial Configuration file:  " />
+				
+				<h:panelGroup rendered="#{!app.productionStage}">
+					<div class="ui-g ui-widget-content ui-g-12">
+						<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+							<p:outputLabel value="Database Configuration file:  " />
+						</div>
+						<div class="ui-lg-9 ui-md-8 ui-sm-12">
+							<p:outputLabel value="#{admin.dbConfigPath}" />
+						</div>
+						<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
+						<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
+						<div class="ui-lg-3 ui-md-3 ui-sm-12">
+							<p:commandButton value="Reload database setting" icon="fa fa-upload" disabled="#{empty admin.dbConfigPath}" actionListener="#{admin.onReloadDatabaseConfig}" update="@form" />
+						</div>
 					</div>
-					<div class="ui-lg-9 ui-md-8 ui-sm-12">
-						<p:outputLabel value="#{admin.dbConfigPath}" />
-					</div>
-					<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
-					<div class="ui-lg-2 ui-md-3 ui-sm-0"></div>
-					<div class="ui-lg-3 ui-md-3 ui-sm-12">
-						<p:commandButton value="Reload database setting" icon="fa fa-upload" disabled="#{empty admin.dbConfigPath}" actionListener="#{admin.onReloadDatabaseConfig}" update="@form" />
-					</div>
-				</div>
+				</h:panelGroup>
+				
 				<div class="ui-g ui-widget-content">
+				
+					<h:panelGroup rendered="#{!app.productionStage}">
+						<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+							<p:outputLabel value="Current Method: " />
+						</div>
+						<div class="ui-lg-9 ui-md-8 ui-sm-12">
+							<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JDBC}" value="1. Manual JDBC URL Connection" />
+							<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JNDI}" value="2. JNDI" />
+						</div>
+						<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
+					</h:panelGroup>
+					
 					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-						<p:outputLabel value="Current Method: " />
-					</div>
-					<div class="ui-lg-9 ui-md-8 ui-sm-12">
-						<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JDBC}" value="1. Manual JDBC URL Connection" />
-						<h:outputText rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JNDI}" value="2. JNDI" />
-					</div>
-					<div class="ui-g-12 ui-sm-0 ui-g-nopad"></div>
-					<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-						<p:outputLabel value="Connection Method: " />
+						<p:outputLabel value="Datasource Connection Method: " />
 					</div>
 					<div class="ui-lg-9 ui-md-8 ui-sm-12">
 						<p:selectOneButton value="#{admin.dbConfig.datasourceConnectionType}">
@@ -353,33 +374,37 @@
 				</div>
 
 				<p:outputPanel id="dbConfigPanel">
+				
 					<h:panelGroup rendered="#{admin.dbConfig.datasourceConnectionType == DBConnection.JDBC}">
-
 						<div class="ui-g ui-widget-content">
-							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
-								<p:outputLabel value="Available Drivers:  " for="driverList" />
-							</div>
-							<div class="ui-lg-9 ui-md-8 ui-sm-12" >
-								<p:selectOneMenu id="driverList" value="#{admin.jdbcDriverClassName}" converter="adminJdbcDriverConveter" var="driver" autoWidth="false" >
-									<f:selectItems value="#{admin.driverList}" var="driver" itemLabel="#{driver.class.name} (Version #{driver.majorVersion}.#{driver.minorVersion})" itemValue="#{driver}" noSelectionValue="null" />
-									<p:column>
-										<div class="ui-g">
-											<div class="ui-md-7 ui-sm-12">
-												<h:outputText value="#{driver.class.name}" />
+						
+							<h:panelGroup rendered="#{!app.productionStage}">
+								<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
+									<p:outputLabel value="Available Drivers:  " for="driverList" />
+								</div>
+								<div class="ui-lg-9 ui-md-8 ui-sm-12" >
+									<p:selectOneMenu id="driverList" value="#{admin.jdbcDriverClassName}" converter="adminJdbcDriverConveter" var="driver" autoWidth="false" >
+										<f:selectItems value="#{admin.driverList}" var="driver" itemLabel="#{driver.class.name} (Version #{driver.majorVersion}.#{driver.minorVersion})" itemValue="#{driver}" noSelectionValue="null" />
+										<p:column>
+											<div class="ui-g">
+												<div class="ui-md-7 ui-sm-12">
+													<h:outputText value="#{driver.class.name}" />
+												</div>
+												<div class="ui-md-4 ui-sm-12">
+													<h:outputText value="(Version #{driver.majorVersion}.#{driver.minorVersion})" />
+												</div>
+												<div class="ui-md-0 ui-sm-12"></div>
 											</div>
-											<div class="ui-md-4 ui-sm-12">
-												<h:outputText value="(Version #{driver.majorVersion}.#{driver.minorVersion})" />
-											</div>
-											<div class="ui-md-0 ui-sm-12"></div>
-										</div>
-									</p:column>
-								</p:selectOneMenu>
-								<div class="ui-g-12" style="text-align: center; padding-bottom: 0;">
-									<h:outputText value="The system will automatically choose a database driver based on the URL protocol. " />
-								</div>							
-								<p:tooltip for="driverList" value="The system will automatically choose a database driver based on URL protocol." showDelay="50" position="top" hideDelay="1000" />
-							</div>
-							<div class="ui-g-12 ui-g-nopad"></div>
+										</p:column>
+									</p:selectOneMenu>
+									<div class="ui-g-12" style="text-align: center; padding-bottom: 0;">
+										<h:outputText value="The system will automatically choose a database driver based on the URL protocol. " />
+									</div>							
+									<p:tooltip for="driverList" value="The system will automatically choose a database driver based on URL protocol." showDelay="50" position="top" hideDelay="1000" />
+								</div>
+								<div class="ui-g-12 ui-g-nopad"></div>
+							</h:panelGroup>
+							
 							<div class="ui-lg-2 ui-md-3 ui-sm-12 ides-label-sm ides-label-md">
 								<p:outputLabel for="dbUrl" value="URL:  " />
 							</div>
@@ -464,7 +489,7 @@
 						<h:outputText value="Log IP Address: " />
 					</div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12">
-						<p:selectBooleanButton value="#{admin.logIpAddress}"  onLabel="Enable" offLabel="Disable" onIcon="fa fa-check" offIcon="fa fa-close" />
+						<p:selectBooleanButton value="#{admin.logIpAddress}"  onLabel="Enabled" offLabel="Disabled" onIcon="fa fa-check" offIcon="fa fa-close" />
 					</div>
 				</div>
 
@@ -542,7 +567,7 @@
 					<div class="ui-lg-5 ui-md-2 ui-sm-12 ui-g-nopad"></div>
 					<div class="ui-md-0 ui-sm-12"></div>
 					<div class="ui-lg-2 ui-md-3 ui-sm-12" style="padding-right: 0;">
-						<p:commandButton value="Save All &amp; Apply" icon="fa fa-save" actionListener="#{admin.onApplyChange}" onstart="setLoadingMessage('Saving');" oncomplete="afterChangesApplied(xhr, status, args);" update="@form, menu" />
+						<p:commandButton value="Save all &amp; apply" icon="fa fa-save" actionListener="#{admin.onApplyChange}" onstart="setLoadingMessage('Saving');" oncomplete="afterChangesApplied(xhr, status, args);" update="@form, menu" />
 					</div>
 				</div>
 			</div>

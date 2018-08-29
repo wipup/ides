@@ -11,7 +11,7 @@
 	<h:form id="#{IdeaWizardConst.CREATE_IDEA_FORM_WIZARD_ID}" > 
 		<span id="scrollTopBar" ></span>
 		<p:steps id="wizardStep" activeIndex="#{ideaWizard.currentStep.ordinal}" styleClass="custom">
-			<p:menuitem value="Client's Organisation" />
+			<p:menuitem value="Client &amp; Organisation" />
 			<p:menuitem value="Project Idea" />
 			<p:menuitem value="Confirmation" />
 		</p:steps>
@@ -21,37 +21,67 @@
 		<p:messages id="beanValidation" closable="true">
 			<p:autoUpdate />
 		</p:messages>
+		
+		<ui:param name="selectedClientDetail" value="#{ideaWizard.selectedOrg.contact} #{ideaWizard.selectedOrg != null ? '(' : '' }#{ideaWizard.selectedOrg.name}#{ideaWizard.selectedOrg != null ? ')' : '' }" />
+		
 		<p:wizard id="#{IdeaWizardConst.CREATE_IDEA_WIZARD_ID}" widgetVar="wiz" flowListener="#{ideaWizard.handleWizardFlow}" showNavBar="false" showStepStatus="false" >
 			<p:tab id="#{WizardStep.CREATE_ORGANISATION}" title="1. Client's Organisation Detail">
 				<!-- ======================================================================================================================== -->
 				<h:panelGroup rendered="#{!ideaWizard.createNewOrganisationPage}">
-					<p:panel header="1. Client &amp; organisation" styleClass="no-space">
+					<p:panel header="1. Choose or create your client &amp; organisation" styleClass="no-space">
 						<div class="ui-g">
-							<div class="ui-lg-6 ui-md-6 ui-sm-12 ides-label-md" style="font-weight: normal;">
-								<h:outputText value="Search and select client &amp; organisation from the list below or" />
+							<div class="ui-lg-6 ui-md-6 ui-sm-12 ides-label-md" style="font-weight: normal; font-size: large;">
+								<h:outputText value="Search and select your client &amp; organisation from the list below or" />
 							</div>
 							<div class="ui-lg-5 ui-md-5 ui-sm-12">
 								<p:commandButton id="newOrgButton" value="Create new client and organisation" icon="fa fa-pencil" onclick="enableWidgetBySelector('.wizard-button', false);" actionListener="#{ideaWizard.onClickCreateOrganisationButton}" update="@form" immediate="true" styleClass="wizard-button" onerror="enableWidgetBySelector('.wizard-button', true);" />
 							</div>
 							<div class="ui-g-12 no-space"></div>
+							<div class="ui-g-12" style="text-align: center;">
+								<span>Select your client by clicking on the list below</span>
+							</div>
+							<div class="ui-g-12 no-space"></div>
+							<script type="text/javascript">
+								$(document).ready(function(){
+									var orgList = PF('organisationList'); 
+									var orgListHeader = $("#organisationListheader");
+									var orgListFilter = orgList.filterInput.parent();
+									
+									orgListHeader.detach().prependTo(orgList.jq);
+									orgListFilter.detach().prependTo(orgList.jq);
+								});
+							</script>
 							<div class="ui-g-12">
+								
+								<div id="organisationListheader" class="ui-g ui-widget-content ui-widget-header" style="font-weight: bold; padding: .5em .3em;">
+									<div class="ui-lg-2 ui-md-2 ui-sm-0 ui-g-nopad">
+										<h:outputText value="Client number" />
+									</div>
+									<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad" >
+										<h:outputText value="Client name" />
+									</div>
+									<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad" >
+										<h:outputText value="Organisation" />
+									</div>
+								</div>
+								
 								<p:selectOneListbox id="organisationList" widgetVar="organisationList" var="o" value="#{ideaWizard.selectedOrg}" converter="orgConverter" 
 									onchange="updateOrgValue();" filter="true" filterMatchMode="contains" scrollHeight="150" required="true" 
 									requiredMessage="Please choose your project client or create a new one.">
 									<f:selectItems value="#{ideaWizard.orgs}" var="item" itemValue="#{item}" noSelectionValue="null"  />
 									<p:column>
-										<div class="ui-g ui-g-nopad">
-											<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad">
-												<h:outputText value="#{o.name}" />	
+										<div class="ui-g ui-g-nopad" style="padding: .1em .3em;">
+											<div class="ui-lg-2 ui-md-2 ui-sm-0 ui-g-nopad">
+												<h:outputText value="##{o.id}" />
 											</div>
 											<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad">
 												<h:outputText value="#{o.contact}" />
 											</div>
-											<div class="ui-lg-2 ui-md-2 ui-sm-0 ides-label-sm ides-label-md ui-g-nopad" style="font-weight: normal;">
-												<h:outputText value="##{o.id}" />&#160;
+											<div class="ui-lg-5 ui-md-5 ui-sm-6 ui-g-nopad">
+												<h:outputText value="#{o.name}" />	
 											</div>
-										<div class="ui-lg-0 ui-md-0 ui-sm-12 ides-div-border ui-g-nopad"></div>
-										<div class="ui-lg-0 ui-md-0 ui-sm-12"></div>
+											<div class="ui-lg-0 ui-md-0 ui-sm-12"></div>
+											<div class="ui-lg-0 ui-md-0 ui-sm-12 ides-div-border ui-g-nopad"></div>
 										</div>
 									</p:column>
 								</p:selectOneListbox>
@@ -62,7 +92,7 @@
 				
 					</p:panel>
 					<h:panelGroup id="orgDetailPanel">
-						<p:panel widgetVar="orgPanelVar" collapsed="false" styleClass="no-space" header="Contact detail: #{ideaWizard.selectedOrg.contact} #{ideaWizard.selectedOrg != null ? '(' : '' }#{ideaWizard.selectedOrg.name}#{ideaWizard.selectedOrg != null ? ')' : '' }" toggleable="true" toggleSpeed="500" closeSpeed="500" >
+						<p:panel widgetVar="orgPanelVar" collapsed="false" styleClass="no-space" header="Your selected client: #{selectedClientDetail}" toggleable="true" toggleSpeed="500" closeSpeed="500" >
 							<ui:include src="#{IdesPage.SHOW_ORG.path}" />
 						</p:panel>
 					</h:panelGroup>
@@ -70,6 +100,14 @@
 				<!-- ======================================================================================================================== -->
 				<h:panelGroup rendered="#{ideaWizard.createNewOrganisationPage}">
 					<p:panel header="1. Create new client &amp; organisation">
+						<div class="ui-g">
+							<div class="ui-g-12 ides-div-border" style="text-align: center;">
+								<span>All information that you provide here will be <span style="color: red; font-weight: bold;">publicly accessible</span>.</span>
+							</div>
+							<div class="ui-g-12 ides-div-border" style="text-align: center;">
+								<h:outputText value="Fields with asterisk (*) are required." style="font-weight: bold;" />
+							</div>
+						</div>
 						<h:panelGroup rendered="#{app.enableCaptcha and not auth.loggedIn}">
 							<div class="ui-g">
 								<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
@@ -100,7 +138,7 @@
 								};
 								$(document).ready(function(){
 									enableWidgetBySelector('.wizard-submit-org', false);
-									$('.wizard-submit-org').children('.ui-button-text').text('Please challenge the reCAPTCHA');
+									$('.wizard-submit-org').children('.ui-button-text').text('Please prove you are a human');
 								});
 							</script>
 							<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadedCallback&amp;render=explicit" async="async" defer="defer"></script>
@@ -112,10 +150,10 @@
 								</div>
 								<div class="ui-g ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
 									<div class="ui-g-no-pad ui-lg-3 ui-md-5 ui-sm-12">
-										<p:selectBooleanButton id="saveOrg" value="#{ideaWizard.saveProfile}" onLabel="Yes" offLabel="No"  onIcon="fa fa-check" offIcon="fa fa-close" />
+										<p:selectBooleanButton id="saveOrg" value="#{ideaWizard.saveProfile}" onLabel="Yes" offLabel="No" onIcon="fa fa-check" offIcon="fa fa-close" />
 									</div>
 									<div class="ui-g-12">
-										By using "Save this for next time", you allow us to store your email address in our database.<br/>
+										By using "Save this for next time", you allow us to store your email address in our database.<br />
 									</div>
 								</div>
 							</div>
@@ -146,26 +184,28 @@
 			</p:tab>
 
 			<p:tab id="#{WizardStep.CREATE_IDEA}" title="2. Idea Detail">
-				<p:panel styleClass="no-space" header="2. Project idea detail">
+				<p:panel styleClass="no-space" header="2. Enter your project idea's detail">
 					<div class="ui-g">
-						<h:panelGroup>
-							<div class="ui-g-12 ides-div-border" style="font-weight: bold; text-align: center;">
-								<h:outputText value="All submitted ideas have to be reviewed and approved by the administrator before being shown." />
-							</div>
-							<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
-								<p:outputLabel style="font-weight: bold;" value="Organisation: " indicateRequired="true" />
-							</div>
-							<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-								<h:outputText value="#{ideaWizard.selectedOrg.name} (#{ideaWizard.selectedOrg.contact})" />
-							</div>
-						</h:panelGroup>
+						<div class="ui-g-12 ides-div-border" style="text-align: center;">
+							<span><span style="font-weight: bold;">Note: </span> all submitted ideas have to be approved by the administrator before being shown.</span>
+							<br/>
+						</div>
+						<div class="ui-g-12 ides-div-border" style="text-align: center; font-weight: bold;">
+							<h:outputText value="Fields with asterisk (*) are required." />
+						</div>
+						<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
+							<p:outputLabel style="font-weight: bold;" value="Client and organisation: " indicateRequired="true" />
+						</div>
+						<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
+							<h:outputText value="#{ideaWizard.selectedOrg.name} (#{ideaWizard.selectedOrg.contact})" />
+						</div>
 					</div>
 					<ui:include src="#{IdesPage.CREATE_IDEA_FORM.path}" />
 				</p:panel>
 			</p:tab>
 			<!-- ==================================== -->
 			<p:tab id="#{WizardStep.REVIEW}" title="3. Confirmation">
-				<p:panel styleClass="no-space" header="Review your project idea" >
+				<p:panel styleClass="no-space" header="3. Review your project idea" >
 					<h:panelGroup rendered="#{app.enableCaptcha and not auth.loggedIn}">
 						<div class="ui-g">
 							<div class="ui-lg-3 ui-md-3 ui-sm-12 ides-label-sm ides-label-md ides-div-border">
@@ -193,14 +233,14 @@
 									'callback' : onCaptchaSuccess
 								});
 								$('#loadingIdeaCaptcha').hide();
-								$('.wizard-submit-idea').children('.ui-button-text').text('Please challenge the reCAPTCHA');
+								$('.wizard-submit-idea').children('.ui-button-text').text('Please prove you are a human');
 							};
 						</script>
 						<script src="https://www.google.com/recaptcha/api.js?onload=onCaptchaLoadedCallback&amp;render=explicit" async="async" defer="defer"></script>
 					</h:panelGroup>
 					<ui:include src="#{IdesPage.SHOW_IDEA.path}" />
 				</p:panel>
-				<p:panel styleClass="no-space" header="Contact detail: #{ideaWizard.selectedOrg.contact} #{ideaWizard.selectedOrg.name}" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleableHeader="true" >
+				<p:panel styleClass="no-space" header="Review your project client: #{selectedClientDetail}" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleableHeader="true" >
 					<ui:include src="#{IdesPage.SHOW_ORG.path}" />
 				</p:panel>
 				<script type="text/javascript">

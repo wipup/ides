@@ -40,7 +40,7 @@
 			<div class="ui-g">
 				<div class="ui-g ui-g-12">
 					<div class="ui-g-2 ui-lg-3 ui-md-6 ui-sm-12 ui-g-nopad">
-						<p:outputLabel value="Number of associating ideas: " for="ideaCount" style="font-weight: bold;" />
+						<p:outputLabel value="Number of associating idea: " for="ideaCount" style="font-weight: bold;" />
 					</div>
 					<div class=" ui-g-6 ui-lg-6 ui-md-6 ui-sm-12 ui-g-nopad">
 						<div class="ui-inputgroup">
@@ -49,7 +49,7 @@
 								<f:selectItem itemLabel="more than" itemValue="#{OrgListConst.PARAM_IDEA_COUNT_MORE_THAN}" />
 								<f:selectItem itemLabel="less than" itemValue="#{OrgListConst.PARAM_IDEA_COUNT_LESS_THAN}" />
 							</p:selectOneMenu>
-							<p:inputNumber id="ideaCount" value="#{orgList.associatingIdeaCount}" emptyValue="empty" minValue="0" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ PF('filterIdeaCountBtn').jq.click(); }" placeholder="Number of associating ideas" decimalPlaces="0" />
+							<p:inputNumber id="ideaCount" value="#{orgList.associatingIdeaCount}" emptyValue="empty" minValue="0" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ PF('filterIdeaCountBtn').jq.click(); }" placeholder="Number of associating idea" decimalPlaces="0" />
 							<p:commandButton icon="fa fa-search" value="Apply" widgetVar="filterIdeaCountBtn" onclick="PF('searchOrgBtn').jq.click();" />
 						</div>
 					</div>
@@ -124,7 +124,7 @@
 			</p:column>
 
 			<p:column headerText="Email" footerText="Email" sortBy="#{o.email}"  priority="6" >
-				<h:outputText value="#{o.email}" />
+				<h:outputText value="#{o.email}" styleClass="highlight-target" />
 			</p:column>
 
 			<p:column headerText="Total Ideas" footerText="Total Ideas" sortBy="#{o.totalIdeas}">

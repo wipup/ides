@@ -19,7 +19,7 @@
 
 			<h:panelGroup rendered="#{ideaWizard.currentStep != WizardStep.REVIEW}">
 				<div class="ui-lg-4 ui-md-5 ui-sm-5"  >
-					<p:button type="button" value="Next" icon="fa fa-arrow-right" iconPos="right" 
+					<p:button type="button" value="Next" icon="fa fa-arrow-right" iconPos="right" onmouseup="animateScroll('scrollTopBar');"
 						styleClass="wizard-button-next wizard-button" onclick="animateScroll('scrollTopBar'); PF('wiz').next(); return false;" 
 						disabled="#{!ideaWizard.enableNextBtn}" validateClient="true" 
 						oncomplete="enableWidgetBySelector('.wizard-button-next', true);" />
