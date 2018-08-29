@@ -50,7 +50,7 @@
 					
 					<p:menuitem value="" onclick="return false;" rendered="#{auth.loggedIn and auth.admin}" styleClass="mobile-menu mimic-label" disabled="true" style="border: 0; height: 10px;" />
 					<p:submenu label="#{msg['menu.adminTools.header.label']}" expanded="true" onclick="return false;" disabled="true" rendered="#{auth.admin}" styleClass="mimic-button">
-						<p:menuitem value=" #{msg['menu.adminTools.adminPanel.button']}" actionListener="#{nav.navigateTo}" update="body" onclick="PF('sideMenubar').hide();"  icon="fa fa-gears" styleClass="mobile-menu ui-widget-header">
+						<p:menuitem value=" #{msg['menu.adminTools.adminPanel.button']}" actionListener="#{nav.navigateTo}" update="body" onclick="PF('sideMenubar').hide();" oncomplete="updateAnnouncement();"  icon="fa fa-gears" styleClass="mobile-menu ui-widget-header">
 							<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ADMIN_TOOLS.pageId}" />
 						</p:menuitem>
 						<p:menuitem value=" #{msg['menu.adminTools.clientList.button']}" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin and app.enableOrgDeletion}" icon="fa fa-group" onclick="PF('sideMenubar').hide();"  styleClass="mobile-menu ui-widget-header"  >
@@ -98,7 +98,7 @@
 			
 			
 			<p:menuitem value="&#160;" disabled="true" style="border-left: 1px solid black;" rendered="#{auth.admin}" />
-			<p:menuitem value=" #{msg['menu.adminTools.adminPanel.button']}" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin}" icon="fa fa-gears" >
+			<p:menuitem value=" #{msg['menu.adminTools.adminPanel.button']}" actionListener="#{nav.navigateTo}" update="body" rendered="#{auth.admin}" icon="fa fa-gears" oncomplete="updateAnnouncement();" >
 				<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.ADMIN_TOOLS.pageId}" />
 			</p:menuitem>
 			<p:menuitem value="&#160;" disabled="true" style="border-right: 1px solid black;" rendered="#{auth.admin}" />
@@ -113,13 +113,16 @@
 			</p:submenu>
 			<f:facet name="options">
 				<p:remoteCommand name="idesLogout" actionListener="#{auth.actionSignOut}" onstart="setLoadingMessage('Signing out');"  />
-				<p:remoteCommand name="idesLogin" actionListener="#{auth.actionSignIn}" update="@form, body, @widgetVar(appNotification)" onstart="setLoadingMessage('Signing in');" oncomplete="handleSignIn(xhr, status, args);" global="false" />
+				<p:remoteCommand name="idesLogin" actionListener="#{auth.actionSignIn}" update="@form, body" onstart="setLoadingMessage('Signing in');" oncomplete="handleSignIn(xhr, status, args);" global="false" />
+				
 				<h:panelGroup rendered="#{!auth.loggedIn}">
 					<span id="googleSignIn" class="g-signin2" data-onsuccess="onSignIn">#{unableToConnectGoogle}</span>
 				</h:panelGroup>
 			</f:facet>
 		</p:menubar>
-
+		
+		<p:remoteCommand name="updateAnnouncement" rendered="#{auth.admin}" update="@widgetVar(appNotification)" onstart="PF('appNotification').hide()" oncomplete="PF('appNotification').hide()" />
+		
 		<h:panelGroup rendered="#{auth.loggedIn}">
 			<style>
 					span.ui-menuitem-icon.ui-icon.fa {

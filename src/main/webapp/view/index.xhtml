@@ -46,7 +46,7 @@
 		</h:panelGroup>
 
 		<h:panelGroup id="notification">
-			<p:notificationBar widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" styleClass="notification-bar" effectSpeed="slow">
+			<p:notificationBar widgetVar="appNotification" autoDisplay="#{app.autoDisplayAnnouncement}" styleClass="notification-bar" effect="none">
 				<div class="ui-g ui-g-nopad">
 					<div class="ui-md-12 ui-sm-11 ui-g-nopad">
 						<p:textEditor widgetVar="announcement" value="#{app.announcement}" rendered="#{app.autoDisplayAnnouncement or auth.admin}" style="min-height: auto;" styleClass="readonly-editor" readonly="true" toolbarVisible="false" required="false" />
@@ -57,7 +57,7 @@
 				</div>
 				<script type="text/javascript">
 					$(document).ready(function(){
-						if (#{app.autoDisplayAnnouncement}){
+						if (#{app.autoDisplayAnnouncement or auth.admin}){
 							var announcement = PF('announcement');
 							announcement.editor = new Quill(announcement.jqId, readOnlyEditorOptions);
 						}
