@@ -13,6 +13,9 @@ time.timeago {
 .ui-dialog .ui-dialog-titlebar {
 	margin: 0 !important;
 	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: -moz-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: -ms-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
 	padding: .4em .4em .4em 1.5em !important;
 }
 
@@ -25,6 +28,7 @@ time.timeago {
 	box-shadow: none !important;
 	-moz-box-shadow: none !important;
 	-webkit-box-shadow: none !important;
+	-ms-box-shadow: none !important;
 }
 
 .allocate-btn{
@@ -82,6 +86,9 @@ button.approve-btn:hover {
 .mimic-button {
 	border: 1px solid #156090 !important;
 	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: -ms-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: -moz-linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
+	background: linear-gradient(top, #2399e5 0, #186ba0 100%) !important;
 	color: #fff !important;
 }
 
@@ -112,6 +119,7 @@ div.mobile-menu>ul>li.ui-menuitem {
 	border: 1px solid #d5d5d5;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -140,6 +148,7 @@ div.mobile-menu>ul>li.ui-menuitem {
 	margin: -1px 0 0 -1px;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
 	box-sizing: border-box;
 }
 
@@ -198,12 +207,18 @@ div.mobile-menu>ul>li.ui-menuitem {
 }
 
 .main-background {
-	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%); /*#186ba0;/*#990099;*/
+	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: -moz-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: -ms-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: linear-gradient(top, #2399e5 0, #186ba0 100%);  
 	color: white;
 }
 
 .main-background > .ui-widget-header {
-	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%); /*#186ba0;/*#990099;*/
+	background: -webkit-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: -moz-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: -ms-linear-gradient(top, #2399e5 0, #186ba0 100%);
+	background: linear-gradient(top, #2399e5 0, #186ba0 100%);  
 	color: white;
 	font-weight: normal;
 	font-size: larger;

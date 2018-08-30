@@ -87,9 +87,9 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 		builder.setConfigurationName(name);
 		builder.setStatusLevel(logLevel);
 
-		String logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}] %C{1.} - %m";
+		String logPattern = "%d{DEFAULT} %p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		if (LOG_IP_ADDRESS) {
-			logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}][%X{" + LOG_IP_ADDRESS_ATTRIBUTE_KEY + "}] %C{1.} - %m";
+			logPattern = "%d{DEFAULT} %p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}][%X{" + LOG_IP_ADDRESS_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		}
 		
 		AppenderComponentBuilder consoleAppenderBuilder = builder
