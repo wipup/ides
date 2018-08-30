@@ -78,7 +78,7 @@ If someone browses the url without application's context path (e.g. http://local
 
 To make the page automatically redirect to the application page (/ides), modify the *index.html* file located in *\glassfish\domains\domain1\docroot*
 
-The recommended way to do this is to use Javascript to redirect to the application page, by removing everything inside the <body> tag and add this code below instead.
+The recommended way to do this is to use Javascript to redirect to the application page, by removing everything inside the *body* tag and add this code below instead.
   
 ```
 <script type="text/javascript">
