@@ -69,3 +69,21 @@ keytool -delete -keystore ./cacerts.jks -alias equifaxsecureca
 ```
 
   Current known expired *certificates* are *gtecybertrustglobalca* and *equifaxsecureca*.
+
+### 4.3 Redirect from Glassfish's root context to application context
+
+Normally, all applications are deployed and accessible using its own context path, for example, IDES is deployed on path http://localhost:8080/ides
+
+If someone browses the url without application's context path (e.g. http://localhost:8080/), Glassfish will render its default index page which contains a link to server's administrator console and etc.
+
+To make the page automatically redirect to the application page (/ides), modify the *index.html* file located in *\glassfish\domains\domain1\docroot*
+
+The recommended way to do this is to use Javascript to redirect to the application page, by removing everything inside the <body> tag and add this code below instead.
+  
+```
+<script type="text/javascript">
+	window.location.href = '/ides';
+</script>
+```
+
+Also, change the page title by editing text inside the <title> tag to *IDES Project Idea Database* to let users know that they are accessing the right application.
