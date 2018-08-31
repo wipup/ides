@@ -57,6 +57,8 @@
 
 	<!-- ============================================================================================================== -->
 
+	
+	<!-- Oracle 10g paging method -->
 	<select id="selectIdeasForListing" resultMap="selectIdeasForListingResult"  >
 		<if test="first &gt;= 0 and last &gt; first">
 			SELECT outer.*
