@@ -12,6 +12,11 @@ import ports.soc.ides.model.User;
 import ports.soc.ides.model.constant.Role;
 import ports.soc.ides.util.IdesUtils;
 
+/**
+ * Not thread safe
+ * @author WIPU
+ *
+ */
 public class IdesConfiguration extends AbstractConfiguration {
 
 	private static final long serialVersionUID = -1160763844263519830L;

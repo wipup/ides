@@ -5,6 +5,11 @@ import java.util.Objects;
 import ports.soc.ides.config.util.PropertyLoader;
 import ports.soc.ides.util.IdesUtils;
 
+/**
+ * Not thread safe
+ * @author WIPU
+ *
+ */
 public class DatabaseConfiguration extends AbstractConfiguration {
 
 	private static final long serialVersionUID = 686421499244008738L;

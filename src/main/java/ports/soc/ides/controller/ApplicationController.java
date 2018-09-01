@@ -165,11 +165,19 @@ public class ApplicationController extends AbstractIdesController {
 		config.printAllProperties();
 	}
 
+	/**
+	 * Not thread safe
+	 * @param config
+	 */
 	@IdesRoleAllowed({Role.Administrator})
 	public IdesConfiguration getConfig() {
 		return config;
 	}
 
+	/**
+	 * Not thread safe
+	 * @param config
+	 */
 	@IdesRoleAllowed({Role.Administrator})
 	public void setConfig(IdesConfiguration config) {
 		this.config = config;
@@ -229,10 +237,6 @@ public class ApplicationController extends AbstractIdesController {
 
 	public ProjectStage getProjectStage() {
 		return projectStage;
-	}
-
-	public void setProjectStage(ProjectStage projectStage) {
-		this.projectStage = projectStage;
 	}
 	
 	public boolean isProductionStage() {

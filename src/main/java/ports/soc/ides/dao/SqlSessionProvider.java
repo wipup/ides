@@ -39,6 +39,7 @@ import ports.soc.ides.config.util.QueuedPropertyReader;
 import ports.soc.ides.exception.IdesException;
 import ports.soc.ides.util.IdesUtils;
 
+
 @ApplicationScoped
 public class SqlSessionProvider {
 
@@ -96,6 +97,11 @@ public class SqlSessionProvider {
 		}
 	}
 
+	/**
+	 * Not thread safe
+	 * @param dbConfig
+	 * @throws IOException
+	 */
 	public void initSqlSessionFactory(DatabaseConfiguration dbConfig) throws IOException {
 		log.debug("Load database configuration: " + dbConfig);
 		DataSource dsc = null;
