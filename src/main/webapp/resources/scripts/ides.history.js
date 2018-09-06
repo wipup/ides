@@ -4,12 +4,8 @@ if (window.history){
 }
 
 function removeHash(x){
-	if (supportHistory){
-		window.history.back();
-	} else {
-		if (!x){
-			x = "";
-		}
-		window.location.hash = x;
+	if (!x){
+		x = "";
 	}
+	window.location.hash = x;
 }
