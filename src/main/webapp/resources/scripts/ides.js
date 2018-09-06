@@ -218,10 +218,15 @@ function fixModalSize(modalId) {
 function enablePageScrollbar(enable){
 	if (enable){
 		$("html, body").css("overflow", "auto");
-		$("body").css("position", "");
 	} else {
 		$("html, body").css("overflow", "hidden");
-		$("body").css("position", "relative");
+	}
+}
+
+function hideModalByWidget(w){
+	var widget = PF(w);
+	if (widget){
+		widget.hide();
 	}
 }
 

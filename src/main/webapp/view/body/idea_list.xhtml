@@ -104,9 +104,9 @@
 						</div>
 					</div>
 				</div>
-				<p:remoteCommand name="applyFilter" actionListener="#{ideaList.onFilterIdea}" update="#{IdeaListConst.IDEA_TABLE_FORM_ID}" 
-						oncomplete="#{auth.admin ? 'resetSelection();' : ''} showTotalIdeaMessage(); updateRppDropdownText();" 
-						onstart="$(':focus').blur(); setLoadingMessage('Applying filter');" />
+				<p:remoteCommand name="applyFilter" actionListener="#{ideaList.onFilterIdea}" update="#{IdeaListConst.IDEA_TABLE_FORM_ID}"
+						onstart="$(':focus').blur(); setLoadingMessage('Applying filter');" 
+						oncomplete="#{auth.admin ? 'resetSelection();' : ''} showTotalIdeaMessage(); updateRppDropdownText();"  />
 			</div>
 		</p:panel>
 		<p:remoteCommand name="showTotalIdeaMessage" actionListener="#{ideaList.onShowIdeaFetchingStatus}" partialSubmit="true" process="@this" />		
@@ -152,6 +152,21 @@
 				}
 				return false;
 			}
+			
+			var handleHashChange = function(){
+				var hash = window.location.hash;
+				if (!hash){
+					hideModalByWidget('ideaDetailModal');
+					#{auth.admin ? 'closeAdminModals();' : ''}
+					return;
+				}
+			};
+			
+			$(document).ready(function() {
+				updateTableAfterAjax();
+				refreshModalSetting();	
+				$(window).on('hashchange', handleHashChange);
+			});
 		</script>
 		
 		<ui:param name="rppTemplateForVisitors" value="#{IdeaListConst.ROWS_PER_PAGE_TEMPLATE}"/>
@@ -233,7 +248,7 @@
 			</p:column>
 
 			<p:column headerText="Title" footerText="Title" sortBy="#{IdeaConst.COLUMN_TITLE}" styleClass="column-md-title column-sm-title" >
-				<p:commandLink value="#{idea.title}" actionListener="#{ideaList.onSelectRow}" update="showIdeaPanel" oncomplete="#{not empty ideaList.searchKeyword ? 'safeHighlight();' : ''}" onerror="PF('ideaDetailModal').hide();" styleClass="highlight-target">
+				<p:commandLink value="#{idea.title}" actionListener="#{ideaList.onSelectIdea}" update="showIdeaPanel" oncomplete="#{not empty ideaList.searchKeyword ? 'safeHighlight();' : ''}" onerror="PF('ideaDetailModal').hide();" styleClass="highlight-target">
 					<f:param name="#{IdeaListConst.PARAM_IDEA_INDEX}" value="#{i}" />
 					<f:param name="#{Const.PARAM_MODAL_VAR}" value="ideaDetailModal" />
 				</p:commandLink>
@@ -310,12 +325,6 @@
 				</div>
 			</p:column>
 		</p:dataTable>
-		<script type="text/javascript">
-			$(document).ready(function() {
-				refreshModalSetting();
-				updateTableAfterAjax();
-			});
-		</script>
 		<h:panelGroup rendered="#{auth.admin}">
 			<p:remoteCommand name="processSelectedIdeas" actionListener="#{ideaList.onProcessSelectedIdeas}" oncomplete="processSelectedIdeasCallback(xhr, status, args);" update="@form" />
 			<p:remoteCommand name="processOneIdea" actionListener="#{ideaList.onProcessOneIdea}" oncomplete="PF('confirmOneIdeaDialog').hide(); resetSelection(); enableWidgetBySelector('.dialog-btn', true);" update="@form" />
@@ -504,13 +513,21 @@
 					$("#confirmOneIdeaDate").text(date);
 					PF('confirmOneIdeaBtn').jq.children('span').text(buttonTxt);
 					
+					window.location.hash = "confirm/" + action + "/ref/" + ref;
+					
 					var modalHeader = $(modal.titlebar).children('span').text(header);
 					modal.show();
+				}
+				
+				function closeAdminModals(){
+					hideModalByWidget("confirmOneIdeaDialog");
+					hideModalByWidget("editIdeaModalVar");
+					hideModalByWidget("confirmModalVar");
 				}
 			</script>
 		</h:panelGroup>
 	</h:form>
-	<p:dialog widgetVar="confirmOneIdeaDialog" header="Confirmation" rendered="#{auth.admin}" modal="true" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="250" width="600" position="top">
+	<p:dialog widgetVar="confirmOneIdeaDialog" header="Confirmation" rendered="#{auth.admin}" modal="true" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true); removeHash();" height="250" width="600" position="top">
 		<div class="ui-g">
 			<div class="ui-g-12">
 				<span class="fa fa-question-circle"></span> <span class="ui-outputlabel ui-widget" id="confirmMessage"></span>
@@ -565,7 +582,7 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="editIdeaModal" widgetVar="editIdeaModalVar" header="Edit Idea" height="520" width="1200" onShow="fixModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" rendered="#{auth.admin}" modal="true" maximizable="false" position="top" closeOnEscape="false" >
+	<p:dialog id="editIdeaModal" widgetVar="editIdeaModalVar" header="Edit Idea" height="520" width="1200" onShow="fixModalSize(this.id); enablePageScrollbar(false); addEditIdeaModalHash();" onHide="enablePageScrollbar(true); removeHash();" rendered="#{auth.admin}" modal="true" maximizable="false" position="top" closeOnEscape="false" >
 		<h:panelGroup id="editIdeaModalPanel" styleClass="no-space">
 			<h:form rendered="#{ideaList.renderEditIdeaForm}">
 				<p:messages>
@@ -574,6 +591,11 @@
 				<ui:include src="#{IdesPage.CREATE_IDEA_FORM.path}" />
 				<p:remoteCommand name="submitEditIdea" actionListener="#{ideaList.onSubmitEditIdea}" update="#{IdeaListConst.IDEA_TABLE_FORM_ID}" oncomplete="enableWidgetBySelector('.dialog-btn', true);" />
 			</h:form>
+			<script>
+				function addEditIdeaModalHash(){
+					window.location.hash = "edit/row/#{ideaList.selectedIdeaIndex + 1}";
+				}
+			</script>
 		</h:panelGroup>
 		<f:facet name="footer" style="height: 50px;">
 			<div class="ui-g">
@@ -590,7 +612,7 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="confirmSelectedIdeasModalDialog" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" rendered="#{auth.admin}" 
+	<p:dialog id="confirmSelectedIdeasModalDialog" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false); addConfirmSelectedIdeasModalDialogHash();" onHide="enablePageScrollbar(true); removeHash();" rendered="#{auth.admin}" 
 		widgetVar="confirmModalVar" header="Confirm #{ideaList.confirmModalMode} of #{ideaList.selectedIdeaSize} idea#{ideaList.selectedIdeaSize &lt;= 1 ? '' : 's'}" closeOnEscape="true" modal="true" position="top" height="300" width="800">
 		<p:dataTable value="#{ideaList.selectedIdeas}" var="idea" emptyMessage="No idea selected" reflow="true">
 			<p:column headerText="#" style="width: 48px; text-align: right;">
@@ -606,6 +628,11 @@
 				<h:outputText value="#{idea.organisation.contact} (#{idea.organisation.name})" />	
 			</p:column>
 		</p:dataTable>
+		<script>
+			function addConfirmSelectedIdeasModalDialogHash(){
+				window.location.hash = "confirm/selected/#{ideaList.confirmModalMode}";
+			}
+		</script>
 		<f:facet name="footer" style="height: 50px;">
 			<div class="ui-g">
 				<div class="ui-md-4 ui-sm-12 ui-g-nopad">
@@ -627,7 +654,7 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="ideaDetailModal" header="Idea and client's detail" onShow="fixModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" height="700" width="1300" widgetVar="ideaDetailModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+	<p:dialog id="ideaDetailModal" header="Idea and client's detail" onShow="fixModalSize(this.id); enablePageScrollbar(false); addIdeaDetailModalHash();" onHide="enablePageScrollbar(true); removeHash();" height="700" width="1300" widgetVar="ideaDetailModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
 		<h:panelGroup id="showIdeaPanel" styleClass="no-space">
 			<h:panelGroup rendered="#{not empty ideaList.searchKeyword}">
 			</h:panelGroup>
@@ -637,6 +664,11 @@
 			<p:panel styleClass="no-space" header="Client &amp; organisation detail" toggleable="true" toggleSpeed="500" closeSpeed="500" style="margin-top: .3em !important">
 				<ui:include src="#{IdesPage.SHOW_ORG.path}" />
 			</p:panel>
+			<script>
+				function addIdeaDetailModalHash(){
+					window.location.hash = "detail/row/#{ideaList.selectedIdeaIndex + 1}";
+				}
+			</script>
 		</h:panelGroup>
 		<f:facet name="footer" style="height: 50px;">
 			<div class="ui-g">
@@ -650,6 +682,7 @@
 		</f:facet>
 	</p:dialog>
 </ui:fragment>
+
 
 
 

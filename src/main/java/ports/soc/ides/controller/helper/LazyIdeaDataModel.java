@@ -97,7 +97,12 @@ public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 		if (IdesUtils.isEmpty(dataSource)) {
 			return null;
 		}
-		return dataSource.get(index % dataSource.size());
+		
+		int targetIndex = index % getPageSize();
+		if (targetIndex >= dataSource.size() || targetIndex < 0) {
+			return null;
+		}
+		return dataSource.get(targetIndex);
 	}
 	
 	public Idea getIdeaByIndex(String index) {

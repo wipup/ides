@@ -87,9 +87,9 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 		builder.setConfigurationName(name);
 		builder.setStatusLevel(logLevel);
 
-		String logPattern = "%d{DEFAULT} %p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}] %C{1.} - %m";
+		String logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		if (LOG_IP_ADDRESS) {
-			logPattern = "%d{DEFAULT} %p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}][%X{" + LOG_IP_ADDRESS_ATTRIBUTE_KEY + "}] %C{1.} - %m";
+			logPattern = "%p [%X{" + LOG_SESSION_ATTRIBUTE_KEY + "}][%X{" + LOG_IP_ADDRESS_ATTRIBUTE_KEY + "}] %C{1.} - %m";
 		}
 		
 		AppenderComponentBuilder consoleAppenderBuilder = builder
@@ -98,7 +98,7 @@ public class LoggerConfigurationFactory extends ConfigurationFactory {
 		builder.add(consoleAppenderBuilder);
 
 		LayoutComponentBuilder fileAppenderLayoutBuilder = builder
-				.newLayout("PatternLayout").addAttribute("pattern", logPattern + "%n").addAttribute("charset", LOG_CHARSET);
+				.newLayout("PatternLayout").addAttribute("pattern", "%d{DEFAULT} " + logPattern + "%n").addAttribute("charset", LOG_CHARSET);
 		ComponentBuilder fileAppenderTriggeringPolicy = builder.newComponent("Policies").addComponent(builder.newComponent("SizeBasedTriggeringPolicy").addAttribute("size", "100 MB"))
 				.addComponent(builder.newComponent("TimeBasedTriggeringPolicy").addAttribute("interval", "1").addAttribute("modulate", "true"));
 

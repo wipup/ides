@@ -118,6 +118,9 @@ public class IdeaListController extends AbstractIdesController implements Serial
 	private List<Idea> selectedIdeas;
 
 	private String searchKeyword;
+	
+	//for history 
+	private int selectedIdeaIndex;
 
 	@PostConstruct
 	public void init() {		
@@ -128,6 +131,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 		renderEditIdeaForm = false;
 
 		searchKeyword = "";
+		selectedIdeaIndex = -1;
 
 		filterIdeaStatus = IdeaStatus.Approved;
 		filterProjectType = null;
@@ -138,7 +142,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 	}
 
 	@LogPerformance(note = "select idea from data table", level = "DEBUG")
-	public void onSelectRow(ActionEvent event) {
+	public void onSelectIdea(ActionEvent event) {
 		String ind = "";
 		try {
 			ind = getParameter(PARAM_IDEA_INDEX);
@@ -177,6 +181,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				log.debug("Selected idea=" + selectedIdea.printDetail());
 				showOrg.initDefault(selectedIdea.getOrganisation());
 				log.debug("Selected idea's org=" + selectedIdea.getOrganisation().printDetail());
+				selectedIdeaIndex = index;
 			}
 
 			showRequestedModal();
@@ -280,6 +285,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			ideaForm.setRenderReferenceNumber(true);
 			ideaForm.setRenderProjectTypeHelp(false);
 
+			selectedIdeaIndex = index;
 			renderEditIdeaForm = true;
 			showRequestedModal();
 		} catch (Exception e) {
@@ -520,7 +526,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 
 			UIComponent comp = FacesContext.getCurrentInstance().getViewRoot().findComponent(IDEA_TABLE_FORM_ID + ":" + IDEA_TABLE_FORM_DATATABLE_ID);
 			if (comp instanceof DataTable) {
-				//fix datatable's multiple ajax requests
+				//fix datatable's multiple ajax requests issue
 				DataTable dt = (DataTable) comp;
 				dt.setFirst(0);
 				int rowsPerPage = dt.getRows();
@@ -599,4 +605,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 		this.lazyIdeaDataModel = lazyIdeaDataModel;
 	}
 
+	public int getSelectedIdeaIndex() {
+		return selectedIdeaIndex;
+	}
 }
