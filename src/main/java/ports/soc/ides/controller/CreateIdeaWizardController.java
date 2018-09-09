@@ -43,6 +43,7 @@ import ports.soc.ides.model.constant.OwnerType;
 import ports.soc.ides.model.constant.ProjectType;
 import ports.soc.ides.model.constant.Role;
 import ports.soc.ides.util.CaptchaUtil;
+import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @Named("ideaWizard")
@@ -273,7 +274,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			return;
 		}
 
-		try  {
+		try {
 			IdeaDAO dao = new IdeaDAO(sqlProvider);
 
 			LocalDateTime now = LocalDateTime.now();
@@ -297,6 +298,25 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			setAutoUpdateOverlayNotification(true);
 		}
 		showRequestedModal();
+	}
+	
+	@LogPerformance
+	public void onAcceptCompleteIdeaSubmission(ActionEvent event) {
+		try {
+			if (!submitIdeaSuccess) {
+				return;
+			}
+			
+			addMessageInfo("Success", "Your idea has been submitted successfully.");
+			addMessageInfo("", "Please note that all submitted ideas have to be reviewed and approved by the administrator before being shown.");
+			
+			NavigationController nav = FacesUtils.getNamedController(NavigationController.class);
+			nav.navigateTo(IdesPage.CREATE_IDEA_WIZARD_SUBMIT_COMPLETE);
+			
+			showIdea.setRenderId(true);
+		} catch (Exception e) {
+			log.error(e);
+		}
 	}
 
 	public void onIdesEvent(@Observes(notifyObserver = Reception.IF_EXISTS) IdesEvent e) {
@@ -545,6 +565,9 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			return;
 		}
 		if (IdesUtils.isEmpty(app.getCaptchaPrivateKey()) || IdesUtils.isEmpty(app.getCaptchaPublicKey())) {
+			return;
+		}
+		if (auth.isLoggedIn()) {
 			return;
 		}
 		CaptchaUtil.reinitCaptcha(PrimeFaces.current());

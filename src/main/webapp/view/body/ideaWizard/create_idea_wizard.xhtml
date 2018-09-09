@@ -252,6 +252,7 @@
 						closeModalWhenClickMask(true);
 						enableWidgetBySelector('.wizard-submit-idea', true);
 						PF('submitIdeaResultDialog').hide();
+						#{app.enableCaptcha and not auth.loggedIn ? 'enableWidgetBySelector(\'.wizard-submit-idea\', false);' : 'countDownSubmitButton(\'.wizard-submit-idea\');'}
 					}
 					
 					$(document).ready(function(){
@@ -259,6 +260,10 @@
 					});
 				</script>
 				<p:remoteCommand name="startOver" actionListener="#{ideaWizard.onStartOver}" oncomplete="closeModalWhenClickMask(true); PF('submitIdeaResultDialog').hide();" update="@form" />
+				<p:outputPanel>
+					<p:autoUpdate />
+					<p:remoteCommand name="submitIdeaComplete" rendered="#{ideaWizard.submitIdeaSuccess}" actionListener="#{ideaWizard.onAcceptCompleteIdeaSubmission}" update="body" />
+				</p:outputPanel>
 				<p:dialog id="submitIdeaResultDialog" widgetVar="submitIdeaResultDialog" appendTo="body" header="New idea submission result" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" maximizable="false" position="top" closeOnEscape="false" height="150" width="600" closable="false">
 					<div style="width: 100%;">
 						<p:messages showDetail="true" closable="false" />
@@ -267,7 +272,7 @@
 						<div class="ui-g no-space">
 							<div class="ui-g-12">
 								<p:button value="Close" styleClass="no-space" onclick="onCloseSubmitIdeaDialog(); return false;" rendered="#{!ideaWizard.submitIdeaSuccess}"  />
-								<p:button  value="OK" styleClass="no-space" onclick="startOver(); return false;" rendered="#{ideaWizard.submitIdeaSuccess}"  />
+								<p:button value="OK" styleClass="no-space" onclick="onCloseSubmitIdeaDialog(); enableWidgetBySelector('.wizard-submit-idea', false);  submitIdeaComplete(); return false;"  rendered="#{ideaWizard.submitIdeaSuccess}" />
 							</div>
 						</div>
 					</f:facet>

@@ -29,7 +29,10 @@
 			<h:panelGroup rendered="#{ideaWizard.currentStep == WizardStep.REVIEW}">
 				<div class="ui-lg-4 ui-md-4 ui-sm-5"  >
 					<p:commandButton value="Submit" icon="fa fa-save" styleClass="wizard-button wizard-submit-idea" actionListener="#{ideaWizard.onSubmitNewIdea}" 
-						update="submitIdeaResultDialog" onstart="enableWidgetBySelector('.wizard-submit-idea', false);" validateClient="true" oncomplete="afterClickedSubmitIdeaButton(); animateScroll('scrollTopBar');" >
+						update="submitIdeaResultDialog"  validateClient="true"
+						onerror="#{app.enableCaptcha and not auth.loggedIn ? 'enableWidgetBySelector(\'.wizard-submit-idea\', false);' : 'countDownSubmitButton(\'.wizard-submit-idea\');'}"
+						onstart="enableWidgetBySelector('.wizard-submit-idea', false);"
+						oncomplete="afterClickedSubmitIdeaButton(); animateScroll('scrollTopBar');" >
 						<f:param name="#{Const.PARAM_MODAL_VAR}" value="submitIdeaResultDialog"  />
 					</p:commandButton>
 				</div>

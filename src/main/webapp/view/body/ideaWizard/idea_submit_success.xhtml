@@ -1,0 +1,53 @@
+<ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
+	<p:importConstants type="ports.soc.ides.controller.CreateIdeaWizardController" var="IdeaWizardConst" />
+	<p:importEnum type="ports.soc.ides.controller.helper.CreateIdeaWizardStep" var="WizardStep" allSuffix="ALL_STEPS" />
+	<p:importConstants type="ports.soc.ides.controller.NavigationController" var="NavConst" />
+	
+	<p:panel header="Your idea has been submitted successfully" toggleable="false" collapsed="true" styleClass="main-background" >
+	</p:panel>
+	<h:form>
+		<p:messages closable="false" showDetail="true" />
+		
+		<div class="ui-g">
+			<div class="ui-lg-4 ui-md-5 ui-sm-5" >
+				<p:commandButton value=" #{msg['menu.navigation.submitIdea.button']}" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-plus" >
+					<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.CREATE_IDEA_WIZARD.pageId}" />
+				</p:commandButton>
+			</div>
+			<div class="ui-lg-3 ui-md-1 ui-sm-0 ui-g">
+			</div>
+			<div class="ui-lg-4 ui-md-5 ui-sm-5"  >
+				<p:commandButton value=" #{msg['menu.navigation.ideaList.button']}" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-list-alt">
+					<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.IDEA_LIST.pageId}" />
+				</p:commandButton>
+			</div>
+		</div>
+		
+		<p:panel styleClass="no-space" header="Your submitted idea" >
+			<ui:include src="#{IdesPage.SHOW_IDEA.path}" />
+		</p:panel>
+		
+		<p:panel styleClass="no-space" header="Review your project client" toggleable="true" toggleSpeed="500" closeSpeed="500" toggleableHeader="true" >
+			<ui:include src="#{IdesPage.SHOW_ORG.path}" />
+		</p:panel>
+		
+		<div class="ui-g">
+			<div class="ui-lg-4 ui-md-5 ui-sm-5" >
+				<p:commandButton value=" #{msg['menu.navigation.submitIdea.button']}" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-plus" >
+					<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.CREATE_IDEA_WIZARD.pageId}" />
+				</p:commandButton>
+			</div>
+			<div class="ui-lg-3 ui-md-1 ui-sm-0 ui-g">
+			</div>
+			<div class="ui-lg-4 ui-md-5 ui-sm-5"  >
+				<p:commandButton value=" #{msg['menu.navigation.ideaList.button']}" actionListener="#{nav.navigateTo}" update="body" icon="fa fa-list-alt">
+					<f:param name="#{NavConst.PARAM_NAVIGATION_PAGE}" value="#{Page.IDEA_LIST.pageId}" />
+				</p:commandButton>
+			</div>
+		</div>
+	
+	</h:form>
+
+</ui:fragment>

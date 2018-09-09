@@ -13,6 +13,7 @@ public enum IdesPage {
 	ADMIN_TOOLS( "Administrator Tools", "/view/body/admin_tools.xhtml"), 
 	CREATE_IDEA_WIZARD("Submit a new idea", "/view/body/ideaWizard/create_idea_wizard.xhtml"),
 	CREATE_IDEA_WIZARD_NAV_BAR("createIdeaWizardNavBar", "/view/body/ideaWizard/idea_wizard_navigation_bar.xhtml"),
+	CREATE_IDEA_WIZARD_SUBMIT_COMPLETE("idea submit complete", "/view/body/ideaWizard/idea_submit_success.xhtml"),
 	HOW_TO_USE( "How to use", "/view/body/how_to_use.xhtml"), 
 	IDEA_LIST( "Idea List", "/view/body/idea_list.xhtml"),
 	ORG_LIST( "Organisation List", "/view/body/org_list.xhtml"),
