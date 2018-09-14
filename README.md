@@ -86,6 +86,8 @@ Or
 deploy C:/ides/ides.war
 ```
 
+Then, after the deployment completed, the application should be accessible via [localhost](http://localhost:8080/ides)
+
 
 ## 4. Fix known bugs/issues
 
@@ -131,7 +133,7 @@ keytool -delete -keystore ./cacerts.jks -alias equifaxsecureca
 
   Current known expired *certificates* are *gtecybertrustglobalca* and *equifaxsecureca*.
 
-### 4.3 Redirect from GlassFish's root context to application context
+### 4.3 Redirect from GlassFish's root context path to application context path
 
 Normally, all applications are deployed and accessible using its own context path, for example, IDES is deployed on path http://localhost:8080/ides
 
