@@ -9,19 +9,23 @@
 
 ## 2. How to setup
 
-### 1. Compile the source code using Maven command
+### 2.1. Compile the source code using Maven command
 
 ```
 mvn package
 ```
 
-### 2. If the compilation fails, it is because it cannot download Oracle driver jar files.
+### 2.2. If the compilation fails, it is because it cannot download Oracle driver jar files.
 
 There are two ways to fix this. The first one is find the jar file and add the it to the Maven local repository manually.
 The second one is following the instruction of [how to download the file from Oracle Maven repository](https://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9016)
 This method will need to create a setting file. The example of setting file is [here](sample-maven-settings.xml).
 
-### 3. Prepare IDES initial configuration file and datasource file
+### 2.3. Setup database
+
+Please read the file [database.sql.MD](database.sql.MD)
+
+### 2.4. Prepare IDES initial configuration file and datasource file
 
 #### The example of the required property files
   - database configuration property file [sample-db-config.properties](sample-db-config.properties)
@@ -35,13 +39,11 @@ The properties that should be changed in the configuration file are
   - ides.role.student.emailDomain
   - ides.externalApi.googleSignIn.clientId
 
-### 4. Setup GlassFish
+### 2.5. Setup GlassFish JVM system property
 
 First thing first, find a file asadmin. This file is the administrator console of GlassFish. It should be located in folder /bin
 
-#### 4.1 Setup JVM system property
-
-IDES requires 4 JVM system properties.
+IDES requires 4 JVM system properties. For other environment, please refer to file [JVM-Property.MD](JVM-Property.MD)
 
 ```
 start-domain domain1
@@ -63,21 +65,10 @@ create-system-properties java.security.egd=file\\:///dev/urandom
 ```
 
 
-### Setup JVM system property
-
-Please refer to file [JVM-Property.MD](JVM-Property.MD)
+## 3. How to deploy
 
 
 
-
-### Setup database
-
-For SQL commands, please refer to file [database.sql.MD](database.sql.MD)
-
-
-## 3. 
-
-Write later
 
 
 ## 4. Fix known bugs/issues
