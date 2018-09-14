@@ -49,7 +49,7 @@ It should be located in folder `/bin`
 IDES requires 4 JVM system properties. For other environment, please refer to file [JVM-Property.MD](JVM-Property.MD)
 
 ```
-asadmin
+./bin/asadmin
 start-domain domain1
 create-system-properties ides.configuration.initial.fileLocation=/path/to/your/ides-config.properties
 create-system-properties ides.configuration.database.fileLocation=/path/to/your/log/directory/
@@ -70,9 +70,9 @@ create-system-properties java.security.egd=file\\:///dev/urandom
 
 ## 3. How to deploy
 
-First, execute asadmin and start the GlassFish server.
+First, enter asadmin console and start the GlassFish server.
 ```
-asadmin
+./bin/asadmin
 start-domain domain1
 ```
 
