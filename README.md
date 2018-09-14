@@ -15,7 +15,9 @@
 mvn package
 ```
 
-### 2.2. If the compilation fails, it is because it cannot download Oracle driver jar files.
+If the compilation succeeds, there should be a file `ides.war`. Keep this file. It will be used to deploy in step 3.
+
+### 2.2. If the compilation fails, it may be because it cannot download Oracle driver jar files.
 
 There are two ways to fix this. The first one is find the jar file and add the it to the Maven local repository manually.
 The second one is following the instruction of [how to download the file from Oracle Maven repository](https://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9016)
@@ -41,7 +43,8 @@ The properties that should be changed in the configuration file are
 
 ### 2.5. Setup GlassFish JVM system property
 
-First thing first, find a file asadmin. This file is the administrator console of GlassFish. It should be located in folder /bin
+First thing first, find the `asadmin` file. This file is for accessing the administrator console of GlassFish. 
+It should be located in folder `/bin`
 
 IDES requires 4 JVM system properties. For other environment, please refer to file [JVM-Property.MD](JVM-Property.MD)
 
@@ -64,11 +67,22 @@ If you are using Linux, you may face a Java security bug. To fix it, add more pr
 create-system-properties java.security.egd=file\\:///dev/urandom
 ```
 
-
 ## 3. How to deploy
 
+First, start the GlassFish server.
+```
+start-domain domain1
+```
 
-
+Then, deploy the file. This step needs the war file in step 2.1.
+For example, if the war file is `ides.war`.
+```
+deploy /home/user/full/path/to/ides.war
+```
+Or
+```
+deploy C:/ides/ides.war
+```
 
 
 ## 4. Fix known bugs/issues
@@ -76,7 +90,7 @@ create-system-properties java.security.egd=file\\:///dev/urandom
 ### 4.1 Method not found in GlassFish (Security-related method)
 Solution taken from [Stackoverflow.com](https://stackoverflow.com/questions/49383650/sun-security-ssl-sslsessionimpl-not-found)
 
-***Exception*** caused by java.lang.NoSuchMethodError: sun.security.ssl.SSLSessionImpl.
+***Exception*** caused by java.lang.NoSuchMethodError: sun.security.ssl.SSLSessionImpl. or maybe other error that I cannot remember.
 
 ***Solution:*** downgrade the Java version to Java 1.8.0-151 or use other newer version of GlassFish
 
