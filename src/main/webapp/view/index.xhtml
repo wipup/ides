@@ -99,6 +99,10 @@
 				setLoadingMessage(defaultMessage);
 			};
 			
+			$(document).ready(function(){
+				disableFormSubmitOnEnter();
+			});
+			
 		</script>
 		<p:ajaxStatus onstart="updateAjaxMessage(); PF('status').show()" onsuccess="PF('status').hide(); setLoadingMessage(defaultMessage)" onerror="handleError(event)" oncomplete="disableFormSubmitOnEnter()" />
 		<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage)">

@@ -145,7 +145,6 @@ public class UserController extends AbstractIdesController {
 	}
 
 	private User processGoogleIdToken(String idTokenString) throws GeneralSecurityException, IOException {
-		//ApplicationController app = IdesUtils.getNamedController(ApplicationController.class);
 		String clientId = app.getGoogleSignInclientId();
 
 		HttpTransport http = new NetHttpTransport();

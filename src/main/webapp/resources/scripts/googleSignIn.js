@@ -26,20 +26,24 @@ var refreshValues = function() {
 var signinChanged = function(signedIn) {
 	refreshValues();
 	if (signedIn) {
+		
 		var profile = googleUser.getBasicProfile();
 		var authResponse = googleUser.getAuthResponse();
 		var id_token = authResponse.id_token;
 		var email = null;
+		
 		if (profile){
 			email = profile.getEmail();
 		} 
+		
 		idesLogin([ {
-			name : name_param,
-			value : id_token
-		},{
-			name: email_param,
-			value : email
-		} ]);
+				name : name_param,
+				value : id_token
+			},{
+				name: email_param,
+				value : email
+			} ]);
+		
 	} else {
 		//signed out
 		if (!ignoreGoogleListener){

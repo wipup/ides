@@ -157,7 +157,8 @@
 				<p:outputLabel value="Aims and Objectives: " for="ideaAims" />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<p:textEditor id="ideaAims" widgetVar="ideaAims" value="#{ideaForm.idea.aim}" style="margin-bottom:10px; min-height: 150px;" placeholder="Enter your project aims and objectives" required="true" requiredMessage="Project aim and objective must not be empty!" >
+				<p:textEditor id="ideaAims" widgetVar="ideaAims" value="#{ideaForm.idea.aim}" style="margin-bottom:10px; min-height: 150px;" 
+					placeholder="Enter your project aims and objectives" required="true" requiredMessage="Project aim and objective must not be empty!" >
 					<f:facet name="toolbar">
 						<ui:include src="#{IdesPage.CREATE_IDEA_FORM_EDITOR_OPTION.path}" />
 					</f:facet>

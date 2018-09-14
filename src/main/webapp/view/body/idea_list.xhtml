@@ -99,7 +99,7 @@
 					</div>
 					<div class="ui-lg-6 ui-md-6 ui-sm-12 ui-g-nopad">
 						<div class="ui-inputgroup">
-							<p:inputText id="searchTxt" widgetVar="searchTxt"  value="#{ideaList.searchKeyword}" placeholder="Search keyword" maxlength="#{IdeaListConst.MAX_SEARCH_KEYWORD_LENGTH}" onfocus="$(this).select()" onkeyup="if (event.keyCode === 13){ applyFilter(); }" />
+							<p:inputText id="searchTxt" widgetVar="searchTxt"  value="#{ideaList.searchKeyword}" placeholder="Search keyword" maxlength="#{IdeaListConst.MAX_SEARCH_KEYWORD_LENGTH}" onfocus="$(this).select()" onkeyup="if (event.keyCode === $.ui.keyCode.ENTER){ applyFilter(); }"  />
 							<p:button value="Search" icon="fa fa-search" styleClass="white-button"  onclick="applyFilter(); return false;" title="Search idea"   />
 						</div>
 					</div>
@@ -654,7 +654,11 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="ideaDetailModal" header="Idea and client's detail" onShow="fixModalSize(this.id); enablePageScrollbar(false); addIdeaDetailModalHash();" onHide="enablePageScrollbar(true); removeHash();" height="700" width="1300" widgetVar="ideaDetailModal" modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+	<p:dialog id="ideaDetailModal" header="Idea and client's detail" 
+			onShow="fixModalSize(this.id); enablePageScrollbar(false); addIdeaDetailModalHash();" 
+			onHide="enablePageScrollbar(true); removeHash();" height="700" width="1300" widgetVar="ideaDetailModal" 
+			modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
+			
 		<h:panelGroup id="showIdeaPanel" styleClass="no-space">
 			<h:panelGroup rendered="#{not empty ideaList.searchKeyword}">
 			</h:panelGroup>
