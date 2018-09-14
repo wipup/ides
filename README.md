@@ -19,9 +19,13 @@ If the compilation succeeds, there should be a file `ides.war`. Keep this file. 
 
 ### 2.2. If the compilation fails, it may be because it cannot download Oracle driver jar files.
 
-There are two ways to fix this. The first one is find the jar file and add the it to the Maven local repository manually.
+There are three ways to fix this. The first one is find the jar file from other source and add it to the Maven local repository manually.
 The second one is following the instruction of [how to download the file from Oracle Maven repository](https://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9016)
 This method will need to create a setting file. The example of setting file is [here](sample-maven-settings.xml).
+
+The last method is to edit the [pom.xml](pom.xml) and replace the dependency driver with the version that you have.
+ - Comment line 92-98 out (the Oracle driver dependency)
+ - Create a new dependecy about the Oracle Driver that you have.
 
 ### 2.3. Setup database
 
