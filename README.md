@@ -2,19 +2,73 @@
 
 ## 1. Required software
 
-Write later
+1. Java SE 1.8 or newer
+2. GlassFish 5.0
+3. Oracle Database Express Edition 10g
+4. Apache Maven 
 
 ## 2. How to setup
 
-Write later
+### 1. Compile the source code using Maven command
+
+```
+mvn package
+```
+
+### 2. If the compilation fails, it is because it cannot download Oracle driver jar files.
+
+There are two ways to fix this. The first one is find the jar file and add the it to the Maven local repository manually.
+The second one is following the instruction of [how to download the file from Oracle Maven repository](https://docs.oracle.com/middleware/1213/core/MAVEN/config_maven_repo.htm#MAVEN9016)
+This method will need to create a setting file. The example of setting file is [here](sample-maven-settings.xml).
+
+### 3. Prepare IDES initial configuration file and datasource file
+
+#### The example of the required property files
+  - database configuration property file [sample-db-config.properties](sample-db-config.properties)
+  - application configuration property file [sample-ides-config.properties](sample-ides-config.properties)
+
+Don't forget to chage the properties in both files.
+
+The properties that should be changed in the configuration file are
+  - ides.role.administrator.email
+  - ides.role.staff.emailDomain
+  - ides.role.student.emailDomain
+  - ides.externalApi.googleSignIn.clientId
+
+### 4. Setup GlassFish
+
+First thing first, find a file asadmin. This file is the administrator console of GlassFish. It should be located in folder /bin
+
+#### 4.1 Setup JVM system property
+
+IDES requires 4 JVM system properties.
+
+```
+start-domain domain1
+create-system-properties ides.configuration.initial.fileLocation=/path/to/your/ides-config.properties
+create-system-properties ides.configuration.database.fileLocation=/path/to/your/log/directory/
+create-system-properties ides.log.outputLocation=/path/to/your/db-config.properties
+```
+
+The last system property is as follow. This one is fixed. No need to change anything.
+
+```
+create-system-properties log4j.configurationFactory=ports.soc.ides.logger.LoggerConfigurationFactory
+```
+
+If you are using Linux, you may face a Java security bug. To fix it, add more property as follow.
+
+```
+create-system-properties java.security.egd=file\\:///dev/urandom
+```
+
 
 ### Setup JVM system property
 
 Please refer to file [JVM-Property.MD](JVM-Property.MD)
 
-### Setup required property files
-  - database configuration property file [sample-db-config.properties](sample-db-config.properties)
-  - application configuration property file [sample-ides-config.properties](sample-ides-config.properties)
+
+
 
 ### Setup database
 
