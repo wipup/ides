@@ -8,6 +8,10 @@ GRANT ALL PRIVILEGES TO your_username;
 # 1. Client and organisation table
 
 ## 1.1 Create a new table
+
+This step is for creating a a new table. 
+If there is an existing idea database table, please skip this step and do the "Update old table" step instead
+
 ```
 CREATE TABLE CONTACTS
 (
@@ -24,6 +28,9 @@ CREATE UNIQUE INDEX PRIMARY_CONTACTS_INDEX ON CONTACTS(ORGID);
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
 ## 1.2 Migrate/Update old table
+
+This step assumes that there is an existing database table.
+
 ```
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ALTER SEQUENCE contacts_sequence INCREMENT BY 2706;
@@ -33,6 +40,10 @@ ALTER SEQUENCE contacts_sequence increment by 1;
 # 2. Idea Table
 
 ## 2.1 Create a new table
+
+This step is for creating a a new table. 
+If there is an existing idea database table, please skip this step and do the "Update old table" step instead
+
 ```
 CREATE TABLE IDEAS2
 (  PROJAIMS clob,
@@ -53,6 +64,9 @@ CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
 
 ## 2.2 Migrate/Update old table
+
+This step assumes that there is an existing database table.
+
 ```
 CREATE TABLE IDEAS2
 (  PROJAIMS clob,
