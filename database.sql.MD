@@ -53,17 +53,17 @@ CREATE SEQUENCE contact_profile_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE 
 ```
 
 
-# 2. Create a new database schema for testing, playing or whatever
-This section is for those who want to setup the database from scratch.
+# 2. Create a new database schema from scratch
+This section is for those who want to setup the database from scratch in order to test, play around or whatever.
 
 ## 2.1 Create new user
 Firstly, access the oracle database with Database Administrator permission (sysdba) and create a new user.
-Don't forget to change "your_username" and "your_password" to your preferences.
+Don't forget to change _<your_username>_ and _<your_password>_ to your preferences.
 
 ```
 sqlplus / as sysdba
-CREATE USER your_username IDENTIFIED BY your_password;
-GRANT ALL PRIVILEGES TO your_username;
+CREATE USER <your_username> IDENTIFIED BY <your_password>;
+GRANT ALL PRIVILEGES TO <your_username>;
 ```
 
 
@@ -89,7 +89,10 @@ CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE
 
 
 ## 2.3 Create Project Idea table
-
+ - Create a table for project ideas
+ - Create Sequence that will be used to generate primary keys for this table
+ - Create a foreign key to client & organisation table. 
+ 
 ```
 CREATE TABLE IDEAS2
 (  PROJAIMS clob,
