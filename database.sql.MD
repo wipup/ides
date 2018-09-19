@@ -15,16 +15,17 @@ CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 2707 NOMAXVALUE NOCY
 
 
 ## 1.2. Project idea table
-- Alter the IDEAS2 table.
+- Add 2 new columns to the IDEAS2 table.
 - Create Sequence that will be used to generate primary keys for this table.
 - The added Sequence must start with the highest existing primary key (1288).
+- Add default values to the new columns.
 
 ```
 ALTER TABLE IDEAS2 MODIFY (PROJORG decimal(11,0) CONSTRAINT PROJORG_NOT_NULL_CONSTRAINT NOT NULL); 
 ALTER TABLE IDEAS2 ADD PROJTYPE varchar2(1);
 ALTER TABLE IDEAS2 ADD PROJCREATE TIMESTAMP;
 
-UPDATE IDEAS2 set projtype = 'N' WHERE projtype IS NULL;
+UPDATE IDEAS2 SET PROJTYPE = 'N' WHERE PROJTYPE IS NULL;
 UPDATE IDEAS2 SET PROJCREATE = PROJDATE;
 
 CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1288 NOMAXVALUE NOCYCLE;
