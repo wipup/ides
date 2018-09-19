@@ -8,10 +8,10 @@ There are 4 required technologies.
 - [GlassFish 5.0 or newer](https://javaee.github.io/glassfish/download)
   - Other fully-fledged Java EE servers should probably be fine but none of them have been tested.
 - [Oracle Database 10g or newer](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html)
-  - If use a version newer than 10g, the SQL statement selectIdeasForListing 
-  [idea-mapper.xml](src/main/resources/resources/mybatis/mapper/idea-mapper.xml) 
+  - If use a version newer than 10g, the SQL statement `selectIdeasForListing` in the file
+  [idea-mapper.xml](https://github.com/wipup/ides/blob/6c4e566bae7844cd33a645c8aed3aba5cc67ec56/src/main/resources/resources/mybatis/mapper/idea-mapper.xml#L62-L123) 
   should be updated to use a new keyword for paging (`FETCH NEXT # ROWS ONLY`) instead of using the keyword `ROWNUM`. 
-  The Java method [LazyIdeaDataModel.load](/src/main/java/ports/soc/ides/controller/helper/LazyIdeaDataModel.java) 
+  The Java method [LazyIdeaDataModel.load](https://github.com/wipup/ides/blob/e772ff81d31037598cb49dfbf9df4fc3c9c4d3c2/src/main/java/ports/soc/ides/controller/helper/LazyIdeaDataModel.java#L65-L94) 
   may need to be changed too.
 - [Apache Maven](https://maven.apache.org/download.cgi)
   - Recommend the latest version.
