@@ -1,16 +1,75 @@
 # How to setup the database 
+
+
+# 1. Update/Alter existing database schema
+This section is for the original purpsoe of this project; improve the old existing one.
+
+## 1.1. Client and organisation table
+- Create Sequence that will be used to generate primary keys for this table.
+- The added Sequence must start with the highest existing primary key (2707).
+- No further alteration needed for table CONTACTS.
+
+```
+CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 2707 NOMAXVALUE NOCYCLE;
+```
+
+
+## 1.2. Project idea table
+- Alter the IDEAS2 table.
+- Create Sequence that will be used to generate primary keys for this table.
+- The added Sequence must start with the highest existing primary key (1288).
+
+```
+ALTER TABLE IDEAS2 MODIFY (PROJORG decimal(11,0) CONSTRAINT PROJORG_NOT_NULL_CONSTRAINT NOT NULL); 
+ALTER TABLE IDEAS2 ADD PROJTYPE varchar2(1);
+ALTER TABLE IDEAS2 ADD PROJCREATE TIMESTAMP;
+
+UPDATE IDEAS2 set projtype = 'N' WHERE projtype IS NULL;
+UPDATE IDEAS2 SET PROJCREATE = PROJDATE;
+
+CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1288 NOMAXVALUE NOCYCLE;
+```
+
+## 1.3. Contact Profile table
+ - Create a table for Contact Profile
+ - Create Sequence that will be used to generate primary keys for Contact Profile.
+ 
+```
+CREATE TABLE CONTACT_PROFILE
+(
+	ID decimal(11,0) PRIMARY KEY NOT NULL,
+	ADDR varchar2(100),
+	DOES varchar2(50),
+	NAME varchar2(50),
+	POSTCODE varchar2(10),
+	TEL varchar2(20),
+	CONTACT varchar2(50),
+	EMAIL varchar2(50),
+	OWNER varchar2(100) NOT NULL,
+	OWNERTYPE varchar2(1)
+);
+CREATE INDEX CONTACT_PROFILE_OWNER_INDEX ON CONTACT_PROFILE(OWNER);
+CREATE SEQUENCE contact_profile_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE; 
+```
+
+
+# 2. Create a new database schema for testing, playing or whatever
+This section is for those who want to setup the database from scratch.
+
+## 2.1 Create new user
+Firstly, access the oracle database with Database Administrator permission (sysdba) and create a new user.
+Don't forget to change "your_username" and "your_password" to your preferences.
+
 ```
 sqlplus / as sysdba
 CREATE USER your_username IDENTIFIED BY your_password;
 GRANT ALL PRIVILEGES TO your_username;
 ```
 
-# 1. Client and organisation table
 
-## 1.1 Create a new table
-
-This step is for creating a a new table. 
-If there is an existing idea database table, please skip this step and do the "Update old table" step instead
+## 2.2 Create Client and Organisation table
+ - Create a table for client & organisation
+ - Create Sequence that will be used to generate primary keys for this table
 
 ```
 CREATE TABLE CONTACTS
@@ -27,22 +86,9 @@ CREATE TABLE CONTACTS
 CREATE UNIQUE INDEX PRIMARY_CONTACTS_INDEX ON CONTACTS(ORGID);
 CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
-## 1.2 Migrate/Update old table
 
-This step assumes that there is an existing database table.
 
-```
-CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
-ALTER SEQUENCE contacts_sequence INCREMENT BY 2706;
-SELECT contacts_sequence.nextval FROM dual;
-ALTER SEQUENCE contacts_sequence increment by 1;
-```
-# 2. Idea Table
-
-## 2.1 Create a new table
-
-This step is for creating a a new table. 
-If there is an existing idea database table, please skip this step and do the "Update old table" step instead
+## 2.3 Create Project Idea table
 
 ```
 CREATE TABLE IDEAS2
@@ -63,40 +109,7 @@ CREATE UNIQUE INDEX IDEAS2_PRIMARY_INDEX ON IDEAS2(PROJID);
 CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
 ```
 
-## 2.2 Migrate/Update old table
 
-This step assumes that there is an existing database table.
+## 2.4 Create Contact Profile table
+This section is the same as section 1.3. Please follow the instruction in section 1.3.
 
-```
-ALTER TABLE IDEAS2 MODIFY (PROJORG decimal(11,0) CONSTRAINT PROJORG_NOT_NULL_CONSTRAINT NOT NULL); 
-ALTER TABLE IDEAS2 ADD PROJTYPE varchar2(1);
-ALTER TABLE IDEAS2 ADD PROJCREATE TIMESTAMP;
-
-UPDATE IDEAS2 set projtype = 'N' WHERE projtype IS NULL;
-UPDATE IDEAS2 SET PROJCREATE = PROJDATE;
-
-CREATE SEQUENCE ideas2_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE;
-ALTER SEQUENCE ideas2_sequence increment by 1288;
-SELECT ideas2_sequence.nextval FROM dual;
-ALTER SEQUENCE ideas2_sequence increment by 1;
-```
-
-# 3. Client Profile table
-
-```
-CREATE TABLE CONTACT_PROFILE
-(
-	ID decimal(11,0) PRIMARY KEY NOT NULL,
-	ADDR varchar2(100),
-	DOES varchar2(50),
-	NAME varchar2(50),
-	POSTCODE varchar2(10),
-	TEL varchar2(20),
-	CONTACT varchar2(50),
-	EMAIL varchar2(50),
-	OWNER varchar2(100) NOT NULL,
-	OWNERTYPE varchar2(1)
-);
-CREATE INDEX CONTACT_PROFILE_OWNER_INDEX ON CONTACT_PROFILE(OWNER);
-CREATE SEQUENCE contact_profile_sequence INCREMENT BY 1 START WITH 1 NOMAXVALUE NOCYCLE; 
-```
