@@ -1,12 +1,12 @@
 # How to setup the database 
 
 
-# 1. Update/Alter existing database schema
+# 1. Update/Alter the existing database schema
 This section is for the original purpsoe of this project; improve the old existing one.
 
 ## 1.1. Client and organisation table
 - Create Sequence that will be used to generate primary keys for this table.
-- The added Sequence must start with the highest existing primary key (2707).
+- The added Sequence must start with the highest existing primary key plus 1 (2706 + 1 = 2707).
 - No further alteration needed for table CONTACTS.
 
 ```
@@ -17,7 +17,7 @@ CREATE SEQUENCE contacts_sequence INCREMENT BY 1 START WITH 2707 NOMAXVALUE NOCY
 ## 1.2. Project idea table
 - Add 2 new columns to the IDEAS2 table.
 - Create Sequence that will be used to generate primary keys for this table.
-- The added Sequence must start with the highest existing primary key (1288).
+- The added Sequence must start with the highest existing primary key plus 1 (1287 + 1 = 1288).
 - Add default values to the new columns.
 
 ```
@@ -59,7 +59,7 @@ This section is for those who want to setup the database from scratch in order t
 
 ## 2.1 Create new user
 Firstly, access the oracle database with Database Administrator permission (sysdba) and create a new user.
-Don't forget to change _<your_username>_ and _<your_password>_ to your preferences.
+Don't forget to change _<your_username>_ and _<your_password>_  to your preferences.
 
 ```
 sqlplus / as sysdba
