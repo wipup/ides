@@ -165,5 +165,3 @@ The recommended way to do this is to use Javascript to redirect to the applicati
 
 Also, change the page title by editing text inside the <title> tag to *IDES Project Idea Database* to let users know that they are accessing the right application.
 
-# 5. How to enable HTTPS on GlassFish 5.0
-write later
