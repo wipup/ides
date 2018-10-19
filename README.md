@@ -1,5 +1,7 @@
 # IDES
 
+This project is part of my dissertation.
+
 ## 1. Required software
 
 There are 4 required technologies.
