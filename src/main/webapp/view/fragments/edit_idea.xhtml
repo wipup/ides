@@ -132,19 +132,19 @@
 				<p:outputLabel value="Idea Status: " />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Approved}">			
+				<h:panelGroup rendered="#{ideaForm.idea.approved}">			
 					<span class="status-approved"><h:outputText value="Approved" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Allocated}">			
+				<h:panelGroup rendered="#{ideaForm.idea.allocated}">			
 					<span class="status-allocated"><h:outputText value="Allocated" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Provisional}">			
+				<h:panelGroup rendered="#{ideaForm.idea.provisional}">			
 					<span class="status-provisional"><h:outputText value="Provisional" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{ideaForm.idea.status == IdeaStatus.Withdrawn}">			
+				<h:panelGroup rendered="#{ideaForm.idea.withdrawn}">			
 					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{ideaForm.idea.status != IdeaStatus.Withdrawn and ideaForm.idea.status != IdeaStatus.Provisional and ideaForm.idea.status != IdeaStatus.Allocated and ideaForm.idea.status != IdeaStatus.Approved}">
+				<h:panelGroup rendered="#{!ideaForm.idea.withdrawn and !ideaForm.idea.provisional and !ideaForm.idea.allocated and !ideaForm.idea.approved}">
 					<h:outputText value="#{ideaForm.idea.status}" />
 				</h:panelGroup>
 			</div>

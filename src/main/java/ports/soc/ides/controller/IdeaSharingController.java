@@ -10,7 +10,6 @@ import ports.soc.ides.controller.fragment.OrganisationDisplayController;
 import ports.soc.ides.dao.IdeaDAO;
 import ports.soc.ides.dao.SqlSessionProvider;
 import ports.soc.ides.model.Idea;
-import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
@@ -40,9 +39,8 @@ public class IdeaSharingController extends AbstractIdesController {
 		if (i == null) {
 			return;
 		}
-		
-		IdeaStatus status = i.getStatus();
-		if (status == IdeaStatus.Approved || status == IdeaStatus.Allocated) {
+
+		if (i.isApproved() || i.isAllocated()) {
 			showIdea.initDefault(i);
 			if (IdesUtils.isEmpty(showIdea.getShareableLink())) {
 				log.error("shareable link of idea ref=" + i.getId() + " is empty, sharing halt");
@@ -57,7 +55,7 @@ public class IdeaSharingController extends AbstractIdesController {
 			showOrg.initDefault(i.getOrganisation());
 			
 		} else {
-			log.warn("idea ref=" + i.getId() + " with status=" + status + " is not shareable. No idea rendered");
+			log.warn("idea ref=" + i.getId() + " with status=" + i.getStatus() + " is not shareable. No idea rendered");
 		}
 	}
 	

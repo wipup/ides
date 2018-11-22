@@ -153,19 +153,14 @@
 				return false;
 			}
 			
-			var handleHashChange = function(){
-				var hash = window.location.hash;
-				if (!hash){
-					hideModalByWidget('ideaDetailModal');
-					#{auth.admin ? 'closeAdminModals();' : ''}
-					return;
-				}
-			};
+			window.addEventListener('popstate', function(event) { 
+			    hideModalByWidget('ideaDetailModal');
+			    #{auth.admin ? 'closeAdminModals();' : ''}
+			});
 			
 			$(document).ready(function() {
 				updateTableAfterAjax();
 				refreshModalSetting();	
-				$(window).on('hashchange', handleHashChange);
 			});
 		</script>
 		
@@ -285,19 +280,19 @@
 			</p:column>
 
 			<p:column headerText="Status" footerText="Status" sortBy="#{IdeaConst.COLUMN_STATUS}" styleClass="column-md-status column-sm-status" priority="6" >
-				<h:panelGroup rendered="#{idea.status == IdeaStatus.Approved}">			
+				<h:panelGroup rendered="#{idea.approved}">			
 					<span class="status-approved"><h:outputText value="Approved" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{idea.status == IdeaStatus.Allocated}">			
+				<h:panelGroup rendered="#{idea.allocated}">			
 					<span class="status-allocated"><h:outputText value="Allocated" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{idea.status == IdeaStatus.Provisional}">			
+				<h:panelGroup rendered="#{idea.provisional}">			
 					<span class="status-provisional"><h:outputText value="Provisional" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{idea.status == IdeaStatus.Withdrawn}">			
+				<h:panelGroup rendered="#{idea.withdrawn}">			
 					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{idea.status != IdeaStatus.Withdrawn and idea.status != IdeaStatus.Provisional and idea.status != IdeaStatus.Allocated and idea.status != IdeaStatus.Approved}">
+				<h:panelGroup rendered="#{!idea.withdrawn and !idea.provisional and !idea.allocated and !idea.approved}">
 					<h:outputText value="#{idea.status}" />
 				</h:panelGroup>
 			</p:column>
@@ -310,16 +305,16 @@
 							<f:param name="#{Const.PARAM_MODAL_VAR}" value="editIdeaModalVar" />
 						</p:commandButton>
 					</h:panelGroup>
-					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Provisional}" style="padding: 5px 2px;">
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.approvable}" style="padding: 5px 2px;">
 						<p:button value="Approve" icon="fa fa-check-square-o" styleClass="cell-btn approve-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_APPROVE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
-					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Approved}" style="padding: 5px 2px;">
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.allocatable}" style="padding: 5px 2px;">
 						<p:button value="Allocate" icon="fa fa-lock" styleClass="cell-btn allocate-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_ALLOCATE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
-					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Provisional}" style="padding: 5px 2px;">
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.withdrawable}" style="padding: 5px 2px;">
 						<p:button value="Withdraw" icon="fa fa-minus-circle" styleClass="cell-btn withdraw-btn" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_WITHDRAW}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
-					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.status == IdeaStatus.Withdrawn}" style="padding: 5px 2px;">
+					<h:panelGroup styleClass="ui-g-12" rendered="#{idea.deletable}" style="padding: 5px 2px;">
 						<p:button value="Delete" icon="fa fa-trash-o" styleClass="cell-btn delete-btn" rendered="#{app.enableIdeaDeletion}" onclick="confirmProcessOneIdea('#{IdeaListConst.PARAM_CONFIRM_MODE_DELETE}', #{idea.id}, #{i}, '#{idea.title}', '#{idea.type.label}', '#{idea.organisation.contact} (#{idea.organisation.name})', '#{ideaList.formatDateTime(idea.timestamp)}'); return false;" />
 					</h:panelGroup>
 				</div>
@@ -426,25 +421,25 @@
 				}
 				
 				function updateSelectionControlButtons(){
+					PF('confirmAllocateSelectionBtn').disable();
+					PF('confirmApproveSelectionBtn').disable();
+					PF('confirmWithdrawSelectionBtn').disable();
+				
 					if (statusCount['#{IdeaStatus.Approved}'] > 0){
 						PF('confirmAllocateSelectionBtn').enable();
-					} else {
-						PF('confirmAllocateSelectionBtn').disable();
+						PF('confirmWithdrawSelectionBtn').enable();
 					}
 					
 					if (statusCount['#{IdeaStatus.Provisional}'] > 0){
 						PF('confirmApproveSelectionBtn').enable();
 						PF('confirmWithdrawSelectionBtn').enable();
-					} else {
-						PF('confirmApproveSelectionBtn').disable();
-						PF('confirmWithdrawSelectionBtn').disable();
-					}
+					} 
 					
 					if (PF('confirmDeleteSelectionBtn')){
+						PF('confirmDeleteSelectionBtn').disable();
+						
 						if (statusCount['#{IdeaStatus.Withdrawn}'] > 0 &amp;&amp; #{app.enableIdeaDeletion}){
 							PF('confirmDeleteSelectionBtn').enable();
-						} else {
-							PF('confirmDeleteSelectionBtn').disable();
 						}
 					}
 				}
@@ -513,7 +508,7 @@
 					$("#confirmOneIdeaDate").text(date);
 					PF('confirmOneIdeaBtn').jq.children('span').text(buttonTxt);
 					
-					window.location.hash = "confirm/" + action + "/ref/" + ref;
+					pushHistory("confirm/" + action + "/ref/" + ref);
 					
 					var modalHeader = $(modal.titlebar).children('span').text(header);
 					modal.show();
@@ -527,7 +522,7 @@
 			</script>
 		</h:panelGroup>
 	</h:form>
-	<p:dialog widgetVar="confirmOneIdeaDialog" header="Confirmation" rendered="#{auth.admin}" modal="true" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true); removeHash();" height="250" width="600" position="top">
+	<p:dialog widgetVar="confirmOneIdeaDialog" header="Confirmation" rendered="#{auth.admin}" modal="true" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false);" onHide="enablePageScrollbar(true); popHistory();" height="250" width="600" position="top">
 		<div class="ui-g">
 			<div class="ui-g-12">
 				<span class="fa fa-question-circle"></span> <span class="ui-outputlabel ui-widget" id="confirmMessage"></span>
@@ -582,7 +577,7 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="editIdeaModal" widgetVar="editIdeaModalVar" header="Edit Idea" height="520" width="1200" onShow="fixModalSize(this.id); enablePageScrollbar(false); addEditIdeaModalHash();" onHide="enablePageScrollbar(true); removeHash();" rendered="#{auth.admin}" modal="true" maximizable="false" position="top" closeOnEscape="false" >
+	<p:dialog id="editIdeaModal" widgetVar="editIdeaModalVar" header="Edit Idea" height="520" width="1200" onShow="fixModalSize(this.id); enablePageScrollbar(false); addEditIdeaModalHash();" onHide="enablePageScrollbar(true); popHistory();" rendered="#{auth.admin}" modal="true" maximizable="false" position="top" closeOnEscape="false" >
 		<h:panelGroup id="editIdeaModalPanel" styleClass="no-space">
 			<h:form rendered="#{ideaList.renderEditIdeaForm}">
 				<p:messages>
@@ -593,7 +588,7 @@
 			</h:form>
 			<script>
 				function addEditIdeaModalHash(){
-					window.location.hash = "edit/row/#{ideaList.selectedIdeaIndex + 1}";
+					pushHistory("edit/row/#{ideaList.selectedIdeaIndex + 1}");
 				}
 			</script>
 		</h:panelGroup>
@@ -612,7 +607,7 @@
 		</f:facet>
 	</p:dialog>
 
-	<p:dialog id="confirmSelectedIdeasModalDialog" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false); addConfirmSelectedIdeasModalDialogHash();" onHide="enablePageScrollbar(true); removeHash();" rendered="#{auth.admin}" 
+	<p:dialog id="confirmSelectedIdeasModalDialog" onShow="fixSmallModalSize(this.id); enablePageScrollbar(false); addConfirmSelectedIdeasModalDialogHash();" onHide="enablePageScrollbar(true); popHistory();" rendered="#{auth.admin}" 
 		widgetVar="confirmModalVar" header="Confirm #{ideaList.confirmModalMode} of #{ideaList.selectedIdeaSize} idea#{ideaList.selectedIdeaSize &lt;= 1 ? '' : 's'}" closeOnEscape="true" modal="true" position="top" height="300" width="800">
 		<p:dataTable value="#{ideaList.selectedIdeas}" var="idea" emptyMessage="No idea selected" reflow="true">
 			<p:column headerText="#" style="width: 48px; text-align: right;">
@@ -630,7 +625,7 @@
 		</p:dataTable>
 		<script>
 			function addConfirmSelectedIdeasModalDialogHash(){
-				window.location.hash = "confirm/selected/#{ideaList.confirmModalMode}";
+				pushHistory("confirm/selected/#{ideaList.confirmModalMode}");
 			}
 		</script>
 		<f:facet name="footer" style="height: 50px;">
@@ -656,7 +651,7 @@
 
 	<p:dialog id="ideaDetailModal" header="Idea and client's detail" 
 			onShow="fixModalSize(this.id); enablePageScrollbar(false); addIdeaDetailModalHash();" 
-			onHide="enablePageScrollbar(true); removeHash();" height="700" width="1300" widgetVar="ideaDetailModal" 
+			onHide="enablePageScrollbar(true); popHistory();" height="700" width="1300" widgetVar="ideaDetailModal" 
 			modal="true" maximizable="false" position="top" closeOnEscape="true" styleClass="no-space">
 			
 		<h:panelGroup id="showIdeaPanel" styleClass="no-space">
@@ -670,7 +665,7 @@
 			</p:panel>
 			<script>
 				function addIdeaDetailModalHash(){
-					window.location.hash = "detail/row/#{ideaList.selectedIdeaIndex + 1}";
+					pushHistory("detail/row/#{ideaList.selectedIdeaIndex + 1}");
 				}
 			</script>
 		</h:panelGroup>

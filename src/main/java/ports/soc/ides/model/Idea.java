@@ -38,6 +38,44 @@ public class Idea extends DataModel {
 	private String student;
 
 	private ProjectType type;
+	
+	//---------------
+	
+	public boolean isApproved() {
+		return this.status == IdeaStatus.Approved;
+	}
+	
+	public boolean isAllocated() {
+		return this.status == IdeaStatus.Allocated;
+	}
+	
+	public boolean isWithdrawn() {
+		return this.status == IdeaStatus.Withdrawn;
+	}
+	
+	public boolean isProvisional() {
+		return this.status == IdeaStatus.Provisional;
+	}
+	
+	//----------------
+	
+	public boolean isAllocatable() {
+		return this.status == IdeaStatus.Approved;
+	}
+	
+	public boolean isApprovable() {
+		return this.status == IdeaStatus.Provisional;
+	}
+	
+	public boolean isWithdrawable() {
+		return this.status == IdeaStatus.Provisional || this.status == IdeaStatus.Approved;
+	}
+	
+	public boolean isDeletable() {
+		return this.status == IdeaStatus.Withdrawn;
+	}
+	
+	//----------------
 
 	public long getId() {
 		return id;
@@ -126,7 +164,7 @@ public class Idea extends DataModel {
 	public void setTimestamp(LocalDateTime timestamp) {
 		this.timestamp = timestamp;
 	}
-
+	
 	@Override
 	public String printDetail() {
 		StringBuilder sb = new StringBuilder();

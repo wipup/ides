@@ -168,7 +168,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			
 			if (!auth.isAdmin()) {
 				// not allow non-admin users to see provisional/withdrawn ideas
-				if (selectedIdea.getStatus() == IdeaStatus.Provisional || selectedIdea.getStatus() == IdeaStatus.Withdrawn) {
+				if (selectedIdea.isProvisional() || selectedIdea.isWithdrawn()) {
 					selectedIdea = new Idea(); // send empty idea instead
 					log.error("Unable to select " + DataModel.printDetail(selectedIdea) + " idea without being an administrator");
 					addMessageError("Permission Denied", "");
@@ -320,7 +320,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 					return;
 				}
 
-				if (targetIdea.getStatus() != IdeaStatus.Withdrawn) {
+				if (!targetIdea.isWithdrawn()) {
 					addMessageError("Error", "The idea to be deleted must be withdrawn first");
 					return;
 				}
@@ -439,9 +439,8 @@ public class IdeaListController extends AbstractIdesController implements Serial
 					addMessageError("Error", "Selected idea of row " + index + " does not exist");
 					continue;
 				}
-				IdeaStatus targetStat = getEligibleStatusforAction(mode);
-
-				if (targetStat == i.getStatus() && targetStat != null) {
+				
+				if (isIdeaEligibleForAction(mode, i)) {
 					log.debug("Confirming action=" + mode + ", idea=" + i.printDetail());
 					selectedIdeas.add(i);
 				}
@@ -460,22 +459,22 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			log.error("error on confirming selected ideas", e);
 		}
 	}
-
-	private IdeaStatus getEligibleStatusforAction(String action) {
+	
+	private boolean isIdeaEligibleForAction(String action, Idea i) {
 		if (PARAM_CONFIRM_MODE_ALLOCATE.equals(action)) {
-			return IdeaStatus.Approved;
+			return i.isAllocatable();
 		} else if (PARAM_CONFIRM_MODE_APPROVE.equals(action)) {
-			return IdeaStatus.Provisional;
+			return i.isApprovable();
 		} else if (PARAM_CONFIRM_MODE_WITHDRAW.equals(action)) {
-			return IdeaStatus.Provisional;
+			return i.isWithdrawable();
 		} else if (PARAM_CONFIRM_MODE_DELETE.equals(action)) {
 			if (app.isEnableIdeaDeletion()) {
-				return IdeaStatus.Withdrawn;
+				return i.isDeletable();
 			}
 		}
-		return null;
+		return false;
 	}
-
+	
 	private int processIdeaFilterOption() {
 		try {
 			if (lazyIdeaDataModel == null) {

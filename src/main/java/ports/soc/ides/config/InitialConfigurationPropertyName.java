@@ -41,9 +41,9 @@ public class InitialConfigurationPropertyName {
 	
 	//--------- logger
 	
-	public static final String LOG4J2_CONFIGURATION_FACTORY = "log4j.configurationFactory"; //required
+	public static final String LOG4J2_CONFIGURATION_FACTORY = "log4j.configurationFactory"; //preferrably, must be = ports.soc.ides.logger.LoggerConfigurationFactory
 	public static final String LOGGER_DEFAULT_LEVEL = "ides.log.level"; //preferrably JVM
-	public static final String LOGGER_OUTPUT_LOCATION = "ides.log.outputLocation"; //preferrable  JVM
+	public static final String LOGGER_OUTPUT_LOCATION = "ides.log.outputLocation"; //required 
 	
 	
 	

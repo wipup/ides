@@ -1,6 +1,5 @@
 <ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
 
-	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
 	<p:importEnum type="ports.soc.ides.model.constant.ProjectType" var="ProjType" allSuffix="ALL_PROJ_TYPE" />
 	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="IdesPage" allSuffix="ALL_IDES_PAGES" />
 	<p:importConstants type="ports.soc.ides.controller.AbstractIdesController" var="Const" />
@@ -240,19 +239,19 @@
 								<p:outputLabel value="Status: " />
 							</div>
 							<div class="ui-lg-3 ui-md-8 ui-sm-6 ides-div-border">
-								<h:panelGroup rendered="#{idea.status == IdeaStatus.Approved}">			
+								<h:panelGroup rendered="#{idea.approved}">			
 									<span class="status-approved"><h:outputText value="Approved" /></span>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{idea.status == IdeaStatus.Allocated}">			
+								<h:panelGroup rendered="#{idea.allocated}">			
 									<span class="status-allocated"><h:outputText value="Allocated" /></span>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{idea.status == IdeaStatus.Provisional}">			
+								<h:panelGroup rendered="#{idea.provisional}">			
 									<span class="status-provisional"><h:outputText value="Provisional" /></span>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{idea.status == IdeaStatus.Withdrawn}">			
+								<h:panelGroup rendered="#{idea.withdrawn}">			
 									<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{idea.status != IdeaStatus.Withdrawn and idea.status != IdeaStatus.Provisional and idea.status != IdeaStatus.Allocated and idea.status != IdeaStatus.Approved}">
+								<h:panelGroup rendered="#{!idea.withdrawn and !idea.provisional and !idea.allocated and !idea.approved}">
 									<h:outputText value="#{idea.status}" />
 								</h:panelGroup>
 							</div>

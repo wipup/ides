@@ -1,6 +1,5 @@
 <ui:fragment xmlns="http://www.w3c.org/1999/xhtml" xmlns:ui="http://xmlns.jcp.org/jsf/facelets" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core" xmlns:p="http://primefaces.org/ui">
 
-	<p:importEnum type="ports.soc.ides.model.constant.IdeaStatus" var="IdeaStatus" allSuffix="ALL_IDEA_STATUS" />
 	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
 
 	<div class="ui-g">
@@ -42,19 +41,19 @@
 				<p:outputLabel value="Idea status: " />
 			</div>
 			<div class="ui-lg-9 ui-md-9 ui-sm-12 ides-div-border">
-				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Approved}">
+				<h:panelGroup rendered="#{showIdea.idea.approved}">
 					<span class="status-approved"><h:outputText value="Approved" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Allocated}">
+				<h:panelGroup rendered="#{showIdea.idea.allocated}">
 					<span class="status-allocated"><h:outputText value="Allocated" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Provisional}">
+				<h:panelGroup rendered="#{showIdea.idea.provisional}">
 					<span class="status-provisional"><h:outputText value="Provisional" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{showIdea.idea.status == IdeaStatus.Withdrawn}">
+				<h:panelGroup rendered="#{showIdea.idea.withdrawn}">
 					<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
 				</h:panelGroup>
-				<h:panelGroup rendered="#{showIdea.idea.status != IdeaStatus.Withdrawn and showIdea.idea.status != IdeaStatus.Provisional and showIdea.idea.status != IdeaStatus.Allocated and showIdea.idea.status != IdeaStatus.Approved}">
+				<h:panelGroup rendered="#{!showIdea.idea.withdrawn and !showIdea.idea.provisional and !showIdea.idea.allocated and !showIdea.idea.approved}">
 					<h:outputText value="#{showIdea.idea.status}" />
 				</h:panelGroup>
 			</div>

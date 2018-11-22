@@ -61,10 +61,12 @@ public class IdeaDisplayController extends AbstractIdesController {
 			shareableLink = null;
 			return;
 		}
-		if (idea.getStatus() != IdeaStatus.Approved && idea.getStatus() != IdeaStatus.Allocated) {
+		
+		if (!idea.isApproved() && !idea.isAllocated()) {
 			shareableLink = null;
 			return;
 		}
+		
 		
 		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		StringBuilder sb = new StringBuilder();
