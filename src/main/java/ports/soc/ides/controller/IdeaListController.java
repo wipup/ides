@@ -320,7 +320,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 					return;
 				}
 
-				if (!targetIdea.isWithdrawn()) {
+				if (!targetIdea.isDeletable()) {
 					addMessageError("Error", "The idea to be deleted must be withdrawn first");
 					return;
 				}
@@ -328,6 +328,10 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				dao.deleteIdea(targetIdea);
 				addMessageInfo("Success", "Idea #" + targetIdea.getId() + " has been deleted");
 			} else {
+				if (!isIdeaEligibleForAction(mode, targetIdea)) {
+					addMessageError("Error", "Invalid action");
+					return;
+				}
 				
 				IdeaStatus targetStatus = getResultIdeaStatusFromAction(mode);
 				if (targetStatus == null) {
