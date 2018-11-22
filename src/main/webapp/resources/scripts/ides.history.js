@@ -11,5 +11,6 @@ function pushHistory(x){
 }
 
 function popHistory(){	
-	window.history.go(-1);
+	var stateObj = {url: ""};
+	window.history.replaceState(stateObj, "", "#");
 }
