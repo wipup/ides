@@ -1,11 +1,23 @@
 # IDES
 
+This project is part of my dissertation.
+
 ## 1. Required software
 
-1. Java SE 1.8 or newer
-2. GlassFish 5.0
-3. Oracle Database Express Edition 10g
-4. Apache Maven 
+There are 4 required technologies.
+
+- [Java SE 1.8 or newer](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [GlassFish 5.0 or newer](https://javaee.github.io/glassfish/download)
+  - Other fully-fledged Java EE servers should probably be fine but none of them have been tested.
+- [Oracle Database 10g or newer](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html)
+  - If use a version newer than 10g, the SQL statement `selectIdeasForListing` in the file
+  [idea-mapper.xml](https://github.com/wipup/ides/blob/6c4e566bae7844cd33a645c8aed3aba5cc67ec56/src/main/resources/resources/mybatis/mapper/idea-mapper.xml#L62-L123) 
+  should be updated to use a new keyword for paging (`FETCH NEXT # ROWS ONLY`) instead of using the keyword `ROWNUM`. 
+  The Java method [LazyIdeaDataModel.load](https://github.com/wipup/ides/blob/e772ff81d31037598cb49dfbf9df4fc3c9c4d3c2/src/main/java/ports/soc/ides/controller/helper/LazyIdeaDataModel.java#L65-L94) 
+  may need to be changed too.
+- [Apache Maven](https://maven.apache.org/download.cgi)
+  - Recommend the latest version.
+  - Not sure which version is the minimum version. 
 
 ## 2. How to setup
 
@@ -29,7 +41,7 @@ The last method is to edit the [pom.xml](pom.xml) and replace the dependency dri
 
 ### 2.3. Setup database
 
-Please read the file [database.sql.MD](database.sql.MD)
+Please read the instruction in [database.sql.MD](database.sql.MD)
 
 ### 2.4. Prepare IDES initial configuration file and datasource file
 
@@ -154,3 +166,4 @@ The recommended way to do this is to use Javascript to redirect to the applicati
 ```
 
 Also, change the page title by editing text inside the <title> tag to *IDES Project Idea Database* to let users know that they are accessing the right application.
+
