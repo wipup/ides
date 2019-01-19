@@ -7,14 +7,14 @@ import java.util.Map;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.ibatis.session.SqlSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
+import ports.soc.ides.dao.IdeaDAO;
 import ports.soc.ides.dao.SqlSessionProvider;
-import ports.soc.ides.dao.mybatis.IdeaMapper;
+import ports.soc.ides.dao.wrapper.LazyIdeaList;
 import ports.soc.ides.interceptor.annotation.LogPerformance;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
@@ -31,7 +31,7 @@ import ports.soc.ides.util.IdesUtils;
 public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 
 	@Inject
-	private SqlSessionProvider sqlProvier;
+	private SqlSessionProvider sqlProvider;
 	
 	private static final long serialVersionUID = -340739539400680311L;
 	
@@ -71,13 +71,14 @@ public class LazyIdeaDataModel extends LazyDataModel<Idea>  {
 		log.info(sb.toString());
 		
 		List<Idea> result = new ArrayList<>();
-		try (SqlSession sql = sqlProvier.getSqlSession()){
+		try {
 			
 			int lastRecord = first + pageSize;
+			IdeaDAO ideaDAO = new IdeaDAO(sqlProvider);
+			LazyIdeaList lazyIdeaList = ideaDAO.selectIdeasForListingLazily(filterStatus, filterType, sortField, sortOrder, first, lastRecord, searchKeyword);
 			
-			IdeaMapper ideaMapper = sql.getMapper(IdeaMapper.class);
-			long totalRowCount = ideaMapper.countIdeasForListing(filterStatus, filterType, searchKeyword);			
-			result = ideaMapper.selectIdeasForListing(filterStatus, filterType, sortField, sortOrder, first, lastRecord, searchKeyword);
+			long totalRowCount = lazyIdeaList.getTotalFoundIdea();			
+			result = lazyIdeaList.getFetchedIdeas();
 			
 			log.debug("loaded resultSet size=" + result.size());
 			

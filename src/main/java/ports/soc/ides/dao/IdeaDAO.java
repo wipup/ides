@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.primefaces.model.SortOrder;
 
 import ports.soc.ides.dao.mybatis.IdeaMapper;
+import ports.soc.ides.dao.wrapper.LazyIdeaList;
 import ports.soc.ides.model.DataModel;
 import ports.soc.ides.model.Idea;
 import ports.soc.ides.model.constant.IdeaStatus;
@@ -42,23 +43,23 @@ public class IdeaDAO extends AbstractDAO {
 		}
 	}
 
-	public long countIdeasForListing(List<IdeaStatus> statuses, List<ProjectType> types, String searchText) {
-		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
-			StringBuilder sb = new StringBuilder();
-			sb.append("Counting idea where status=").append(IdesUtils.deepPrint(statuses)).append(", types=").append(IdesUtils.deepPrint(types)).append(", searchText=")
-					.append(searchText);
-			log.trace(sb.toString());
-			return getIdeaMapper(sql).countIdeasForListing(statuses, types, searchText);
-		}
-	}
-
-	public List<Idea> selectIdeasForListing(List<IdeaStatus> statuses, List<ProjectType> types, String sortColumn, SortOrder order, long first, long last, String searchText) {
+	public LazyIdeaList selectIdeasForListingLazily(List<IdeaStatus> statuses, List<ProjectType> types, String sortColumn, SortOrder order, long first, long last, String searchText) {
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Selecting idea where status=").append(IdesUtils.deepPrint(statuses)).append(", types=").append(IdesUtils.deepPrint(types)).append(", sortColumn=")
 					.append(sortColumn).append(", first=").append(first).append(", last=").append(last).append(", searchText=").append(searchText);
 			log.trace(sb.toString());
-			return getIdeaMapper(sql).selectIdeasForListing(statuses, types, sortColumn, order, first, last, searchText);
+			
+			IdeaMapper ideaMapper = getIdeaMapper(sql);
+			
+			List<Idea> ideas = ideaMapper.selectIdeasForListing(statuses, types, sortColumn, order, first, last, searchText);
+			long totalFoundIdea = ideaMapper.countIdeasForListing(statuses, types, searchText);
+			
+			LazyIdeaList result  = new LazyIdeaList();
+			result.setFetchedIdeas(ideas);
+			result.setTotalFoundIdea(totalFoundIdea);
+			
+			return result;
 		}
 	}
 

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import ports.soc.ides.controller.AbstractIdesController;
 import ports.soc.ides.controller.helper.IdesPage;
 import ports.soc.ides.model.Idea;
-import ports.soc.ides.model.constant.IdeaStatus;
 import ports.soc.ides.util.IdesUtils;
 
 @Named("showIdea")
