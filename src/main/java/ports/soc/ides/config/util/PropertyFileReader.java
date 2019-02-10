@@ -2,6 +2,7 @@ package ports.soc.ides.config.util;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -32,12 +33,20 @@ public class PropertyFileReader extends AbstractPropertyReader {
 		return null;
 	}
 	
+	protected Properties initPropertiesFromFile(File source) throws FileNotFoundException, IOException {
+		Properties p = null;
+		try (FileInputStream fis = new FileInputStream(source)){
+			p = new Properties();
+			p.load(fis);
+		}
+		return p;
+	}
+	
 	@Override
 	protected String readOneProperty(String name) {
 		if (prop == null) {
 			try {
-				prop = new Properties();
-				prop.load(new FileInputStream(propertySourceFile));
+				prop = initPropertiesFromFile(propertySourceFile);
 			} catch (IOException e) {
 				prop = null;
 				throw new RuntimeException("Failed to read property of name: " + name, e);
