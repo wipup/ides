@@ -2,6 +2,12 @@
 
 This project is part of my dissertation.
 
+## TO DO
+ - Add cache to view (xhtml) rendering
+ - Minify javascript and css
+ - Add performance log (TRACE) to database operations
+ - Add pagination to log file list 
+
 ## 1. Required software
 
 There are 4 required technologies.
