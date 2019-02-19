@@ -8,7 +8,8 @@
 	<select id="selectIdeaById" resultMap="eagerIdeaResult">
 		SELECT *
 		FROM ideas2
-		WHERE projid = #{id}		
+		WHERE projid = #{id}	
+			AND projapproved &lt;&gt; 'D'
 	</select>
 
 	<resultMap id="eagerIdeaResult" type="ports.soc.ides.model.Idea">
@@ -53,6 +54,7 @@
 				lower(orgname) LIKE '%' || lower(#{searchText}) || '%'
 			)
 		</if>
+		AND projapproved &lt;&gt; 'D'
 	</select>
 
 	<!-- ============================================================================================================== -->
@@ -94,6 +96,7 @@
 				lower(orgname) LIKE '%' || lower(#{searchText}) || '%'
 			)
 		</if>
+		AND projapproved &lt;&gt; 'D'
 		
 		ORDER BY
 		<choose>
@@ -167,6 +170,7 @@
 		SET projapproved = #{status, typeHandler=ports.soc.ides.dao.mybatis.IdeaStatusTypeHandler},
 			projdate = #{timestamp, jdbcType=TIMESTAMP}
 		WHERE projid = #{id}
+			AND projapproved &lt;&gt; 'D'
 	</update>
 	
 	<update id="updateIdea" flushCache="true" parameterType="ports.soc.ides.model.Idea"  >
@@ -180,12 +184,20 @@
 			projstudent = #{idea.student},
 			projdate = #{idea.timestamp, jdbcType=TIMESTAMP}
 		WHERE projid = #{idea.id}
+			AND projapproved &lt;&gt; 'D'
 	</update>
 	
-	<delete id="deleteIdea" flushCache="true">
-		DELETE FROM IDEAS2
-			WHERE projid = #{id}	
-	</delete>
+	<update id="deleteIdea" flushCache="true" >
+		UPDATE IDEAS2
+		SET projapproved = 'D'
+		WHERE projid = #{id}
+			AND projapproved &lt;&gt; 'D'
+	</update>
+	
+<!-- 	<delete id="deleteIdea_deprecated" flushCache="true"> -->
+<!-- 		DELETE FROM IDEAS2 -->
+<!-- 			WHERE projid = #{id}	 -->
+<!-- 	</delete> -->
 	
 </mapper>
 
