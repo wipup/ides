@@ -37,13 +37,18 @@ public class IdeaDAO extends AbstractDAO {
 	}
 
 	public Idea selectIdeaById(long id) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			log.trace("Selecting idea where id=" + id);
 			return getIdeaMapper(sql).selectIdeaById(id);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("selectIdeaById took " + end + "ms");
 		}
 	}
 
 	public LazyIdeaList selectIdeasForListingLazily(List<IdeaStatus> statuses, List<ProjectType> types, String sortColumn, SortOrder order, long first, long last, String searchText) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Selecting idea where status=").append(IdesUtils.deepPrint(statuses)).append(", types=").append(IdesUtils.deepPrint(types)).append(", sortColumn=")
@@ -60,10 +65,14 @@ public class IdeaDAO extends AbstractDAO {
 			result.setTotalFoundIdea(totalFoundIdea);
 			
 			return result;
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("selectIdeasForListingLazily took " + end + "ms");
 		}
 	}
 
 	public long insertIdea(Idea idea) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			IdeaMapper mapper = getIdeaMapper(sql);
 			log.debug("Selecting id for inserting new idea");
@@ -71,29 +80,41 @@ public class IdeaDAO extends AbstractDAO {
 			idea.setId(nextId);
 			log.info("Inserting idea=" + IdesUtils.deepPrint(idea));
 			return mapper.insertIdea(idea);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("insertIdea took " + end + "ms");
 		}
 	}
 
 	public long updateIdeaStatus(Idea id, IdeaStatus status, LocalDateTime timestamp) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Updating status of idea=").append(id.printDetail()).append(" to status=").append(status).append(" with timestamp=").append(timestamp);
 			log.info(sb.toString());
 			return getIdeaMapper(sql).updateIdeaStatus(id.getId(), status, timestamp);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("updateIdeaStatus took " + end + "ms");
 		}
 	}
 
 	@Deprecated
 	public long updateIdeaStatusById(long id, IdeaStatus status, LocalDateTime timestamp) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("Updating status of idea id=").append(id).append(" to status=").append(status).append(" with timestamp=").append(timestamp);
 			log.info(sb.toString());
 			return getIdeaMapper(sql).updateIdeaStatus(id, status, timestamp);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("updateIdeaStatusById_deprecated took " + end + "ms");
 		}
 	}
 
 	public void updateManyIdeasStatus(List<Idea> ideas, IdeaStatus status, LocalDateTime timestamp) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession(false)) {
 			IdeaMapper mapper = getIdeaMapper(sql);
 			StringBuilder sb = new StringBuilder();
@@ -104,41 +125,61 @@ public class IdeaDAO extends AbstractDAO {
 				mapper.updateIdeaStatus(i.getId(), status, timestamp);
 			}
 			sql.commit();
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("updateManyIdeasStatus took " + end + "ms");
 		}
 	}
 
 	public long updateIdea(Idea idea) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			log.info("Updating idea, id=" + idea.getId() + ", idea=" + DataModel.printDetail(idea));
 			return getIdeaMapper(sql).updateIdea(idea);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("updateIdea took " + end + "ms");
 		}
 	}
 
 	@Deprecated
 	public long selectNextIdeaId() {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			long nextId = getIdeaMapper(sql).selectNextId();
 			log.debug("Next idea id=" + nextId);
 			return nextId;
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("selectNextIdeaId_deprecated took " + end + "ms");
 		}
 	}
 
 	public long deleteIdea(Idea idea) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			log.info("Deleting idea=" + idea.printDetail());
 			return getIdeaMapper(sql).deleteIdea(idea.getId());
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("deleteIdea took " + end + "ms");
 		}
 	}
 
 	@Deprecated
 	public long deleteIdeaById(long id) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			log.info("Deleting idea, id=" + id);
 			return getIdeaMapper(sql).deleteIdea(id);
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("deleteIdeaById_deprecated took " + end + "ms");
 		}
 	}
 
 	public void deleteIdeas(List<Idea> ideas) {
+		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession(false)) {
 			IdeaMapper mapper = getIdeaMapper(sql);
 			for (Idea i : ideas) {
@@ -146,7 +187,9 @@ public class IdeaDAO extends AbstractDAO {
 				mapper.deleteIdea(i.getId());
 			}
 			sql.commit();
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("deleteIdeas took " + end + "ms");
 		}
 	}
-
 }
