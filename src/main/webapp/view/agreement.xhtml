@@ -4,28 +4,29 @@
 	<link rel="shortcut icon" type="image/x-icon" href="#{resource['images/favicon.ico']}" />
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	<f:facet name="last">
-		<h:outputStylesheet name="css/style.css" />
-		<h:outputStylesheet name="css/style-large.css" />
-		<h:outputStylesheet name="css/style-medium.css" />
-		<h:outputStylesheet name="css/style-small.css" />
+		<h:outputStylesheet name="css/style-min.css" />
+		<h:outputStylesheet name="css/style-large-min.css" />
+		<h:outputStylesheet name="css/style-medium-min.css" />
+		<h:outputStylesheet name="css/style-small-min.css" />
 	</f:facet>
 </h:head>
 <h:body>
-
-	<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
-	<div class="ui-fluid">
-		<p:panel id="agreementHeader" header="Terms of Service" toggleable="false" collapsed="true" styleClass="main-background">
-			<f:facet name="actions">
-				<a style="color: white;" href="#{request.contextPath}"><h:outputText styleClass="fa fa-home" value=" Home" /></a>
-			</f:facet>
-		</p:panel>
-		<ui:include src="#{Page.AGREEMENT_CONTENT.path}" />
-
-		<div class="ui-g">
-			<div class="ui-lg-3 ui-md-6 ui-sm-12">
-				<p:button value="Home" icon="fa fa-home" href="/" />
+	<p:cache>
+		<p:importEnum type="ports.soc.ides.controller.helper.IdesPage" var="Page" allSuffix="ALL_IDES_PAGES" />
+		<div class="ui-fluid">
+			<p:panel id="agreementHeader" header="Terms of Service" toggleable="false" collapsed="true" styleClass="main-background">
+				<f:facet name="actions">
+					<a style="color: white;" href="#{request.contextPath}"><h:outputText styleClass="fa fa-home" value=" Home" /></a>
+				</f:facet>
+			</p:panel>
+			<ui:include src="#{Page.AGREEMENT_CONTENT.path}" />
+	
+			<div class="ui-g">
+				<div class="ui-lg-3 ui-md-6 ui-sm-12">
+					<p:button value="Home" icon="fa fa-home" href="/" />
+				</div>
 			</div>
 		</div>
-	</div>
+	</p:cache>
 </h:body>
 </html>
