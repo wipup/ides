@@ -84,8 +84,8 @@ public class SqlSessionProvider {
 
 		PropertyLoader pReader = new PropertyFileReader(f);
 		QueuedPropertyReader propReader = new QueuedPropertyReader();
-		propReader.getPropertyReaders().add(pReader);
-		propReader.getPropertyReaders().add(jvmPropReader);
+		propReader.addToQueue(pReader);
+		propReader.addToQueue(jvmPropReader);
 
 		config = new DatabaseConfiguration();
 		config.load(pReader);

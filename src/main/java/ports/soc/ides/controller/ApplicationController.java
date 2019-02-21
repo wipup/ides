@@ -45,7 +45,7 @@ public class ApplicationController extends AbstractIdesController {
 	private ProjectStage projectStage;
 	
 	@PostConstruct
-	private void init() {
+	private void applicationInit() {
 		FacesUtils.startLoggingSessionId();
 		
 		projectStage = FacesContext.getCurrentInstance().getApplication().getProjectStage();
@@ -57,7 +57,7 @@ public class ApplicationController extends AbstractIdesController {
 		allowedDatabaseConfig = false;
 		allowedSecurityConfig = false;
 		try {
-			loadProperty();
+			loadIdesConfiguration();
 		} catch (Exception e) {
 			if (e instanceof IdesException) {
 				log.fatal(e);
@@ -67,49 +67,26 @@ public class ApplicationController extends AbstractIdesController {
 		}
 	}
 
-	private void loadProperty() {		
+	private void loadIdesConfiguration() {		
 		//init logger
-		LoggerContext logCtx = (LoggerContext) LogManager.getContext(false);
-		if (logCtx.getConfiguration() instanceof DefaultConfiguration) {
-			log.fatal("IDES logger is not running. Attempt to start IDES logger");
-			try {
-				logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder()));
-				log.info("IDES logger is updating");
-			} catch (Exception e) {
-				System.out.print("IDES logger initialisation failed");
-				e.printStackTrace();
-			}
-		}
+		LoggerContext logCtx = initialIDESLogger();
 		
-		QueuedPropertyReader propReader = new QueuedPropertyReader();
 		PropertyLoader jvmConfigReader = new JVMPropertyReader();
 		configurationFilePath = jvmConfigReader.getOneStringProperty(InitialConfigurationPropertyName.APPLICATION_INITIAL_CONFIGURATION_FILE_LOCATION);
 
 		// Read properties from the configuration file first, if file is not found, read from JVM
 		// property settings
-		if (IdesUtils.isEmpty(configurationFilePath)) {
-			final String error = "Initial configuration property has not been set: " + InitialConfigurationPropertyName.APPLICATION_INITIAL_CONFIGURATION_FILE_LOCATION; 
-			log.fatal(error);
-			throw new IdesConfigurationException(error);
-		}
+		File idesConfigFile = validateConfigurationFilePath(configurationFilePath);
 		
-		log.info("Read configuration file: " + configurationFilePath);
-		File f = new File(configurationFilePath);
-		if (!f.isFile() || !f.canRead()) {
-			final String error = "Failed to load configuration settings at: " + f.getAbsolutePath();  
-			log.fatal(error);
-			throw new IdesConfigurationException(error);
-		}
+		QueuedPropertyReader propReader = new QueuedPropertyReader();
+		propReader.addToQueue(new PropertyFileReader(idesConfigFile));
+		propReader.addToQueue(jvmConfigReader);
 		
-		PropertyLoader configFileReader = new PropertyFileReader(f);
-		propReader.getPropertyReaders().add(configFileReader);
-		propReader.getPropertyReaders().add(jvmConfigReader);
-		
-		//If logLcation is not set in JVM system property, find config in a file instead
-		String logFileOutputLocation = jvmConfigReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
+		//If logLocation is not set in JVM system property, find config in a file instead
+		String logFileOutputLocation = propReader.fromLast().getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 		if (IdesUtils.isEmpty(logFileOutputLocation)) {
 			log.warn("No log file location specified in JVM system property. Attempt to fix by acquiring location from file: " + configurationFilePath );
-			logFileOutputLocation = configFileReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
+			logFileOutputLocation = propReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 			
 			if (!IdesUtils.isEmpty(logFileOutputLocation)) {
 				File logDir = new File(logFileOutputLocation);
@@ -124,7 +101,7 @@ public class ApplicationController extends AbstractIdesController {
 		}
 		
 		
-		String logLevel = configFileReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_DEFAULT_LEVEL);
+		String logLevel = propReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_DEFAULT_LEVEL);
 		if (!IdesUtils.isEmpty(logLevel)) {
 			Level desiredLevel = Level.getLevel(logLevel.toUpperCase());
 			if (desiredLevel == null) {
@@ -163,6 +140,47 @@ public class ApplicationController extends AbstractIdesController {
 		log.info("Logger default level: " + LoggerConfigurationFactory.DEFAULT_LOG_LEVEL);
 		
 		config.printAllProperties();
+	}
+	
+	/**
+	 * Init IDES Logger
+	 * @return
+	 */
+	private LoggerContext initialIDESLogger() {
+		LoggerContext logCtx = (LoggerContext) LogManager.getContext(false);
+		if (logCtx.getConfiguration() instanceof DefaultConfiguration) {
+			log.fatal("IDES logger is not running. Attempt to start IDES logger");
+			try {
+				logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder()));
+				log.info("IDES logger is updating");
+			} catch (Exception e) {
+				System.out.print("IDES logger initialisation failed");
+				e.printStackTrace();
+			}
+		}
+		return logCtx;
+	}
+	
+	/**
+	 * Throw IdesConfigurationException when fail to load configuration from the given file
+	 * @param configFilePath
+	 * @return
+	 */
+	private File validateConfigurationFilePath(String configFilePath) {
+		if (IdesUtils.isEmpty(configFilePath)) {
+			final String error = "Initial configuration property has not been set: " + InitialConfigurationPropertyName.APPLICATION_INITIAL_CONFIGURATION_FILE_LOCATION; 
+			log.fatal(error);
+			throw new IdesConfigurationException(error);
+		}
+		
+		log.info("Read configuration file: " + configFilePath);
+		File file = new File(configFilePath);
+		if (!file.isFile() || !file.canRead()) {
+			final String error = "Failed to load configuration settings from file: " + file.getAbsolutePath();  
+			log.fatal(error);
+			throw new IdesConfigurationException(error);
+		}
+		return file;
 	}
 
 	/**

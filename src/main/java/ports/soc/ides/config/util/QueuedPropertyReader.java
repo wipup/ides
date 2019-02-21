@@ -14,6 +14,7 @@ import ports.soc.ides.util.IdesUtils;
 public class QueuedPropertyReader extends AbstractPropertyReader {
 
 	private List<PropertyLoader> propertyReaders;
+	private boolean reverse = false;
 	
 	public QueuedPropertyReader() {
 		propertyReaders = new ArrayList<>();
@@ -25,18 +26,51 @@ public class QueuedPropertyReader extends AbstractPropertyReader {
 	
 	@Override
 	protected String readOneProperty(String name) {
+		if (reverse) {
+			reverse = false;
+			return readOnePropertyFromTail(name);
+		}
+		return readOnePropertyFromHead(name);
+	}
+	
+	private String readOnePropertyFromHead(String name) {
 		String result = null;
-		for(PropertyLoader c : propertyReaders) {
-			result = c.getOneStringProperty(name);
+		for(PropertyLoader p : propertyReaders) {
+			result = p.getOneStringProperty(name);
 			if (result != null) {
 				return result;
 			}
 		}
 		return null;
 	}
+	
+	private String readOnePropertyFromTail(String name) {
+		String result = null;
+		for(int i = propertyReaders.size() - 1; i >= 0; i--) {
+			PropertyLoader p = propertyReaders.get(i);
+			result = p.getOneStringProperty(name);
+			if (result != null) {
+				return result;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Reverse queue
+	 * @return
+	 */
+	public QueuedPropertyReader fromLast() {
+		reverse = true;
+		return this;
+	}
 
 	public List<PropertyLoader> getPropertyReaders() {
 		return propertyReaders;
+	}
+	
+	public void addToQueue(PropertyLoader prop) {
+		propertyReaders.add(prop);
 	}
 	
 	public void setPropertyReaders(PropertyLoader[] configurators) {

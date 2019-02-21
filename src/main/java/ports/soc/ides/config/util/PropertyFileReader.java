@@ -19,18 +19,14 @@ public class PropertyFileReader extends AbstractPropertyReader {
 	private Properties prop;
 	
 	public PropertyFileReader(File source) {
-		RuntimeException e = isValidPropertyFile(source);
-		if (e != null) {
-			throw e;
-		}
+		validatePropertyFile(source);
 		propertySourceFile = source;
 	}
 	
-	protected IllegalArgumentException isValidPropertyFile(File source) {
+	protected void validatePropertyFile(File source) {
 		if (!source.getName().endsWith(PROPERTIES_FILE_EXTENSION)) {
-			return new IllegalArgumentException("The input property file extension of " + source.getAbsolutePath() + " does not ends with " + PROPERTIES_FILE_EXTENSION);
+			throw new IllegalArgumentException("The input property file extension of " + source.getAbsolutePath() + " does not ends with " + PROPERTIES_FILE_EXTENSION);
 		}
-		return null;
 	}
 	
 	protected Properties initPropertiesFromFile(File source) throws FileNotFoundException, IOException {
