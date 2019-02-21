@@ -77,16 +77,13 @@ public class ApplicationController extends AbstractIdesController {
 		// Read properties from the configuration file first, if file is not found, read from JVM
 		// property settings
 		File idesConfigFile = validateConfigurationFilePath(configurationFilePath);
-		
-		QueuedPropertyReader propReader = new QueuedPropertyReader();
-		propReader.addToQueue(new PropertyFileReader(idesConfigFile));
-		propReader.addToQueue(jvmConfigReader);
+		PropertyLoader fileConfigReader = new PropertyFileReader(idesConfigFile);
 		
 		//If logLocation is not set in JVM system property, find config in a file instead
-		String logFileOutputLocation = propReader.fromLast().getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
+		String logFileOutputLocation = jvmConfigReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 		if (IdesUtils.isEmpty(logFileOutputLocation)) {
 			log.warn("No log file location specified in JVM system property. Attempt to fix by acquiring location from file: " + configurationFilePath );
-			logFileOutputLocation = propReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
+			logFileOutputLocation = fileConfigReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_OUTPUT_LOCATION);
 			
 			if (!IdesUtils.isEmpty(logFileOutputLocation)) {
 				File logDir = new File(logFileOutputLocation);
@@ -100,6 +97,9 @@ public class ApplicationController extends AbstractIdesController {
 			}
 		}
 		
+		QueuedPropertyReader propReader = new QueuedPropertyReader();
+		propReader.addToQueue(fileConfigReader);
+		propReader.addToQueue(jvmConfigReader);
 		
 		String logLevel = propReader.getOneStringProperty(InitialConfigurationPropertyName.LOGGER_DEFAULT_LEVEL);
 		if (!IdesUtils.isEmpty(logLevel)) {
