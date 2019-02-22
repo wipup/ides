@@ -5,13 +5,18 @@
 	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	
 	<meta name="og:site_name" property="og:site_name" content="IDES" />
+	
 	<meta name="og:url" property="og:url" content="#{share.allowed ? share.showIdea.shareableLink : (request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length()))}" />
 	<meta name="og:title" property="og:title" content="#{share.allowed ? (share.showIdea.idea.title.length() > 60 ? share.showIdea.idea.title.substring(0, 55).concat('...') : share.showIdea.idea.title) : 'IDES Project Idea Database'}" />
 	<meta name="og:type" property="og:type" content="website" />
 	<meta name="og:description" property="og:description" content="#{share.allowed ? (share.showIdea.idea.aim.length() > 195 ? share.showIdea.idea.aim.substring(0, 190).concat('...') : share.showIdea.idea.aim) : 'School of Computing, University of Portsmouth, United Kingdom'}" />
 	<meta name="og:locale" property="og:locale" content="en_GB" />
+	<meta name="og:image" property="og:image" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{resource['images/logo.png']}" />
+	<meta name="og:image:width" property="og:image:width" content="512" />
+	<meta name="og:image:height " property="og:image:height" content="512" />
+	<meta name="og:image:type " property="og:image:type" content="image/png" />
+	<meta name="og:image:alt " property="og:image:alt" content="IDES Project Idea Database" />
 	 
-	
 	<f:facet name="last">
 		<h:outputScript name="scripts/time.timeago.js" />
 		<h:outputScript name="scripts/ides.js" />
