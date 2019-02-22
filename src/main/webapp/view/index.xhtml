@@ -12,9 +12,16 @@
 	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 	<meta name="designer" content="Student No.869163 University of Portsmouth" />
 	<meta name="programmer" content="Student No.869163 University of Portsmouth" />
-	<meta name="description" content="Dissertation project idea database for masters students of University of Portsmouth. This website is part of dissertation project of student No.869163 (UP869163), MSc Information Systems 2017/18, University of Portsmouth."/>
+	<meta name="description" content="Dissertation project idea database for masters students of University of Portsmouth."/>
 	<meta name="keywords" content="university of portsmouth,projects,ideas,dissertation"/>
 	<meta name="copyright" content="UP869163" />
+	
+	<meta name="og:url" property="og:url" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" />
+	<meta name="og:title" property="og:title" content="IDES Project Idea Database" />
+	<meta name="og:type" property="og:type" content="website" />
+	<meta name="og:description" property="og:description" content="School of Computing, University of Portsmouth, United Kingdom" />
+	<meta name="og:locale" property="og:locale" content="en_GB" />
+	
 	<f:facet name="last">
 		<h:outputScript name="scripts/ides.js" />
 		<h:outputScript name="scripts/googleSignIn.js" />
