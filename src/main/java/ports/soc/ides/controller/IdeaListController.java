@@ -493,6 +493,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			} else {
 				selectedStatus.add(filterIdeaStatus);
 			}
+			selectedStatus.remove(IdeaStatus.Trashed);
 
 			if (filterProjectType == null) {
 				selectedProjType.addAll(Arrays.asList(ProjectType.values()));
