@@ -251,7 +251,10 @@
 								<h:panelGroup rendered="#{idea.withdrawn}">			
 									<span class="status-withdrawn"><h:outputText value="Withdrawn" /></span>
 								</h:panelGroup>
-								<h:panelGroup rendered="#{!idea.withdrawn and !idea.provisional and !idea.allocated and !idea.approved}">
+								<h:panelGroup rendered="#{idea.trashed}">			
+									<span class="status-withdrawn"><h:outputText value="Trashed" /></span>
+								</h:panelGroup>
+								<h:panelGroup rendered="#{!idea.withdrawn and !idea.provisional and !idea.allocated and !idea.approved and !idea.trashed}">
 									<h:outputText value="#{idea.status}" />
 								</h:panelGroup>
 							</div>

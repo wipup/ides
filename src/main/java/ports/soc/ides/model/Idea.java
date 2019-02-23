@@ -57,6 +57,10 @@ public class Idea extends DataModel {
 		return this.status == IdeaStatus.Provisional;
 	}
 	
+	public boolean isTrashed() {
+		return this.status == IdeaStatus.Trashed;
+	}
+	
 	//----------------
 	
 	public boolean isAllocatable() {
