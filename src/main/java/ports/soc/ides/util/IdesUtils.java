@@ -216,6 +216,16 @@ public class IdesUtils {
 		return sb.toString();
 	}
 
+	public static String removeAllHtmlTags(String s) {
+		if (IdesUtils.isEmpty(s)) {
+			return "";
+		}
+		s = s.replaceAll("[<]{1}.*?[>]{1}", " ")
+				.replaceAll("[\\s]{2,}", " ")
+				.trim();
+		return s;
+	}
+	
 	public static boolean isValidEmail(String email) {
 		return email.matches(EMAIL_REGEX);
 	}
@@ -226,5 +236,4 @@ public class IdesUtils {
 		}
 		return model.printDetail();
 	}
-	
 }

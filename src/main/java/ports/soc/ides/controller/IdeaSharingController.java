@@ -10,12 +10,13 @@ import ports.soc.ides.controller.fragment.OrganisationDisplayController;
 import ports.soc.ides.dao.IdeaDAO;
 import ports.soc.ides.dao.SqlSessionProvider;
 import ports.soc.ides.model.Idea;
+import ports.soc.ides.model.socialmedia.BasicOpenGraphModel;
 import ports.soc.ides.util.FacesUtils;
 import ports.soc.ides.util.IdesUtils;
 
 @Named("share")
 @RequestScoped
-public class IdeaSharingController extends AbstractIdesController {
+public class IdeaSharingController extends AbstractIdesController implements BasicOpenGraphModel {
 
 	private static final long serialVersionUID = 3350207201789855790L;
 	
@@ -27,6 +28,9 @@ public class IdeaSharingController extends AbstractIdesController {
 	
 	@Inject
 	private SqlSessionProvider sqlProvider;
+	
+	@Inject
+	private ApplicationController app;
 
 	private boolean allowed;
 	
@@ -79,6 +83,45 @@ public class IdeaSharingController extends AbstractIdesController {
 		}
 	}
 	
+
+	@Override
+	public String getOgUrl() {
+		if (!allowed || IdesUtils.isEmpty(showIdea.getShareableLink())) {
+			return FacesUtils.getBaseUrl();
+		}
+		return showIdea.getShareableLink();
+	}
+
+	@Override
+	public String getOgTitle() {
+		String ideaTitle = showIdea.getIdea().getTitle();
+		if (IdesUtils.isEmpty(ideaTitle)) {
+			return app.getBundledMessage("og.title");
+		}
+		if (ideaTitle.length() > 55) {
+			ideaTitle = ideaTitle.substring(0, 50) + "...";
+		}
+		return ideaTitle;
+	}
+
+	@Override
+	public String getOgDescription() {
+		String ideaAim = showIdea.getIdea().getAim();
+		if (IdesUtils.isEmpty(ideaAim)) {
+			return app.getBundledMessage("og.description");
+		}
+		ideaAim = IdesUtils.removeAllHtmlTags(ideaAim);
+		
+		if (ideaAim.length() > 200) {
+			ideaAim = ideaAim.substring(0, 195) + "...";
+		}
+		return ideaAim;
+	}
+	
+	public String getBaseUrl() {
+		return FacesUtils.getBaseUrl();
+	}
+	
 	public IdeaDisplayController getShowIdea() {
 		return showIdea;
 	}
@@ -86,4 +129,5 @@ public class IdeaSharingController extends AbstractIdesController {
 	public boolean isAllowed() {
 		return allowed;
 	}
+
 }

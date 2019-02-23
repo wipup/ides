@@ -18,16 +18,16 @@
 		<meta name="keywords" content="university of portsmouth,projects,ideas,dissertation"/>
 		<meta name="copyright" content="UP869163" />
 		
-		<meta name="og:url" property="og:url" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" />
-		<meta name="og:title" property="og:title" content="IDES Project Idea Database" />
-		<meta name="og:type" property="og:type" content="website" />
-		<meta name="og:description" property="og:description" content="School of Computing, University of Portsmouth, United Kingdom" />
-		<meta name="og:locale" property="og:locale" content="en_GB" />
-		<meta name="og:image" property="og:image" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{resource['images/logo.png']}" />
+		<meta name="og:url" property="og:url" content="#{app.baseUrl}#{request.contextPath}/" />
+		<meta name="og:title" property="og:title" content="#{msg['og.title']}" />
+		<meta name="og:type" property="og:type" content="#{msg['og.type']}" />
+		<meta name="og:description" property="og:description" content="#{msg['og.description']}" />
+		<meta name="og:locale" property="og:locale" content="#{msg['og.locale']}" />
+		<meta name="og:image" property="og:image" content="#{app.baseUrl}#{resource['images/logo.png']}" />
 		<meta name="og:image:width" property="og:image:width" content="512" />
 		<meta name="og:image:height " property="og:image:height" content="512" />
 		<meta name="og:image:type " property="og:image:type" content="image/png" />
-		<meta name="og:image:alt " property="og:image:alt" content="IDES Project Idea Database" />
+		<meta name="og:image:alt " property="og:image:alt" content="#{msg['og.title']}" />
 	</p:cache>
 	
 	<f:facet name="last">
