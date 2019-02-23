@@ -65,11 +65,28 @@
 	</servlet-mapping>
 
 	<security-constraint>
+		<display-name>Not Allow Direct Access to web resources</display-name>
 		<web-resource-collection>
-			<web-resource-name>Not Allow Direct Access</web-resource-name>
+			<web-resource-name>All view-fragment files</web-resource-name>
 			<url-pattern>/view/body/*</url-pattern>
 			<url-pattern>/view/fragments/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint />
 	</security-constraint>
+
+	<!-- Enable Secure Socket Layer -->
+	<!-- Comment this to disable https -->
+	<security-constraint>
+		<display-name>Enable HTTPS/TLS/SSL</display-name>
+		<web-resource-collection>
+			<web-resource-name>All resources</web-resource-name>
+			<description>This will make the constraint affect all pages of the application</description>
+			<url-pattern>/*</url-pattern>
+		</web-resource-collection>
+		<user-data-constraint>
+			<description />
+			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
+		</user-data-constraint>
+	</security-constraint>
+
 </web-app>
