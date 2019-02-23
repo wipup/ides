@@ -75,7 +75,6 @@ public class UserController extends AbstractIdesController {
 			email = getParameter(PARAM_ID_EMAIL);
 			idToken = getParameter(PARAM_ID_TOKEN);
 			
-			// TODO log email
 			log.info("User requested to sign in with email: " + email);
 			
 			if (!IdesUtils.isEmpty(idToken)) {
@@ -106,7 +105,7 @@ public class UserController extends AbstractIdesController {
 			addMessageError("Fail", "Unknown error occurred");
 		} catch (Throwable e) {
 			user = User.ANONYMOUS;
-			// Glassfish 5 has a bug about Security method with Java version 1.8.0_171 and some above
+			// Glassfish 5 has a bug about Security method with Java version 1.8.0_161 and some above
 			// This block is for logging errors from such bug
 			log.fatal("Unexpected error during signing in", e);
 			throw e;
@@ -167,7 +166,6 @@ public class UserController extends AbstractIdesController {
 			throw new IdesException("Sign in failed", "Please contact administrator");
 		}
 
-		// TODO log email
 		String email = payload.getEmail();
 		String domainName = payload.getHostedDomain();
 		log.info("user authentication by id token completed, user email=" + email + ", domain=" + domainName);
