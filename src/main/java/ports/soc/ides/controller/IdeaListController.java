@@ -200,7 +200,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			}
 		} else if (e instanceof PageChangeEvent) {
 			PageChangeEvent pe = (PageChangeEvent) e;
-			if (pe.getPageAfter() == IdesPage.IDEA_LIST && pe.isEventSuccess()) {
+			if (pe.pageChangeTo(IdesPage.IDEA_LIST) && pe.isEventSuccess()) {
 				log.debug("Process pageChange event: " + e.toString());
 				processIdeaFilterOption();
 			}
@@ -509,8 +509,9 @@ public class IdeaListController extends AbstractIdesController implements Serial
 				}
 			}
 
-			log.debug("set idea filter option=[selectedStatus=" + IdesUtils.deepPrint(selectedStatus) + ", selectedProjType=" + IdesUtils.deepPrint(selectedProjType)
-					+", searchKeyword=" + searchKeyword + "]");
+			log.debug("set idea filter option=[selectedStatus=" + IdesUtils.deepPrint(selectedStatus) 
+					+ ", selectedProjType=" + IdesUtils.deepPrint(selectedProjType)
+					+ ", searchKeyword=" + searchKeyword + "]");
 
 			if (!IdesUtils.isEmpty(searchKeyword)) {
 				searchKeyword = searchKeyword.trim();
@@ -527,16 +528,7 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			lazyIdeaDataModel.setFilterStatus(selectedStatus);
 			lazyIdeaDataModel.setFilterType(selectedProjType);
 
-			UIComponent comp = FacesContext.getCurrentInstance().getViewRoot().findComponent(IDEA_TABLE_FORM_ID + ":" + IDEA_TABLE_FORM_DATATABLE_ID);
-			if (comp instanceof DataTable) {
-				//fix datatable's multiple ajax requests issue
-				DataTable dt = (DataTable) comp;
-				dt.setFirst(0);
-				int rowsPerPage = dt.getRows();
-				if (!ROWS_PER_PAGE_LIST.contains(rowsPerPage)) {
-					dt.setRows(DEFAULT_ROWS_PER_PAGE);
-				}	
-			}
+			preventDataTableMultipleAjaxCall(); //do not delete this. it is mandatory
 			
 			return (int) lazyIdeaDataModel.getRowCount();
 		} catch (Exception e) {
@@ -544,6 +536,21 @@ public class IdeaListController extends AbstractIdesController implements Serial
 			addMessageFatal("Error", "Failed to query ideas");
 		}
 		return -1;
+	}
+	
+	/**
+	 * fix datatable's multiple ajax requests issue
+	 */
+	private void preventDataTableMultipleAjaxCall() {
+		UIComponent comp = FacesContext.getCurrentInstance().getViewRoot().findComponent(IDEA_TABLE_FORM_ID + ":" + IDEA_TABLE_FORM_DATATABLE_ID);
+		if (comp instanceof DataTable) {
+			DataTable dt = (DataTable) comp;
+			dt.setFirst(0);
+			int rowsPerPage = dt.getRows();
+			if (!ROWS_PER_PAGE_LIST.contains(rowsPerPage)) {
+				dt.setRows(DEFAULT_ROWS_PER_PAGE);
+			}	
+		}
 	}
 	
 	@LogPerformance(level = "DEBUG")

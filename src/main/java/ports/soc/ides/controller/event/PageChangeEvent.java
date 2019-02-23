@@ -19,6 +19,10 @@ public class PageChangeEvent extends IdesEvent {
 	public IdesPage getPageAfter() {
 		return pageAfter;
 	}
+	
+	public boolean pageChangeTo(IdesPage pageAfter) {
+		return this.pageAfter == pageAfter;
+	}
 
 	public void setRequestedPage(IdesPage requestedPage) {
 		this.requestedPage = requestedPage;

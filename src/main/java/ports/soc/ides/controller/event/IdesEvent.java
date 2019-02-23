@@ -6,7 +6,12 @@ import java.util.Map;
 import ports.soc.ides.controller.AbstractIdesController;
 import ports.soc.ides.util.IdesUtils;
 
-public class IdesEvent{
+/**
+ * For CDI Bean event bus
+ * @author WIPU
+ *
+ */
+public class IdesEvent {
 
 	protected Class<? extends AbstractIdesController> eventSource;
 	protected boolean eventSuccess = true;

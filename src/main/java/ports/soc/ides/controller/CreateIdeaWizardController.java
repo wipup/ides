@@ -322,7 +322,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 	public void onIdesEvent(@Observes(notifyObserver = Reception.IF_EXISTS) IdesEvent e) {
 		if (e instanceof PageChangeEvent && e.isEventSuccess()) {
 			PageChangeEvent pe = (PageChangeEvent) e;
-			if (pe.getPageAfter() == IdesPage.CREATE_IDEA_WIZARD) {
+			if (pe.pageChangeTo(IdesPage.CREATE_IDEA_WIZARD)) {
 				initWizard(true);
 			}
 		} else if (e instanceof UserSignInEvent && e.isEventSuccess()) {
@@ -382,7 +382,6 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			ContactProfileDAO dao = new ContactProfileDAO(sqlProvider);
 
 			// select user owned first, expect one
-			// TODO log email
 			log.info("Finding a contact profile of " + user.getEmail());
 			List<ContactProfile> profiles = dao.selectProfile(user.getEmail(), OwnerType.EMAIL); 
 			if (profiles.isEmpty()) {
