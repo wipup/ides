@@ -43,14 +43,14 @@ public class RoleEnforcer implements Serializable {
 		}
 
 		FacesUtils.startLoggingSessionId();
-		UserController userCont = FacesUtils.getNamedController(UserController.class);
-		if (userCont == null) {
+		UserController userController = FacesUtils.getNamedController(UserController.class);
+		if (userController == null) {
 			log.error("No controller initialised. Halt invocation");
 			return null;
 		}
 
 		Role[] allowedRoles = getDeclaredRoles(m);
-		User u = userCont.getUser();
+		User u = userController.getUser();
 		if (u == null) {
 			log.error("User is null. Halt invocation");
 			return null;
@@ -63,7 +63,7 @@ public class RoleEnforcer implements Serializable {
 			}
 		}
 
-		userCont.addMessageFatal("Permission Denied", "");
+		userController.addMessageFatal("Permission Denied", "");
 		log.error("Permission denied: " + u.printDetail() + " isn't allowed to invoke method " + m.getName() + " of Roles" + IdesUtils.deepPrint(allowedRoles));
 		return null;
 	}
