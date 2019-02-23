@@ -9,24 +9,26 @@
 	<f:metadata>
 		<f:viewAction action="#{nav.onPostBack}" onPostBack="true" />
 	</f:metadata>
-	<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
-	<meta name="designer" content="Student No.869163 University of Portsmouth" />
-	<meta name="programmer" content="Student No.869163 University of Portsmouth" />
-	<meta name="description" content="Dissertation project idea database for masters students of University of Portsmouth."/>
-	<meta name="keywords" content="university of portsmouth,projects,ideas,dissertation"/>
-	<meta name="copyright" content="UP869163" />
-	
-	<meta name="og:url" property="og:url" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" />
-	<meta name="og:title" property="og:title" content="IDES Project Idea Database" />
-	<meta name="og:type" property="og:type" content="website" />
-	<meta name="og:description" property="og:description" content="School of Computing, University of Portsmouth, United Kingdom" />
-	<meta name="og:locale" property="og:locale" content="en_GB" />
-	<meta name="og:image" property="og:image" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{resource['images/logo.png']}" />
-	<meta name="og:image:width" property="og:image:width" content="512" />
-	<meta name="og:image:height " property="og:image:height" content="512" />
-	<meta name="og:image:type " property="og:image:type" content="image/png" />
-	<meta name="og:image:alt " property="og:image:alt" content="IDES Project Idea Database" />
-	
+
+	<p:cache>
+		<meta name="viewport" content="user-scalable=no,width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+		<meta name="designer" content="Student No.869163 University of Portsmouth" />
+		<meta name="programmer" content="Student No.869163 University of Portsmouth" />
+		<meta name="description" content="Dissertation project idea database for masters students of University of Portsmouth."/>
+		<meta name="keywords" content="university of portsmouth,projects,ideas,dissertation"/>
+		<meta name="copyright" content="UP869163" />
+		
+		<meta name="og:url" property="og:url" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{request.contextPath}/" />
+		<meta name="og:title" property="og:title" content="IDES Project Idea Database" />
+		<meta name="og:type" property="og:type" content="website" />
+		<meta name="og:description" property="og:description" content="School of Computing, University of Portsmouth, United Kingdom" />
+		<meta name="og:locale" property="og:locale" content="en_GB" />
+		<meta name="og:image" property="og:image" content="#{request.requestURL.substring(0, request.requestURL.length() - request.requestURI.length())}#{resource['images/logo.png']}" />
+		<meta name="og:image:width" property="og:image:width" content="512" />
+		<meta name="og:image:height " property="og:image:height" content="512" />
+		<meta name="og:image:type " property="og:image:type" content="image/png" />
+		<meta name="og:image:alt " property="og:image:alt" content="IDES Project Idea Database" />
+	</p:cache>
 	
 	<f:facet name="last">
 		<h:outputScript name="scripts/ides.js" />
@@ -90,69 +92,74 @@
 			<ui:include src="#{nav.currentPage.path}" />
 		</h:panelGroup>
 		
-		<script type="text/javascript">
-			var defaultMessage = "Loading";
-			var ajaxStatusMessage = "Loading";
+		<p:cache>
 			
-			function setLoadingMessage(message){
-				ajaxStatusMessage = message;
-			}
-			
-			function updateAjaxMessage(){
-				$("#globalAjaxMessage").text(ajaxStatusMessage);
-			}
-			
-			function disableFormSubmitOnEnter(){
-				//taken from https://stackoverflow.com/questions/28116894/primefaces-disable-submit-on-pressing-enter-key
-				$('form').off('keypress.disableAutoSubmitOnEnter').on('keypress.disableAutoSubmitOnEnter', function(event) {
-				    if (event.which === $.ui.keyCode.ENTER &amp;&amp; $(event.target).is(':input:not(textarea,:button,:submit,:reset)')) {
-				        event.preventDefault();
-				    }
+			<script type="text/javascript">
+				var defaultMessage = "Loading";
+				var ajaxStatusMessage = "Loading";
+				
+				function setLoadingMessage(message){
+					ajaxStatusMessage = message;
+				}
+				
+				function updateAjaxMessage(){
+					$("#globalAjaxMessage").text(ajaxStatusMessage);
+				}
+				
+				function disableFormSubmitOnEnter(){
+					//taken from https://stackoverflow.com/questions/28116894/primefaces-disable-submit-on-pressing-enter-key
+					$('form').off('keypress.disableAutoSubmitOnEnter').on('keypress.disableAutoSubmitOnEnter', function(event) {
+					    if (event.which === $.ui.keyCode.ENTER &amp;&amp; $(event.target).is(':input:not(textarea,:button,:submit,:reset)')) {
+					        event.preventDefault();
+					    }
+					});
+				}
+				
+				function handleError(e){
+					PF('status').hide(); 
+					PF('ajaxErrorDialog').show(); 
+					setLoadingMessage(defaultMessage);
+				};
+				
+				$(document).ready(function(){
+					disableFormSubmitOnEnter();
 				});
-			}
-			
-			function handleError(e){
-				PF('status').hide(); 
-				PF('ajaxErrorDialog').show(); 
-				setLoadingMessage(defaultMessage);
-			};
-			
-			$(document).ready(function(){
-				disableFormSubmitOnEnter();
-			});
-			
-		</script>
-		<p:ajaxStatus onstart="updateAjaxMessage(); PF('status').show()" onsuccess="PF('status').hide(); setLoadingMessage(defaultMessage)" onerror="handleError(event)" oncomplete="disableFormSubmitOnEnter()" />
-		<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage)">
-			<div>
-				<div id="globalAjaxMessage" style="text-align: center;">
-					Loading...
-				</div>
+				
+			</script>
+			<p:ajaxStatus onstart="updateAjaxMessage(); PF('status').show()" onsuccess="PF('status').hide(); setLoadingMessage(defaultMessage)" onerror="handleError(event)" oncomplete="disableFormSubmitOnEnter()" />
+			<p:dialog widgetVar="status" modal="false" draggable="false" closable="false" resizable="false" showHeader="false" position="top" onHide="setLoadingMessage(defaultMessage)">
 				<div>
-					<p:graphicImage name="/images/ajaxloadingbar.gif" />
+					<div id="globalAjaxMessage" style="text-align: center;">
+						Loading...
+					</div>
+					<div>
+						<p:graphicImage name="/images/ajaxloadingbar.gif" />
+					</div>
 				</div>
-			</div>
-		</p:dialog>
-		<p:dialog widgetVar="ajaxErrorDialog" onShow="enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" header="Error" draggable="true" closable="true" resizable="false" showHeader="true" position="top">
-			<div class="ui-g ui-g-12">
-				<div class="ui-g-12">
-					<h:outputText value="Failed to connect to the server." />
+			</p:dialog>
+			<p:dialog widgetVar="ajaxErrorDialog" onShow="enablePageScrollbar(false);" onHide="enablePageScrollbar(true);" modal="true" header="Error" draggable="true" closable="true" resizable="false" showHeader="true" position="top">
+				<div class="ui-g ui-g-12">
+					<div class="ui-g-12">
+						<h:outputText value="Failed to connect to the server." />
+					</div>
+					<div class="ui-g-12">
+						<p:button value="Close" icon="fa fa-close" onclick="PF('ajaxErrorDialog').hide(); return false;" />
+					</div>
 				</div>
-				<div class="ui-g-12">
-					<p:button value="Close" icon="fa fa-close" onclick="PF('ajaxErrorDialog').hide(); return false;" />
-				</div>
-			</div>
-		</p:dialog>
-
-		<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show()"  />
-		<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top"  >
-			<f:facet name="message">
-				<h:outputText value="You have been inactive for too long. Your session has expired." />
-				<br/>
-				<h:outputText value="Please backup all your information and refresh the page." />
-			</f:facet>
-			<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide(); disableAllWidget();" icon="fa fa-close" />
-		</p:confirmDialog>
+			</p:dialog>
+	
+			<p:idleMonitor timeout="#{Config.DEFAULT_SESSION_TIMEOUT_IN_MILLISEC}" onidle="closeModalWhenClickMask(false); PF('timeoutAlert').show()"  />
+			<p:confirmDialog widgetVar="timeoutAlert" header="Session expired" global="false" closable="false" draggable="true" position="top"  >
+				<f:facet name="message">
+					<h:outputText value="You have been inactive for too long. Your session has expired." />
+					<br/>
+					<h:outputText value="Please backup all your information and refresh the page." />
+				</f:facet>
+				<p:commandButton value="OK" type="button" onclick="PF('timeoutAlert').hide(); disableAllWidget();" icon="fa fa-close" />
+			</p:confirmDialog>
+		
+		</p:cache>
+		
 	</div>
 
 </h:body>
