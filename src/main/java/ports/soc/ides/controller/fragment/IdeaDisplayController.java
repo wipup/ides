@@ -66,7 +66,6 @@ public class IdeaDisplayController extends AbstractIdesController {
 			return;
 		}
 		
-		
 		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 		StringBuilder sb = new StringBuilder();
 		sb.append(req.getRequestURL().substring(0, req.getRequestURL().length() - req.getRequestURI().length()))
@@ -95,6 +94,7 @@ public class IdeaDisplayController extends AbstractIdesController {
 	}
 
 	public Idea getIdea() {
+		// TODO why did I wrote this?
 		if (idea == EMPTY_IDEA) {
 			idea = new Idea();
 		}

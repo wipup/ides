@@ -201,6 +201,10 @@ public class ApplicationController extends AbstractIdesController {
 		this.config = config;
 	}
 	
+	public String getBaseUrl() {
+		return FacesUtils.getBaseUrl();
+	}
+	
 	public Set<Role> getRolesOfEmailAndDomain(String email, String domain) {
 		return config.getRolesOfUser(email, domain);
 	}

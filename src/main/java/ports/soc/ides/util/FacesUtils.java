@@ -194,4 +194,12 @@ public class FacesUtils {
 		return bean;
 	}
 
+	public static String getBaseUrl() {
+		try {
+			HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+			return (request.getRequestURL().substring(0, request.getRequestURL().length() - request.getRequestURI().length()));
+		} catch (Exception e) {
+			return "";
+		}
+	}
 }
