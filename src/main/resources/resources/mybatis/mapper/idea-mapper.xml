@@ -194,10 +194,11 @@
 			AND projapproved &lt;&gt; 'D'
 	</update>
 	
-<!-- 	<delete id="deleteIdea_deprecated" flushCache="true"> -->
-<!-- 		DELETE FROM IDEAS2 -->
-<!-- 			WHERE projid = #{id}	 -->
-<!-- 	</delete> -->
+	<delete id="deleteDisabledIdea" flushCache="true">
+		DELETE FROM IDEAS2
+			WHERE projid = #{id}	
+			AND projapproved = 'D'
+	</delete>
 	
 </mapper>
 

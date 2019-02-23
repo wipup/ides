@@ -28,4 +28,6 @@ public interface IdeaMapper {
 	public long selectNextId();
 	
 	public long deleteIdea(@Param("id") long id);
+	
+	public long deleteDisabledIdea(@Param("id") long id);
 }
