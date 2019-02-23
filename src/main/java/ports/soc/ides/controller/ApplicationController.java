@@ -149,10 +149,10 @@ public class ApplicationController extends AbstractIdesController {
 	private LoggerContext initialIDESLogger() {
 		LoggerContext logCtx = (LoggerContext) LogManager.getContext(false);
 		if (logCtx.getConfiguration() instanceof DefaultConfiguration) {
-			log.fatal("IDES logger is not running. Attempt to start IDES logger");
+			log.fatal("IDES custom logger is not running. Attempt to start IDES logger");
 			try {
 				logCtx.updateLoggers(LoggerConfigurationFactory.createConfiguration("LoggerConfigurationFactory", ConfigurationBuilderFactory.newConfigurationBuilder()));
-				log.info("IDES logger is updating");
+				log.info("IDES custom logger is updating");
 			} catch (Exception e) {
 				System.out.print("IDES logger initialisation failed");
 				e.printStackTrace();

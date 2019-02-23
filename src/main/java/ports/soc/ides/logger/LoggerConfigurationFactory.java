@@ -21,7 +21,9 @@ import ports.soc.ides.config.InitialConfigurationPropertyName;
 
 /**
  * 
- * Reference: https://logging.apache.org/log4j/2.x/manual/customconfig.html
+ * IDES custom logger
+ * 
+ * Reference template: https://logging.apache.org/log4j/2.x/manual/customconfig.html
  *
  */
 @Plugin(name = "LoggerConfigurationFactory", category = ConfigurationFactory.CATEGORY)

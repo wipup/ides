@@ -12,7 +12,6 @@ public class LazyIdeaList {
 	private List<Idea> fetchedIdeas;
 
 	public LazyIdeaList() {
-		fetchedIdeas = new ArrayList<Idea>();
 		totalFoundIdea = 0;
 	}
 	
@@ -21,6 +20,9 @@ public class LazyIdeaList {
 	}
 
 	public List<Idea> getFetchedIdeas() {
+		if (fetchedIdeas == null) {
+			fetchedIdeas = new ArrayList<>();
+		}
 		return fetchedIdeas;
 	}
 

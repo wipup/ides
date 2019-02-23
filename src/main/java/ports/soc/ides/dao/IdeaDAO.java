@@ -47,6 +47,7 @@ public class IdeaDAO extends AbstractDAO {
 		}
 	}
 
+	// TODO make it query once
 	public LazyIdeaList selectIdeasForListingLazily(List<IdeaStatus> statuses, List<ProjectType> types, String sortColumn, SortOrder order, long first, long last, String searchText) {
 		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
@@ -56,7 +57,6 @@ public class IdeaDAO extends AbstractDAO {
 			log.trace(sb.toString());
 			
 			IdeaMapper ideaMapper = getIdeaMapper(sql);
-			
 			List<Idea> ideas = ideaMapper.selectIdeasForListing(statuses, types, sortColumn, order, first, last, searchText);
 			long totalFoundIdea = ideaMapper.countIdeasForListing(statuses, types, searchText);
 			
@@ -76,9 +76,11 @@ public class IdeaDAO extends AbstractDAO {
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
 			IdeaMapper mapper = getIdeaMapper(sql);
 			log.debug("Selecting id for inserting new idea");
+			
 			long nextId = mapper.selectNextId();
 			idea.setId(nextId);
 			log.info("Inserting idea=" + IdesUtils.deepPrint(idea));
+			
 			return mapper.insertIdea(idea);
 		} finally {
 			long end = System.currentTimeMillis() - start;

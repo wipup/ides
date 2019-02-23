@@ -3,7 +3,8 @@ package ports.soc.ides.model.constant;
 
 public enum IdeaStatus {
 
-	Approved("A", "Approved"), Withdrawn("W", "Withdrawn"), Provisional("P", "Provisional"), Allocated("S", "Allocated");
+	Approved("A", "Approved"), Withdrawn("W", "Withdrawn"), Provisional("P", "Provisional"), Allocated("S", "Allocated"), 
+	Trashed("D", "Trashed");
 	
 	private final String value;
 	private String label;
@@ -28,6 +29,8 @@ public enum IdeaStatus {
 				return Withdrawn;
 			case "P":
 				return Provisional;
+			case "D":
+				return Trashed;
 			}
 		}
 		return Withdrawn;

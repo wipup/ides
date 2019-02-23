@@ -53,6 +53,7 @@ public abstract class AbstractIdesController implements Serializable {
 	
 	protected void showRequestedModal() {
 		//Fix an issue when the client could not connect to the server but still show a modal  
+		//By controlling modal from server side.
 		String modalName = getParameter(PARAM_MODAL_VAR);
 		if (!IdesUtils.isEmpty(modalName)) {
 			executeJavaScript("PF('" + modalName.trim() + "').show()");
@@ -192,6 +193,5 @@ public abstract class AbstractIdesController implements Serializable {
 	public String formatLongDateTime(LocalDateTime dt) {
 		return DateTimeUtils.formatLongDateTime(dt);
 	}
-	
 
 }
