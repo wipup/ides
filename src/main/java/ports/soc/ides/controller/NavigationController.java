@@ -114,7 +114,7 @@ public class NavigationController extends AbstractIdesController {
 			ExternalContext ex = FacesContext.getCurrentInstance().getExternalContext();
 			HttpServletRequest req = (HttpServletRequest) ex.getRequest();
 			String sessionId = req.getRequestedSessionId();
-			log.debug("Received a postback request with sessionId: " + sessionId);
+			log.info("Received a postback request with sessionId: " + sessionId);
 			
 			currentPage = IdesPage.IDEA_LIST;
 		} catch (Exception e) {
