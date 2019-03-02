@@ -221,6 +221,7 @@ public class IdesUtils {
 			return "";
 		}
 		s = s.replaceAll("[<]{1}.*?[>]{1}", " ")
+				.replaceAll("&nbsp;", " ")
 				.replaceAll("[\\s]{2,}", " ")
 				.trim();
 		return s;
