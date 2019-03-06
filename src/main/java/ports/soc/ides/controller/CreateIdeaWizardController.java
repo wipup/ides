@@ -541,6 +541,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			return false;
 		}
 
+		long start = System.currentTimeMillis();
 		boolean success = false;
 		try {
 			success = CaptchaUtil.validateCaptcha(token, privateKey);
@@ -550,6 +551,9 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 		} catch (Exception e) {
 			log.error("Error verifying captcha", e);
 			addMessageError("Internal Server Error. Failed to verify reCAPTCHA response.", "");
+		} finally {
+			long end = System.currentTimeMillis() - start;
+			log.info("validateCaptcha took " + end + "ms");
 		}
 
 		if (!success) {
