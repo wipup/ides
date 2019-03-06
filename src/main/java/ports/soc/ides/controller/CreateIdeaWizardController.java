@@ -541,7 +541,7 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			return false;
 		}
 
-		long start = System.currentTimeMillis();
+		long startTime = System.currentTimeMillis();
 		boolean success = false;
 		try {
 			success = CaptchaUtil.validateCaptcha(token, privateKey);
@@ -552,12 +552,12 @@ public class CreateIdeaWizardController extends AbstractIdesController {
 			log.error("Error verifying captcha", e);
 			addMessageError("Internal Server Error. Failed to verify reCAPTCHA response.", "");
 		} finally {
-			long end = System.currentTimeMillis() - start;
+			long end = System.currentTimeMillis() - startTime;
 			log.info("validateCaptcha took " + end + "ms");
 		}
 
 		if (!success) {
-			addMessageError("reCAPTCHA Validation Failed. Please re-challenge the reCAPTCHA", "");
+			addMessageError("reCAPTCHA Validation Failed. Please do the reCAPTCHA challenge again", "");
 		}
 
 		return success;
