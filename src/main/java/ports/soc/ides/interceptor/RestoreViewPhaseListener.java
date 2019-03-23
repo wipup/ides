@@ -60,7 +60,7 @@ public class RestoreViewPhaseListener implements PhaseListener {
 		}
 		
 		try {
-			log.info("Received Ajax request having invalid session id");
+			log.trace("Received Ajax request having invalid session id");
 			FacesUtils.handleInvalidSessionId(FacesContext.getCurrentInstance());
 		} catch (Exception e) {
 			log.error("Error redirect at phase listener beforePhase " + getPhaseId(), e);
