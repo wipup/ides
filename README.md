@@ -12,8 +12,7 @@ This project is part of my dissertation.
 There are 4 required technologies.
 
 - [Java SE 1.8 or newer](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-- ~~GlassFish 5.0 or newer~~ 
-- [Payara](https://www.payara.fish/software/downloads/) 
+- [GlassFish 5.0 or newer](https://javaee.github.io/glassfish/download)
   - Other fully-fledged Java EE servers should probably be fine but none of them have been tested.
 - [Oracle Database 10g or newer](https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html)
   - If use a version newer than 10g, the SQL statement `selectIdeasForListing` in the file
