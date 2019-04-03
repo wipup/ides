@@ -122,10 +122,10 @@ public class IdeaDAO extends AbstractDAO {
 			StringBuilder sb = new StringBuilder();
 			for (Idea i : ideas) {
 				sb.append("Updating status of idea=").append(IdesUtils.deepPrint(ideas)).append(" to status=").append(status).append(" with timestamp=").append(timestamp);
-				log.info(sb.toString());
 				sb.setLength(0);
 				mapper.updateIdeaStatus(i.getId(), status, timestamp);
 			}
+			log.info(sb.toString());
 			sql.commit();
 		} finally {
 			long end = System.currentTimeMillis() - start;
@@ -144,7 +144,6 @@ public class IdeaDAO extends AbstractDAO {
 		}
 	}
 
-	@Deprecated
 	public long selectNextIdeaId() {
 		long start = System.currentTimeMillis();
 		try (SqlSession sql = sqlSessionProvider.getSqlSession()) {
