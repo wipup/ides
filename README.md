@@ -6,6 +6,7 @@ This project is part of my dissertation.
  - Fix bugs in extended organisation page and SQL
  - Minify javascript and css
  - Add pagination to log file list 
+ - Add new **feature**: Email Notification for new idea submission/update.
 
 ## 1. Required software
 
