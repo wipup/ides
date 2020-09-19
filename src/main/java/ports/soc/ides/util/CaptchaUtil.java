@@ -32,6 +32,7 @@ public class CaptchaUtil {
 		conn.setDoOutput(true);
 		conn.setUseCaches(false);
 		conn.setConnectTimeout(5000);
+		conn.setReadTimeout(25*1000);
 		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
 		StringBuilder params = new StringBuilder();
